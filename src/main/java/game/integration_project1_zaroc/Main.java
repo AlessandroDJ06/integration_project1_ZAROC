@@ -2,7 +2,7 @@ package game.integration_project1_zaroc;
 
 import game.integration_project1_zaroc.core.ResourceManager;
 import game.integration_project1_zaroc.core.themes.Themes;
-import game.integration_project1_zaroc.view.GameBoardView;
+import game.integration_project1_zaroc.view.BoardView.GameBoardView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        Themes theme = Themes.DARK_GOLD;
+        Themes theme = Themes.DEFAULT;
         ResourceManager resourceManager = new ResourceManager(theme);
         GameBoardView view = new GameBoardView(resourceManager);
         Scene scene = new Scene(view);

@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.view;
+package game.integration_project1_zaroc.view.BoardView;
 import game.integration_project1_zaroc.components.BoardComponent;
 import game.integration_project1_zaroc.components.GeneralActionsComponent;
 import game.integration_project1_zaroc.components.PlayersPlayingComponent;
@@ -7,14 +7,8 @@ import game.integration_project1_zaroc.core.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.core.themes.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 
 public class GameBoardView extends BorderPane {
 
