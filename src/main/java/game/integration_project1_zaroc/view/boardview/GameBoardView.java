@@ -9,8 +9,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameBoardView extends BorderPane {
 
@@ -57,6 +61,27 @@ public class GameBoardView extends BorderPane {
         pegView.setBackground(new Background(backgroundImage));
         pegView.setMaxSize(400,400);
         pegView.setPrefSize(400,400);
+
+        List<ImageView> poles = new ArrayList<>();
+        for (int i = 0 ; i < 18 ;i++){
+            poles.add(new ImageView(resourceManager.getImage(Components.POLE)));
+        }
+
+        HBox pegRow4 = new HBox(poles.get(0),poles.get(1),poles.get(2),poles.get(3));
+        pegRow4.setAlignment(Pos.CENTER);
+        pegRow4.setSpacing(50);
+        HBox pegRow3 = new HBox(poles.get(4),poles.get(5),poles.get(6),poles.get(7));
+        pegRow3.setAlignment(Pos.CENTER);
+        pegRow3.setSpacing(50);
+        HBox pegRow2 = new HBox(poles.get(8),poles.get(9),poles.get(10),poles.get(11),poles.get(12));
+        pegRow2.setAlignment(Pos.CENTER);
+        pegRow2.setSpacing(50);
+
+        VBox rows = new VBox(pegRow4,pegRow3,pegRow2);
+        rows.setSpacing(15);
+        pegView.setCenter(rows);
+        rows.setAlignment(Pos.CENTER);
+
 
         Region spacer = new Region();
         HBox boardWithPegView = new HBox(board,spacer,pegView);
