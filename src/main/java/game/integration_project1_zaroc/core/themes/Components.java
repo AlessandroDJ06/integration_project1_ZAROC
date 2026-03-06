@@ -9,7 +9,8 @@ public enum Components {
     SETTINGS("settings-button.png"),
     UNDO("undo-button.png"),
     UNIVERSAL("universal-button.png"),
-    GAMEPLAYERS("gameParticipation.png");
+    GAMEPLAYERS("gameParticipation.png"),
+    PEGVIEW("pegview.png");
 
     private final String fileName;
 

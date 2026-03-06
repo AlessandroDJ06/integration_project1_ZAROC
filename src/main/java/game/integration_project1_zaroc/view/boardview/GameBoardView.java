@@ -8,7 +8,11 @@ import game.integration_project1_zaroc.core.themes.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import org.w3c.dom.css.Rect;
 
 public class GameBoardView extends BorderPane {
 
@@ -36,12 +40,34 @@ public class GameBoardView extends BorderPane {
         PlayersPlayingComponent playersPlaying = new PlayersPlayingComponent("Alessandro","Alessandro",resourceManager);
         playersPlaying.setPlayerOnePfp(ProfilePictures.JAMES);
         playersPlaying.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
+
+        BorderPane pegView = new BorderPane();
+        Rectangle rect = new Rectangle();
+        Image boardBackgroundImage = resourceManager.getImage(Components.PEGVIEW);
+        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(
+                boardBackgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                backgroundSize
+        );
+        pegView.setBackground(new Background(backgroundImage));
+        pegView.setMaxSize(400,400);
+        pegView.setPrefSize(400,400);
+
+        Region spacer = new Region();
+        HBox boardWithPegView = new HBox(board,spacer,pegView);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        boardWithPegView.setAlignment(Pos.CENTER);
         VBox boardView = new VBox();
-        boardView.getChildren().addAll(playersPlaying,board);
+
+        boardView.getChildren().addAll(playersPlaying,boardWithPegView);
         boardView.setSpacing(50);
         boardView.setPadding(new Insets(40));
         setCenter(boardView);
-        boardView.setMaxWidth(600);
+        boardView.setMaxWidth(1200);
+        boardView.setAlignment(Pos.TOP_CENTER);
         BorderPane.setAlignment(boardView,Pos.CENTER);
 
         VBox infoAndSettingsVbox = new VBox(this.settingsButton,this.infoButton);
@@ -53,6 +79,7 @@ public class GameBoardView extends BorderPane {
         setLeft(undoButtonVbox);
         BorderPane.setAlignment(undoButtonVbox,Pos.TOP_LEFT);
         undoButtonVbox.setPadding(new Insets(30,0,0,30));
+
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
     }
 }

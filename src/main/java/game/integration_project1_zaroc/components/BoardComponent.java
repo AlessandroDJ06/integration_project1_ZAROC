@@ -45,9 +45,9 @@ public class BoardComponent extends StackPane {
         this.board.setBackground(new Background(backgroundImage));
 
         //grootte van het bord zelf bepalen
-        board.setPrefSize(800,600);
-        board.setMinSize(800,600);
-        board.setMaxSize(800,600);
+        board.setPrefSize(750,550);
+        board.setMinSize(750,550);
+        board.setMaxSize(750,550);
         board.setPadding(new Insets(70,0,10,70)); //TopRightBottomLeft
 
         //voeg peg locaties toe
@@ -64,8 +64,8 @@ public class BoardComponent extends StackPane {
                         path = Components.PEG;
                     }
                     ImageView location = new ImageView(resourceManager.getImage(path));
-                    location.setScaleY(1.5);
-                    location.setScaleX(1.5);
+                    location.setScaleY(1.3);
+                    location.setScaleX(1.3);
                     board.add(location, column, row);
 
                     GridPane.setHalignment(location, HPos.CENTER);
