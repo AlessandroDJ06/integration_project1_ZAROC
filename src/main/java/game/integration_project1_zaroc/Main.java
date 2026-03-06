@@ -1,5 +1,7 @@
 package game.integration_project1_zaroc;
 
+import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.core.ResourceManager;
 import game.integration_project1_zaroc.view.core.themes.Themes;
 import game.integration_project1_zaroc.view.boardview.GameBoardView;
@@ -18,6 +20,7 @@ public class Main extends Application {
         Themes theme = Themes.DEFAULT;
         ResourceManager resourceManager = new ResourceManager(theme);
         GameBoardView view = new GameBoardView(resourceManager);
+        new GameBoardPresenter(view,new AppController());
         //RuleView view = new RuleView(resourceManager); //dit is rule view
         Scene scene = new Scene(view);
         stage.setScene(scene);

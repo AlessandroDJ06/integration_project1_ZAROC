@@ -19,6 +19,7 @@ public class GameBoardView extends BorderPane {
     private Button settingsButton;
     private Button infoButton;
     private ResourceManager resourceManager;
+    private PlayersPlayingComponent playersPlayingComponent;
 
 
     public GameBoardView(ResourceManager resourceManager) {
@@ -32,12 +33,15 @@ public class GameBoardView extends BorderPane {
         this.undoButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO);
         this.settingsButton = new GeneralActionsComponent(this.resourceManager,Components.SETTINGS);
         this.infoButton = new GeneralActionsComponent(this.resourceManager,Components.RULES);
+        this.playersPlayingComponent = new PlayersPlayingComponent(resourceManager);
     }
 
     public void layoutNodes() {
-        PlayersPlayingComponent playersPlaying = new PlayersPlayingComponent("Alessandro","Alessandro",resourceManager);
-        playersPlaying.setPlayerOnePfp(ProfilePictures.JAMES);
-        playersPlaying.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
+        playersPlayingComponent.setPlayerOnePfp(ProfilePictures.JAMES);
+        playersPlayingComponent.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
+
+        playersPlayingComponent.setFirstPlayer("Alessandro");
+        playersPlayingComponent.setSecondPlayer("JEFFRY");
 
         BorderPane pegView = new BorderPane();
         Rectangle rect = new Rectangle();
@@ -60,7 +64,7 @@ public class GameBoardView extends BorderPane {
         boardWithPegView.setAlignment(Pos.CENTER);
         VBox boardView = new VBox();
 
-        boardView.getChildren().addAll(playersPlaying,boardWithPegView);
+        boardView.getChildren().addAll(playersPlayingComponent,boardWithPegView);
         boardView.setSpacing(50);
         boardView.setPadding(new Insets(40));
         setCenter(boardView);
@@ -79,5 +83,29 @@ public class GameBoardView extends BorderPane {
         undoButtonVbox.setPadding(new Insets(30,0,0,30));
 
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
+    }
+
+    BoardComponent getBoard() {
+        return board;
+    }
+
+    PlayersPlayingComponent getPlayersPlayingComponent() {
+        return playersPlayingComponent;
+    }
+
+    ResourceManager getResourceManager() {
+        return resourceManager;
+    }
+
+    Button getInfoButton() {
+        return infoButton;
+    }
+
+    Button getSettingsButton() {
+        return settingsButton;
+    }
+
+    Button getUndoButton() {
+        return undoButton;
     }
 }
