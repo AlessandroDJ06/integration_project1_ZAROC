@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.view.BoardView;
+package game.integration_project1_zaroc.view.boardview;
 import game.integration_project1_zaroc.components.BoardComponent;
 import game.integration_project1_zaroc.components.GeneralActionsComponent;
 import game.integration_project1_zaroc.components.PlayersPlayingComponent;

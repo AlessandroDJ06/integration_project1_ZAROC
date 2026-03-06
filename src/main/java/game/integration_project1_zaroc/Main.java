@@ -2,7 +2,7 @@ package game.integration_project1_zaroc;
 
 import game.integration_project1_zaroc.core.ResourceManager;
 import game.integration_project1_zaroc.core.themes.Themes;
-import game.integration_project1_zaroc.view.BoardView.GameBoardView;
+import game.integration_project1_zaroc.view.boardview.GameBoardView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
