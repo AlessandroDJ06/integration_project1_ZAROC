@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
 import game.integration_project1_zaroc.model.boardinfo.Peg;
+import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,22 +9,26 @@ import java.time.LocalDateTime;
 public class Move {
     private MoveNumber moveNumber;
     private Duration duration;
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
     private Peg startPeg;
     private Peg destinationPeg;
+    private Turn turn;
 
-    public Move(int moveNumber, Duration duration, LocalDateTime timestamp, Peg startPeg, Peg destinationPeg) {
-        if(moveNumber==1 && ){
-
-        }
-        this.duration = duration;
-        this.timestamp = timestamp;
+    public Move(MoveNumber moveNumber, Peg startPeg, Peg destinationPeg) {
+        this.moveNumber = moveNumber;
+        timestamp = LocalDateTime.now();
         this.startPeg = startPeg;
         this.destinationPeg = destinationPeg;
     }
 
+    public MoveNumber getMoveNumber() {
+        return moveNumber;
+    }
+
     public void setMoveNumber(int moveNumber) {
-        this.moveNumber = moveNumber;
+        if(moveNumber == 1 || moveNumber == 2){
+            this.moveNumber = MoveNumber.values()[moveNumber-1];
+        }
     }
 
     public Duration getDuration() {
@@ -36,10 +41,6 @@ public class Move {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 
     public Peg getStartPeg() {
