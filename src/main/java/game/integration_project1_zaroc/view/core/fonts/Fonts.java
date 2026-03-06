@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.core.fonts;
+package game.integration_project1_zaroc.view.core.fonts;
 
 public enum Fonts {
     PRESSSTART2PLARGE("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",15),

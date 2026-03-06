@@ -1,18 +1,16 @@
 package game.integration_project1_zaroc.view.boardview;
-import game.integration_project1_zaroc.components.BoardComponent;
-import game.integration_project1_zaroc.components.GeneralActionsComponent;
-import game.integration_project1_zaroc.components.PlayersPlayingComponent;
-import game.integration_project1_zaroc.core.ResourceManager;
-import game.integration_project1_zaroc.core.profilePictures.ProfilePictures;
-import game.integration_project1_zaroc.core.themes.Components;
+import game.integration_project1_zaroc.view.components.BoardComponent;
+import game.integration_project1_zaroc.view.components.GeneralActionsComponent;
+import game.integration_project1_zaroc.view.components.PlayersPlayingComponent;
+import game.integration_project1_zaroc.view.core.ResourceManager;
+import game.integration_project1_zaroc.view.core.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.core.themes.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.w3c.dom.css.Rect;
 
 public class GameBoardView extends BorderPane {
 

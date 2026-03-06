@@ -1,6 +1,6 @@
-package game.integration_project1_zaroc.components;
-import game.integration_project1_zaroc.core.ResourceManager;
-import game.integration_project1_zaroc.core.themes.Components;
+package game.integration_project1_zaroc.view.components;
+import game.integration_project1_zaroc.view.core.ResourceManager;
+import game.integration_project1_zaroc.view.core.themes.Components;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

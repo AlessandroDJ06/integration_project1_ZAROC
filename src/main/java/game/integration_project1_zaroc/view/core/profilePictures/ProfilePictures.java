@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.core.profilePictures;
+package game.integration_project1_zaroc.view.core.profilePictures;
 
 public enum ProfilePictures {
     JAMES("james"),

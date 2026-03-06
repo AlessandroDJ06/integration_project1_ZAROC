@@ -1,8 +1,8 @@
-package game.integration_project1_zaroc.core;
-import game.integration_project1_zaroc.core.fonts.Fonts;
-import game.integration_project1_zaroc.core.profilePictures.ProfilePictures;
-import game.integration_project1_zaroc.core.themes.Components;
-import game.integration_project1_zaroc.core.themes.Themes;
+package game.integration_project1_zaroc.view.core;
+import game.integration_project1_zaroc.view.core.fonts.Fonts;
+import game.integration_project1_zaroc.view.core.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.core.themes.Components;
+import game.integration_project1_zaroc.view.core.themes.Themes;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 

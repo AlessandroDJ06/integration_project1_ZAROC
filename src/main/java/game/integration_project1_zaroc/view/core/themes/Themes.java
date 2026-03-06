@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.core.themes;
+package game.integration_project1_zaroc.view.core.themes;
 
 public enum Themes {
     DEFAULT("default-style","#E2DBC0"),
