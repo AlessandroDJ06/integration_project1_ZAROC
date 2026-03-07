@@ -73,6 +73,7 @@ public class GameBoardView extends BorderPane {
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
     }
 
+
     BoardComponent getBoard() {
         return board;
     }
@@ -108,6 +109,4 @@ public class GameBoardView extends BorderPane {
     HBox getPegRowFour() {
         return pegView.getPegRowFour();
     }
-
-
 }
