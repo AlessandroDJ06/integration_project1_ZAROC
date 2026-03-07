@@ -17,8 +17,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Themes theme = Themes.DEFAULT;
         ResourceManager resourceManager = new ResourceManager(theme);
-        GameBoardView view = new GameBoardView(resourceManager);
-        //RuleView view = new RuleView(resourceManager); //dit is rule view
+        //GameBoardView view = new GameBoardView(resourceManager);
+        RuleView view = new RuleView(resourceManager); //dit is rule view
         Scene scene = new Scene(view);
         stage.setScene(scene);
         stage.setFullScreen(true);
