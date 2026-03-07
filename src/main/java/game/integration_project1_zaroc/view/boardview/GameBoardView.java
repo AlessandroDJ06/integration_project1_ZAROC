@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.boardview;
 import game.integration_project1_zaroc.view.components.BoardComponent;
 import game.integration_project1_zaroc.view.components.GeneralActionsComponent;
+import game.integration_project1_zaroc.view.components.PegSideViewComponent;
 import game.integration_project1_zaroc.view.components.PlayersPlayingComponent;
 import game.integration_project1_zaroc.view.core.ResourceManager;
 import game.integration_project1_zaroc.view.core.profilePictures.ProfilePictures;
@@ -8,13 +9,8 @@ import game.integration_project1_zaroc.view.core.themes.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameBoardView extends BorderPane {
 
@@ -24,9 +20,7 @@ public class GameBoardView extends BorderPane {
     private Button infoButton;
     private ResourceManager resourceManager;
     private PlayersPlayingComponent playersPlayingComponent;
-    private HBox pegRowFour;
-    private HBox pegRowTwo;
-    private HBox pegRowThree;
+    private PegSideViewComponent pegView;
 
 
 
@@ -42,6 +36,7 @@ public class GameBoardView extends BorderPane {
         this.settingsButton = new GeneralActionsComponent(this.resourceManager,Components.SETTINGS);
         this.infoButton = new GeneralActionsComponent(this.resourceManager,Components.RULES);
         this.playersPlayingComponent = new PlayersPlayingComponent(resourceManager);
+        this.pegView = new PegSideViewComponent(this.resourceManager);
     }
 
     public void layoutNodes() {
@@ -50,48 +45,6 @@ public class GameBoardView extends BorderPane {
 
         playersPlayingComponent.setFirstPlayer("Alessandro");
         playersPlayingComponent.setSecondPlayer("JEFFRY");
-
-        BorderPane pegView = new BorderPane();
-        Rectangle rect = new Rectangle();
-        Image boardBackgroundImage = resourceManager.getImage(Components.PEGVIEW);
-        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
-        BackgroundImage backgroundImage = new BackgroundImage(
-                boardBackgroundImage,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                backgroundSize
-        );
-        pegView.setBackground(new Background(backgroundImage));
-        pegView.setMaxSize(400,400);
-        pegView.setPrefSize(400,400);
-
-        List<ImageView> poles = new ArrayList<>();
-        for (int i = 0 ; i < 18 ;i++){
-            poles.add(new ImageView(resourceManager.getImage(Components.POLE)));
-        }
-
-        HBox pegRow4 = new HBox(poles.get(0),poles.get(1),poles.get(2),poles.get(3));
-        pegRow4.setAlignment(Pos.CENTER);
-        pegRow4.setScaleY(0.5);
-        pegRow4.setSpacing(50);
-        setPegRowFour(pegRow4);
-        HBox pegRow3 = new HBox(poles.get(4),poles.get(5),poles.get(6),poles.get(7));
-        pegRow3.setAlignment(Pos.CENTER);
-        pegRow3.setSpacing(50);
-        pegRow3.setScaleY(0.5);
-        setPegRowThree(pegRow3);
-        HBox pegRow2 = new HBox(poles.get(8),poles.get(9),poles.get(10),poles.get(11),poles.get(12));
-        pegRow2.setAlignment(Pos.CENTER);
-        pegRow2.setSpacing(50);
-        pegRow2.setScaleY(0.5);
-        setPegRowTwo(pegRow2);
-
-        VBox rows = new VBox(pegRow4,pegRow3,pegRow2);
-        rows.setSpacing(15);
-        pegView.setCenter(rows);
-        rows.setAlignment(Pos.CENTER);
-
 
         Region spacer = new Region();
         HBox boardWithPegView = new HBox(board,spacer,pegView);
@@ -144,31 +97,17 @@ public class GameBoardView extends BorderPane {
         return undoButton;
     }
 
-    public void setBoard(BoardComponent board) {
-        this.board = board;
+    HBox getPegRowThree() {
+        return pegView.getPegRowThree();
     }
 
-    public void setPegRowFour(HBox pegRowFour) {
-        this.pegRowFour = pegRowFour;
+    HBox getPegRowTwo() {
+        return pegView.getPegRowTwo();
     }
 
-    public void setPegRowTwo(HBox pegRowTwo) {
-        this.pegRowTwo = pegRowTwo;
+    HBox getPegRowFour() {
+        return pegView.getPegRowFour();
     }
 
-    public void setPegRowThree(HBox pegRowThree) {
-        this.pegRowThree = pegRowThree;
-    }
 
-    public HBox getPegRowFour() {
-        return pegRowFour;
-    }
-
-    public HBox getPegRowTwo() {
-        return pegRowTwo;
-    }
-
-    public HBox getPegRowThree() {
-        return pegRowThree;
-    }
 }
