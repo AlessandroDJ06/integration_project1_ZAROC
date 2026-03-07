@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.view.components;
 
 import game.integration_project1_zaroc.view.core.ResourceManager;
 import game.integration_project1_zaroc.view.core.themes.Components;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -22,6 +23,7 @@ public class GeneralActionsComponent extends Button {
         imageView.setFitWidth(88);
         setGraphic(imageView);
         setBackground(Background.EMPTY);
+        setCursor(Cursor.HAND);
 
     }
 }
