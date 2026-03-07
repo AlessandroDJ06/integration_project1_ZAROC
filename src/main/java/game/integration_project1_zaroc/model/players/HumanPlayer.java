@@ -1,5 +1,7 @@
 package game.integration_project1_zaroc.model.players;
 
+import game.integration_project1_zaroc.model.gameinfo.PawnColor;
+
 public class HumanPlayer extends Player {
     private String username;
     private String email;
