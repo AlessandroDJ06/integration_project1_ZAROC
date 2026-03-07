@@ -30,6 +30,30 @@ public class GameBoardPresenter {
             view.getInfoButton().setScaleX(1.0);
             view.getInfoButton().setScaleY(1.0);
         });
+
+        view.getPegRowFour().setOnMouseEntered(mouseEvent -> {
+            view.getPegRowFour().setScaleY(1.0);
+        });
+
+        view.getPegRowFour().setOnMouseExited(mouseEvent -> {
+            view.getPegRowFour().setScaleY(0.5);
+        });
+
+        view.getPegRowThree().setOnMouseEntered(mouseEvent -> {
+            view.getPegRowThree().setScaleY(1.0);
+        });
+
+        view.getPegRowThree().setOnMouseExited(mouseEvent -> {
+            view.getPegRowThree().setScaleY(0.5);
+        });
+
+        view.getPegRowTwo().setOnMouseEntered(mouseEvent -> {
+            view.getPegRowTwo().setScaleY(1.0);
+        });
+
+        view.getPegRowTwo().setOnMouseExited(mouseEvent -> {
+            view.getPegRowTwo().setScaleY(0.5);
+        });
     }
 
     private void updateView(){

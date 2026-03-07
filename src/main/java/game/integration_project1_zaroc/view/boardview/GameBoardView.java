@@ -24,6 +24,10 @@ public class GameBoardView extends BorderPane {
     private Button infoButton;
     private ResourceManager resourceManager;
     private PlayersPlayingComponent playersPlayingComponent;
+    private HBox pegRowFour;
+    private HBox pegRowTwo;
+    private HBox pegRowThree;
+
 
 
     public GameBoardView(ResourceManager resourceManager) {
@@ -69,13 +73,19 @@ public class GameBoardView extends BorderPane {
 
         HBox pegRow4 = new HBox(poles.get(0),poles.get(1),poles.get(2),poles.get(3));
         pegRow4.setAlignment(Pos.CENTER);
+        pegRow4.setScaleY(0.5);
         pegRow4.setSpacing(50);
+        setPegRowFour(pegRow4);
         HBox pegRow3 = new HBox(poles.get(4),poles.get(5),poles.get(6),poles.get(7));
         pegRow3.setAlignment(Pos.CENTER);
         pegRow3.setSpacing(50);
+        pegRow3.setScaleY(0.5);
+        setPegRowThree(pegRow3);
         HBox pegRow2 = new HBox(poles.get(8),poles.get(9),poles.get(10),poles.get(11),poles.get(12));
         pegRow2.setAlignment(Pos.CENTER);
         pegRow2.setSpacing(50);
+        pegRow2.setScaleY(0.5);
+        setPegRowTwo(pegRow2);
 
         VBox rows = new VBox(pegRow4,pegRow3,pegRow2);
         rows.setSpacing(15);
@@ -132,5 +142,33 @@ public class GameBoardView extends BorderPane {
 
     Button getUndoButton() {
         return undoButton;
+    }
+
+    public void setBoard(BoardComponent board) {
+        this.board = board;
+    }
+
+    public void setPegRowFour(HBox pegRowFour) {
+        this.pegRowFour = pegRowFour;
+    }
+
+    public void setPegRowTwo(HBox pegRowTwo) {
+        this.pegRowTwo = pegRowTwo;
+    }
+
+    public void setPegRowThree(HBox pegRowThree) {
+        this.pegRowThree = pegRowThree;
+    }
+
+    public HBox getPegRowFour() {
+        return pegRowFour;
+    }
+
+    public HBox getPegRowTwo() {
+        return pegRowTwo;
+    }
+
+    public HBox getPegRowThree() {
+        return pegRowThree;
     }
 }
