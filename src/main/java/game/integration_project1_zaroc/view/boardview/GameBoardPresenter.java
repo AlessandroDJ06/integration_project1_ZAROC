@@ -33,26 +33,38 @@ public class GameBoardPresenter {
 
         view.getPegRowFour().setOnMouseEntered(mouseEvent -> {
             view.getPegRowFour().setScaleY(1.5);
+            view.getPegRowFour().setScaleX(1.5);
+            view.getPegRowFour().setSpacing(30);
         });
 
         view.getPegRowFour().setOnMouseExited(mouseEvent -> {
             view.getPegRowFour().setScaleY(1);
+            view.getPegRowFour().setScaleX(1);
+            view.getPegRowFour().setSpacing(50);
         });
 
         view.getPegRowThree().setOnMouseEntered(mouseEvent -> {
             view.getPegRowThree().setScaleY(1.5);
+            view.getPegRowThree().setScaleX(1.5);
+            view.getPegRowThree().setSpacing(30);
         });
 
         view.getPegRowThree().setOnMouseExited(mouseEvent -> {
             view.getPegRowThree().setScaleY(1);
+            view.getPegRowThree().setScaleX(1);
+            view.getPegRowThree().setSpacing(50);
         });
 
         view.getPegRowTwo().setOnMouseEntered(mouseEvent -> {
             view.getPegRowTwo().setScaleY(1.5);
+            view.getPegRowTwo().setScaleX(1.5);
+            view.getPegRowTwo().setSpacing(30);
         });
 
         view.getPegRowTwo().setOnMouseExited(mouseEvent -> {
             view.getPegRowTwo().setScaleY(1);
+            view.getPegRowTwo().setScaleX(1);
+            view.getPegRowTwo().setSpacing(50);
         });
     }
 

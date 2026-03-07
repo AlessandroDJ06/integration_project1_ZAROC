@@ -75,13 +75,12 @@ public class PegSideViewComponent extends BorderPane {
                 this.pegRowThree,
                 this.pegRowTwo
         );
-        rows.setSpacing(15);
+        rows.setSpacing(20);
         rows.setAlignment(Pos.CENTER);
 
         for (Node row : rows.getChildren()){
             if (row instanceof HBox){
                 ((HBox) row).setAlignment(Pos.CENTER);
-//                row.setScaleY(0.5);
                 ((HBox) row).setSpacing(50);
             }
         }
