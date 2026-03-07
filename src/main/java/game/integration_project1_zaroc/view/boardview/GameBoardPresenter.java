@@ -3,17 +3,29 @@ package game.integration_project1_zaroc.view.boardview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.ruleview.RuleView;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class GameBoardPresenter {
     private GameBoardView view;
     private AppController model;
+    private List<HBox> rows;
+    private List<Button> buttons;
 
     public GameBoardPresenter(GameBoardView view,AppController model){
         this.view = view;
         this.model = model;
+        this.rows = Arrays.asList(view.getPegRowFour(),view.getPegRowThree(),view.getPegRowTwo());
+        this.buttons = Arrays.asList(view.getUndoButton(),view.getSettingsButton(),view.getInfoButton());
         updateView();
         addEventHandlers();
     }
+
 
     private void addEventHandlers(){
         view.getInfoButton().setOnAction(event -> {
@@ -21,51 +33,30 @@ public class GameBoardPresenter {
             view.getScene().setRoot(ruleView);
         });
 
-        view.getInfoButton().setOnMouseEntered(event -> {
-            view.getInfoButton().setScaleX(1.2);
-            view.getInfoButton().setScaleY(1.2);
-        });
+        for (Button button : buttons){
+            button.setOnMouseEntered(event -> {
+                button.setScaleX(1.2);
+                button.setScaleY(1.2);
+            });
 
-        view.getInfoButton().setOnMouseExited(event -> {
-            view.getInfoButton().setScaleX(1.0);
-            view.getInfoButton().setScaleY(1.0);
-        });
+            button.setOnMouseExited(event -> {
+                button.setScaleX(1.0);
+                button.setScaleY(1.0);
+            });
+        }
+        for (HBox row : rows){
+            row.setOnMouseEntered(mouseEvent -> {
+                row.setScaleY(1.5);
+                row.setScaleX(1.5);
+                row.setSpacing(30);
+            });
 
-        view.getPegRowFour().setOnMouseEntered(mouseEvent -> {
-            view.getPegRowFour().setScaleY(1.5);
-            view.getPegRowFour().setScaleX(1.5);
-            view.getPegRowFour().setSpacing(30);
-        });
-
-        view.getPegRowFour().setOnMouseExited(mouseEvent -> {
-            view.getPegRowFour().setScaleY(1);
-            view.getPegRowFour().setScaleX(1);
-            view.getPegRowFour().setSpacing(50);
-        });
-
-        view.getPegRowThree().setOnMouseEntered(mouseEvent -> {
-            view.getPegRowThree().setScaleY(1.5);
-            view.getPegRowThree().setScaleX(1.5);
-            view.getPegRowThree().setSpacing(30);
-        });
-
-        view.getPegRowThree().setOnMouseExited(mouseEvent -> {
-            view.getPegRowThree().setScaleY(1);
-            view.getPegRowThree().setScaleX(1);
-            view.getPegRowThree().setSpacing(50);
-        });
-
-        view.getPegRowTwo().setOnMouseEntered(mouseEvent -> {
-            view.getPegRowTwo().setScaleY(1.5);
-            view.getPegRowTwo().setScaleX(1.5);
-            view.getPegRowTwo().setSpacing(30);
-        });
-
-        view.getPegRowTwo().setOnMouseExited(mouseEvent -> {
-            view.getPegRowTwo().setScaleY(1);
-            view.getPegRowTwo().setScaleX(1);
-            view.getPegRowTwo().setSpacing(50);
-        });
+            row.setOnMouseExited(mouseEvent -> {
+                row.setScaleY(1);
+                row.setScaleX(1);
+                row.setSpacing(50);
+            });
+        }
     }
 
     private void updateView(){
