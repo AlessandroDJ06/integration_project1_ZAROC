@@ -16,11 +16,11 @@ public class Peg {
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         this.layerLevel=layerLevel;
-        intialiseMaxCapacity();
+        initialiseMaxCapacity();
         pawns = new ArrayList<>();
     }
 
-    public void intialiseMaxCapacity() {
+    public void initialiseMaxCapacity() {
         switch(getYPosition()){
             case 0 -> this.maxCapacity=MaxCapacity.FIRST_ROW;
             case 1 -> this.maxCapacity=MaxCapacity.SECOND_ROW;
@@ -29,8 +29,8 @@ public class Peg {
         }
     }
 
-    public void addPawnToPeg(Pawn pawn, Peg destinationPeg){
-        pawn.setCurrentPeg(destinationPeg);
+    public void addPawnToPeg(Pawn pawn, Peg currentPeg){
+        pawn.setCurrentPeg(currentPeg);
         pawns.add(pawn);
     }
     public void removePawnFromPeg(Pawn pawn, Peg currentPeg){

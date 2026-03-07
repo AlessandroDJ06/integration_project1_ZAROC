@@ -11,7 +11,6 @@ public class Turn {
     private Player currentPlayer;
     private static int turnNumber = 0;
     private Move[] moves;
-    private Game game;
 
     public Turn(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
@@ -19,16 +18,35 @@ public class Turn {
         turnNumber++;
     }
 
-    public Game getGame() {
-        return this.getGame();
-    }
 
     public void addMove(Move move) {
         moves[move.getMoveNumber().getNumber() - 1] = move;
 
     }
 
-   /* public LocalDateTime getMoveDuration(Move firstMove, Move secondMove) {
+    public static int getTurnNumber() {
+        return turnNumber;
+    }
+
+    /*public Move[] getMoves() {
+        return moves;
+    }*/
+    public Move getFirstMove(){
+        return moves[0];
+    }
+
+    public Move getSecondMove(){
+        return moves[1];
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+    /* public LocalDateTime getMoveDuration(Move firstMove, Move secondMove) {
 
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());
     }*/
