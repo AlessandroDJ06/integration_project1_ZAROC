@@ -10,6 +10,7 @@ public class Game {
 
     public Game() {
         this.status = GameStatus.PLAYING;
+        turns = new ArrayList<>();
     }
 
     public GameStatus getStatus() {

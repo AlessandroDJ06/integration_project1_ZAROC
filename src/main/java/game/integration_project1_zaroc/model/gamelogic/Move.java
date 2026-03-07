@@ -8,11 +8,10 @@ import java.time.LocalDateTime;
 
 public class Move {
     private MoveNumber moveNumber;
-    private Duration duration;
+    //private Duration duration;
     private final LocalDateTime timestamp;
     private Peg startPeg;
     private Peg destinationPeg;
-    private Turn turn;
 
     public Move(MoveNumber moveNumber, Peg startPeg, Peg destinationPeg) {
         this.moveNumber = moveNumber;
@@ -25,19 +24,17 @@ public class Move {
         return moveNumber;
     }
 
-    public void setMoveNumber(int moveNumber) {
-        if(moveNumber == 1 || moveNumber == 2){
-            this.moveNumber = MoveNumber.values()[moveNumber-1];
-        }
+    public void setMoveNumber(MoveNumber moveNumber) {
+            this.moveNumber = moveNumber;
     }
 
-    public Duration getDuration() {
+   /* public Duration getDuration() {
         return duration;
     }
 
     public void setDuration(Duration duration) {
         this.duration = duration;
-    }
+    }*/
 
     public LocalDateTime getTimestamp() {
         return timestamp;

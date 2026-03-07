@@ -3,7 +3,7 @@ package game.integration_project1_zaroc.model.boardinfo;
 public class Board {
     private Peg[][] pegPositions;
 
-    public Board(int size) {
+    public Board() {
         this.pegPositions = new Peg[10][4];
     }
 }
