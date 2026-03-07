@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.core;
 import game.integration_project1_zaroc.view.core.fonts.Fonts;
 import game.integration_project1_zaroc.view.core.pawncolors.PawnColorPaths;
+import game.integration_project1_zaroc.view.core.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.core.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.core.themes.Components;
 import game.integration_project1_zaroc.view.core.themes.Themes;
@@ -16,6 +17,7 @@ public class ResourceManager {
     private  Map<String, Image> loadedProfileImages;
     private  Map<Fonts, Font> loadedFonts;
     private  Map<PawnColorPaths,Image> loadedPawnColors;
+    private  Map<PawnSideViews,Image> loadedSideViews;
     private Themes theme;
 
     public ResourceManager(Themes theme){
@@ -23,6 +25,7 @@ public class ResourceManager {
         this.loadedProfileImages = new HashMap<>();
         this.loadedFonts = new HashMap<>();
         this.loadedPawnColors = new HashMap<>();
+        this.loadedSideViews = new HashMap<>();
         this.theme=theme;
     }
 
@@ -67,6 +70,17 @@ public class ResourceManager {
             );
         }
         return loadedPawnColors.get(color);
+    }
+
+    public Image getPawnSideView(PawnSideViews sideView){
+        if (!loadedSideViews.containsKey(sideView)){
+            loadedSideViews.put(sideView,
+                    new Image(
+                            Objects.requireNonNull(getClass().getResourceAsStream(sideView.getPath()))
+                    )
+            );
+        }
+        return loadedSideViews.get(sideView);
     }
 
     public Themes getTheme() {

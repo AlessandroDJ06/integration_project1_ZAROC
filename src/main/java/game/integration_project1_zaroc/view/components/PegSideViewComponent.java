@@ -32,11 +32,20 @@ public class PegSideViewComponent extends BorderPane {
     }
 
     private void layoutNodes(){
-        Image backgroundImage = resourceManager.getImage(Components.POLE);
+        Image poleCapaFour = resourceManager.getImage(Components.POLECAPAFOUR);
+        Image poleCapaThree = resourceManager.getImage(Components.POLECAPATHREE);
+        Image poleCapaTwo = resourceManager.getImage(Components.POLECAPATWO);
         ArrayList<ImageView> backgroundOfEachPeg = new ArrayList<>();
 
         for (int i = 0 ; i < 13 ; i++){
-            backgroundOfEachPeg.add(new ImageView(backgroundImage));
+            if (i < 4){
+                backgroundOfEachPeg.add(new ImageView(poleCapaFour));
+            } else if (i < 8) {
+                backgroundOfEachPeg.add(new ImageView(poleCapaThree));
+            } else {
+                backgroundOfEachPeg.add(new ImageView(poleCapaTwo));
+            }
+
         }
 
         this.pegRowFour.getChildren().addAll(
@@ -72,7 +81,7 @@ public class PegSideViewComponent extends BorderPane {
         for (Node row : rows.getChildren()){
             if (row instanceof HBox){
                 ((HBox) row).setAlignment(Pos.CENTER);
-                row.setScaleY(0.5);
+//                row.setScaleY(0.5);
                 ((HBox) row).setSpacing(50);
             }
         }

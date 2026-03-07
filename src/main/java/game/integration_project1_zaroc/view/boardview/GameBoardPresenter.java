@@ -32,27 +32,27 @@ public class GameBoardPresenter {
         });
 
         view.getPegRowFour().setOnMouseEntered(mouseEvent -> {
-            view.getPegRowFour().setScaleY(1.0);
+            view.getPegRowFour().setScaleY(1.5);
         });
 
         view.getPegRowFour().setOnMouseExited(mouseEvent -> {
-            view.getPegRowFour().setScaleY(0.5);
+            view.getPegRowFour().setScaleY(1);
         });
 
         view.getPegRowThree().setOnMouseEntered(mouseEvent -> {
-            view.getPegRowThree().setScaleY(1.0);
+            view.getPegRowThree().setScaleY(1.5);
         });
 
         view.getPegRowThree().setOnMouseExited(mouseEvent -> {
-            view.getPegRowThree().setScaleY(0.5);
+            view.getPegRowThree().setScaleY(1);
         });
 
         view.getPegRowTwo().setOnMouseEntered(mouseEvent -> {
-            view.getPegRowTwo().setScaleY(1.0);
+            view.getPegRowTwo().setScaleY(1.5);
         });
 
         view.getPegRowTwo().setOnMouseExited(mouseEvent -> {
-            view.getPegRowTwo().setScaleY(0.5);
+            view.getPegRowTwo().setScaleY(1);
         });
     }
 
