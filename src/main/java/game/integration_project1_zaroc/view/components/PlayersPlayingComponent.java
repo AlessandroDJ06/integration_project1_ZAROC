@@ -13,6 +13,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
 public class PlayersPlayingComponent extends HBox {
+    private final ResourceManager resourceManager;
     private Label firstPlayer;
     private Label secondPlayer;
     private Circle firsPlayerPfpFrame;
@@ -22,7 +23,7 @@ public class PlayersPlayingComponent extends HBox {
     private Label pointPlayerOne;
     private Label pointPlayerTwo;
 
-    private ResourceManager resourceManager;
+
 
     public PlayersPlayingComponent(String firstPlayer,String secondPlayer,ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
