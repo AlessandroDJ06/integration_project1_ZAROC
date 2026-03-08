@@ -35,7 +35,7 @@ public class RuleView extends BorderPane {
 
     public void initialiseNodes() {
         ruleBorderPane = new BorderPane();
-        this.returnButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO); //TODO: make a return button and add here
+        this.returnButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO);
     }
 
     public void layoutNodes() {

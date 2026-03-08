@@ -8,6 +8,7 @@ import game.integration_project1_zaroc.view.core.themes.Themes;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
