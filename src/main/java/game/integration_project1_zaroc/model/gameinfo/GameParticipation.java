@@ -4,49 +4,41 @@ import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 
-import java.util.ArrayList;
 
 public class GameParticipation {
     private Player winner;
-    private PawnColor humanPawnColor;
-    private PawnColor aiPawnColor;
-    private Player[] players;
+    private PawnColor pawnColor;
+    private Player player;
 
-    public GameParticipation(HumanPlayer humanPlayer,PawnColor humanPawnColor, AIPlayer aiPlayer,  PawnColor aiPawnColor) {
-        this.humanPawnColor=humanPawnColor;
-        this.aiPawnColor=aiPawnColor;
-        players = new Player[]{humanPlayer, aiPlayer};
+    public GameParticipation(Player player,PawnColor pawnColor) {
+        this.player=player;
+        this.pawnColor= pawnColor;
 
-    }
-    public GameParticipation(HumanPlayer humanPlayer, AIPlayer aiPlayer){
-        this(humanPlayer,PawnColor.WHITE, aiPlayer, PawnColor.BLACK);
     }
 
     public Player getWinner() {
         return winner;
     }
 
-    public PawnColor getHumanPawnColor() {
-        return humanPawnColor;
+    public void setWinner(Player winner) {
+        this.winner = winner;
     }
 
-    public void setHumanPawnColor(PawnColor humanPawnColor) {
-        this.humanPawnColor = humanPawnColor;
+    public PawnColor getPawnColor() {
+        return pawnColor;
     }
 
-    public PawnColor getAiPawnColor() {
-        return aiPawnColor;
+    public void setPawnColor(PawnColor pawnColor) {
+        this.pawnColor = pawnColor;
     }
 
-    public void setAiPawnColor(PawnColor aiPawnColor) {
-        this.aiPawnColor = aiPawnColor;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Player[] getPlayers() {
-        return players;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
-    public void setPlayers(Player[] players) {
-        this.players = players;
-    }
+
 }
