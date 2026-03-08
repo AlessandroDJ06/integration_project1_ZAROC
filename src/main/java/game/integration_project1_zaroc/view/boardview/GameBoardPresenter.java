@@ -1,13 +1,12 @@
 package game.integration_project1_zaroc.view.boardview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.components.PegSideViewComponent;
+import game.integration_project1_zaroc.view.core.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.ruleview.RuleView;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,12 +53,45 @@ public class GameBoardPresenter {
             row.setOnMouseExited(mouseEvent -> {
                 row.setScaleY(1);
                 row.setScaleX(1);
-                row.setSpacing(50);
+                row.setSpacing(60);
             });
         }
     }
 
     private void updateView(){
+        view.getPegContainers().get(0).getChildren().addAll(
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE))
+        );
+
+        view.getPegContainers().get(1).getChildren().addAll(
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK))
+
+        );
+
+
+        view.getPegContainers().get(2).getChildren().addAll(
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE))
+        );
+
+        view.getPegContainers().get(3).getChildren().addAll(
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK))
+
+        );
+
+
+
 
     }
 

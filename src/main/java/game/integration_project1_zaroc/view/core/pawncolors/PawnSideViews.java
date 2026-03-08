@@ -14,6 +14,6 @@ public enum PawnSideViews {
     }
 
     public String getPath() {
-        return "/game/integration_project1_zaroc/ui/pawnColors/colors"+path;
+        return "/game/integration_project1_zaroc/ui/pawnColors/sideview/"+path;
     }
 }

@@ -6,6 +6,7 @@ public enum Components {
     FINISH("finish.png"),
     PROFILE("profile-button.png"),
     RULES("rules-button.png"),
+    RETURN("return.png"),
     SETTINGS("settings-button.png"),
     UNDO("undo-button.png"),
     UNIVERSAL("universal-button.png"),

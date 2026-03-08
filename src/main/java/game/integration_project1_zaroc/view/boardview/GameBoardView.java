@@ -11,6 +11,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 
+import java.util.List;
+
 
 public class GameBoardView extends BorderPane {
 
@@ -108,5 +110,9 @@ public class GameBoardView extends BorderPane {
 
     HBox getPegRowFour() {
         return pegView.getPegRowFour();
+    }
+
+    List<VBox> getPegContainers() {
+        return pegView.getPegContainers();
     }
 }
