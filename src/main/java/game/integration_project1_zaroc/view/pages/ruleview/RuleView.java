@@ -98,10 +98,12 @@ public class RuleView extends BorderPane {
         );
 
         ruleBorderPane.setBackground(new Background(backgroundImage));
-        ruleBorderPane.setMaxSize(1000, 800);
-        ruleBorderPane.setPrefSize(1000, 800);
+        ruleBorderPane.setMaxSize(900, 800);
+        ruleBorderPane.setMinSize(900,800);
+        ruleBorderPane.setPrefSize(900, 800);
         ruleBorderPane.setCenter(rules);
         ruleBorderPane.setPadding(new Insets(50,150,50,150));
+
 
         setCenter(ruleBorderPane);
         BorderPane.setAlignment(ruleBorderPane, Pos.CENTER);
