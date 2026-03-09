@@ -35,7 +35,7 @@ public class RuleView extends BorderPane {
 
     public void initialiseNodes() {
         ruleBorderPane = new BorderPane();
-        this.returnButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO); //TODO: make a return button and add here
+        this.returnButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO);
     }
 
     public void layoutNodes() {
@@ -84,7 +84,6 @@ public class RuleView extends BorderPane {
 
         TextFlow rules = new TextFlow(titel, hText1, sText1, hText2, sText2, hText3, sText3, hText4, sText4);
         rules.setMaxSize(1000,800);
-
         rules.setLineSpacing(5);
 
 

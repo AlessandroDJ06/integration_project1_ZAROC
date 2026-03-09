@@ -5,10 +5,10 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PegSideViewComponent extends BorderPane {
     private final ResourceManager resourceManager;
@@ -16,6 +16,7 @@ public class PegSideViewComponent extends BorderPane {
     private HBox pegRowTwo;
     private HBox pegRowThree;
     private VBox rows;
+    private List<VBox> pegContainers;
 
     public PegSideViewComponent(ResourceManager resourceManager){
         this.resourceManager = resourceManager;
@@ -29,45 +30,63 @@ public class PegSideViewComponent extends BorderPane {
         this.pegRowThree = new HBox();
         this.pegRowTwo = new HBox();
         this.rows = new VBox();
+        this.pegContainers = new ArrayList<>();
+    }
+
+    private void setBackgroundImage(Region region, Image image) {
+        BackgroundImage bImg = new BackgroundImage(
+                image,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(100, 100, true, true, true, false) // Zorgt dat het vult
+        );
+        region.setBackground(new Background(bImg));
     }
 
     private void layoutNodes(){
         Image poleCapaFour = resourceManager.getImage(Components.POLECAPAFOUR);
         Image poleCapaThree = resourceManager.getImage(Components.POLECAPATHREE);
         Image poleCapaTwo = resourceManager.getImage(Components.POLECAPATWO);
-        ArrayList<ImageView> backgroundOfEachPeg = new ArrayList<>();
 
         for (int i = 0 ; i < 13 ; i++){
+            VBox pegBox = new VBox();
+            pegBox.setPrefSize(25,75);
+            pegBox.setAlignment(Pos.BOTTOM_CENTER);
+            Image currentImage;
             if (i < 4){
-                backgroundOfEachPeg.add(new ImageView(poleCapaFour));
+                currentImage = poleCapaFour;
             } else if (i < 8) {
-                backgroundOfEachPeg.add(new ImageView(poleCapaThree));
+                currentImage = poleCapaThree;
             } else {
-                backgroundOfEachPeg.add(new ImageView(poleCapaTwo));
+                currentImage = poleCapaTwo;
             }
-
+            setBackgroundImage(pegBox,currentImage);
+            pegContainers.add(pegBox);
         }
 
+
+
         this.pegRowFour.getChildren().addAll(
-                backgroundOfEachPeg.get(0),
-                backgroundOfEachPeg.get(1),
-                backgroundOfEachPeg.get(2),
-                backgroundOfEachPeg.get(3)
+                pegContainers.get(0),
+                pegContainers.get(1),
+                pegContainers.get(2),
+                pegContainers.get(3)
         );
 
         this.pegRowThree.getChildren().addAll(
-                backgroundOfEachPeg.get(4),
-                backgroundOfEachPeg.get(5),
-                backgroundOfEachPeg.get(6),
-                backgroundOfEachPeg.get(7)
+                pegContainers.get(4),
+                pegContainers.get(5),
+                pegContainers.get(6),
+                pegContainers.get(7)
         );
 
         this.pegRowTwo.getChildren().addAll(
-                backgroundOfEachPeg.get(8),
-                backgroundOfEachPeg.get(9),
-                backgroundOfEachPeg.get(10),
-                backgroundOfEachPeg.get(11),
-                backgroundOfEachPeg.get(12)
+                pegContainers.get(8),
+                pegContainers.get(9),
+                pegContainers.get(10),
+                pegContainers.get(11),
+                pegContainers.get(12)
         );
 
         rows.getChildren().addAll(
@@ -81,7 +100,7 @@ public class PegSideViewComponent extends BorderPane {
         for (Node row : rows.getChildren()){
             if (row instanceof HBox){
                 ((HBox) row).setAlignment(Pos.CENTER);
-                ((HBox) row).setSpacing(50);
+                ((HBox) row).setSpacing(60);
             }
         }
 
@@ -115,5 +134,9 @@ public class PegSideViewComponent extends BorderPane {
 
     public HBox getPegRowFour() {
         return pegRowFour;
+    }
+
+    public List<VBox> getPegContainers() {
+        return pegContainers;
     }
 }
