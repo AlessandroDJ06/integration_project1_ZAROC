@@ -1,10 +1,10 @@
 package game.integration_project1_zaroc;
 
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.view.boardview.GameBoardPresenter;
-import game.integration_project1_zaroc.view.core.ResourceManager;
-import game.integration_project1_zaroc.view.core.themes.Themes;
-import game.integration_project1_zaroc.view.boardview.GameBoardView;
+import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
+import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;

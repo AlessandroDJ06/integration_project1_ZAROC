@@ -1,14 +1,13 @@
-package game.integration_project1_zaroc.view.core;
-import game.integration_project1_zaroc.view.core.fonts.Fonts;
-import game.integration_project1_zaroc.view.core.pawncolors.PawnColorPaths;
-import game.integration_project1_zaroc.view.core.pawncolors.PawnSideViews;
-import game.integration_project1_zaroc.view.core.profilePictures.ProfilePictures;
-import game.integration_project1_zaroc.view.core.themes.Components;
-import game.integration_project1_zaroc.view.core.themes.Themes;
+package game.integration_project1_zaroc.view.sharedlogic.resource_manager;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
