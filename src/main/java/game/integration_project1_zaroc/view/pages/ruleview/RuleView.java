@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RuleView extends BorderPane {
+public class RuleView extends StackPane {
 
 
     private BorderPane ruleBorderPane;
@@ -35,7 +35,7 @@ public class RuleView extends BorderPane {
 
     public void initialiseNodes() {
         ruleBorderPane = new BorderPane();
-        this.returnButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO);
+        this.returnButton = new GeneralActionsComponent(this.resourceManager, Components.RETURN);
     }
 
     public void layoutNodes() {
@@ -84,6 +84,7 @@ public class RuleView extends BorderPane {
 
         TextFlow rules = new TextFlow(titel, hText1, sText1, hText2, sText2, hText3, sText3, hText4, sText4);
         rules.setMaxSize(1000,800);
+
         rules.setLineSpacing(5);
 
 
@@ -96,8 +97,9 @@ public class RuleView extends BorderPane {
                 BackgroundPosition.CENTER,
                 backgroundSize
         );
-
-        ruleBorderPane.setBackground(new Background(backgroundImage));
+        this.setMaxSize(1000,800);
+        this.setMinSize(1000,800);
+        this.setBackground(new Background(backgroundImage));
         ruleBorderPane.setMaxSize(900, 800);
         ruleBorderPane.setMinSize(900,800);
         ruleBorderPane.setPrefSize(900, 800);
@@ -105,15 +107,18 @@ public class RuleView extends BorderPane {
         ruleBorderPane.setPadding(new Insets(50,150,50,150));
 
 
-        setCenter(ruleBorderPane);
+        getChildren().add(ruleBorderPane);
         BorderPane.setAlignment(ruleBorderPane, Pos.CENTER);
         BorderPane.setMargin(ruleBorderPane, new Insets(50,170 ,180 ,170 )); //top , right, bottom, left
 
-        setTop(returnButton);
-        BorderPane.setAlignment(returnButton, Pos.TOP_LEFT);
+        getChildren().add(returnButton);
+
+        StackPane.setAlignment(returnButton, Pos.TOP_LEFT);
+        StackPane.setMargin(returnButton,new Insets(20,0,0,750));
 
 
-        this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
+
+//        this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
 
     }
 }
