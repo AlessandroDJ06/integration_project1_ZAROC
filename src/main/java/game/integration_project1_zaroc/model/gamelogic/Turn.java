@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.model.gamelogic;
 
 import game.integration_project1_zaroc.model.gameinfo.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
+import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
@@ -14,36 +15,40 @@ public class Turn {
     private Player currentPlayer;
     private static int turnNumber = 0;
     private Move[] moves;
-    //private Game game;
-    //private GameParticipation gameParticipation;
+    private Game game;
 
-    public Turn(Player currentPlayer) {
+    public Turn(Player currentPlayer,Game game) {
         this.currentPlayer = currentPlayer;
         moves = new Move[2];
         turnNumber++;
+        this.game = game;
+
     }
 
 
     public void addMove(Move move) {
-        moves[move.getMoveNumber().getNumber() - 1] = move;
-
+        //if(isLegal(move)){
+            moves[move.getMoveNumber().getNumber() - 1] = move;
+        //}
     }
 
-    //TODO: DEZE DEEL WORDT NOG AANGEPAST
-   /* public void undoMove(Move move) {
-        int index = move.getMoveNumber().getNumber() - 1;
-        moves[index].getPawn().setCurrentPeg();
-        if (index == 0) {
-            if ((getCurrentPlayer().equals(gameParticipation.getHumanPlayer()))) {
-                setCurrentPlayer(gameParticipation.getAiPlayer());
-            } else {
-                setCurrentPlayer(gameParticipation.getHumanPlayer());
-            }
+    //TODO: legal check - eerst de array van pegs volledig afwerken
+    /*public boolean isLegal(Move move){
+        boolean legalCheck = false;
 
+        return legalCheck;
+    }*/
+
+    public void undoMove(Move move) {
+        int index = move.getMoveNumber().getNumber() - 1;
+
+        moves[index].getPawn().setCurrentPeg(move.getStartPeg());
+        moves[index]=null;
+        if(index==0){
+            game.switchCurrentPlayer();
         }
     }
-        public void switchCurrentPlayer(){
-        } */
+
 
     public static int getTurnNumber() {
         return turnNumber;
@@ -72,4 +77,5 @@ public class Turn {
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());
     }*/
 }
+
 

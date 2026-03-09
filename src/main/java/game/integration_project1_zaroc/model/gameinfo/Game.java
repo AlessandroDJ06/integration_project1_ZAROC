@@ -21,6 +21,21 @@ public class Game {
         gameParticipations = new GameParticipation[]{new GameParticipation(player1,PawnColor.WHITE),new GameParticipation(player2,PawnColor.BLACK)};
     }
 
+    public void switchCurrentPlayer() {
+        if (getStatus() == GameStatus.PLAYING) {
+            Turn lastTurn = turns.get(turns.size() - 1);
+
+            if (lastTurn.getCurrentPlayer() == getPlayer1()) {
+                startNewTurn(getPlayer2());
+            } else {
+                startNewTurn(getPlayer1());
+            }
+        }
+    }
+    public void startNewTurn(Player player){
+        Turn turn = new Turn(player,this);
+    }
+
     public GameStatus getStatus() {
         return status;
     }
@@ -33,4 +48,19 @@ public class Game {
         turns.add(turn);
     }
 
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public void setPlayer1(Player player1) {
+        this.player1 = player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
+
+    public void setPlayer2(Player player2) {
+        this.player2 = player2;
+    }
 }
