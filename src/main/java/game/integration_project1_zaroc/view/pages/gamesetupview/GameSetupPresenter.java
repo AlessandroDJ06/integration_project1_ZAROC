@@ -1,7 +1,7 @@
-package game.integration_project1_zaroc.view.gamesetupview;
+package game.integration_project1_zaroc.view.pages.gamesetupview;
 
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.view.utils.GeneralEventhandlers;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
 
 import java.util.Arrays;

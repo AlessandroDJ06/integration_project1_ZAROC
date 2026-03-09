@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.view.utils;
+package game.integration_project1_zaroc.view.sharedlogic.utils;
 
 import javafx.scene.control.Button;
 

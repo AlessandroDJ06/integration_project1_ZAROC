@@ -1,7 +1,7 @@
 package game.integration_project1_zaroc.view.components;
 
-import game.integration_project1_zaroc.view.core.ResourceManager;
-import game.integration_project1_zaroc.view.core.themes.Components;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -51,7 +51,7 @@ public class PegSideViewComponent extends BorderPane {
 
         for (int i = 0 ; i < 13 ; i++){
             VBox pegBox = new VBox();
-            pegBox.setPrefSize(15,75);
+            pegBox.setPrefSize(25,75);
             pegBox.setAlignment(Pos.BOTTOM_CENTER);
             Image currentImage;
             if (i < 4){

@@ -1,10 +1,9 @@
-package game.integration_project1_zaroc.view.boardview;
+package game.integration_project1_zaroc.view.pages.boardview;
 
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.view.components.PegSideViewComponent;
-import game.integration_project1_zaroc.view.core.pawncolors.PawnSideViews;
-import game.integration_project1_zaroc.view.ruleview.RuleView;
-import game.integration_project1_zaroc.view.utils.GeneralEventhandlers;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
+import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -57,15 +56,15 @@ public class GameBoardPresenter {
     private void updateView(){
         view.getPegContainers().get(0).getChildren().addAll(
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE))
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE))
         );
 
         view.getPegContainers().get(1).getChildren().addAll(
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK))
 
         );
@@ -73,18 +72,19 @@ public class GameBoardPresenter {
 
         view.getPegContainers().get(2).getChildren().addAll(
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE))
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE))
         );
 
         view.getPegContainers().get(3).getChildren().addAll(
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.DARKBLUE)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK))
+                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE))
 
         );
+
+        view.getPegContainers().get(6).getChildren().add(new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)));
 
 
 
