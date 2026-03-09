@@ -1,6 +1,6 @@
-package game.integration_project1_zaroc.view.core.pawncolors;
+package game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors;
 
-public enum PawnColorPaths{
+public enum PawnSideViews {
     BLACK("black.png"),
     BROWN("brown.png"),
     DARKBLUE("dark_blue.png"),
@@ -9,12 +9,11 @@ public enum PawnColorPaths{
     WHITE("white.png");
 
     private String path;
-
-    PawnColorPaths(String path){
+    PawnSideViews(String path){
         this.path = path;
     }
 
     public String getPath() {
-        return "/game/integration_project1_zaroc/ui/pawnColors/colors/" + path;
+        return "/game/integration_project1_zaroc/ui/pawnColors/colors"+path;
     }
 }

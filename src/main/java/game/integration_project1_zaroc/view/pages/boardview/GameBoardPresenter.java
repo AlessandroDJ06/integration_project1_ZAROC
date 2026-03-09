@@ -1,13 +1,10 @@
-package game.integration_project1_zaroc.view.boardview;
+package game.integration_project1_zaroc.view.pages.boardview;
 
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.view.ruleview.RuleView;
-import javafx.scene.Cursor;
+import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

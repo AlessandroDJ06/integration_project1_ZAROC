@@ -1,9 +1,9 @@
 package game.integration_project1_zaroc.view.components;
 
-import game.integration_project1_zaroc.view.core.ResourceManager;
-import game.integration_project1_zaroc.view.core.fonts.Fonts;
-import game.integration_project1_zaroc.view.core.profilePictures.ProfilePictures;
-import game.integration_project1_zaroc.view.core.themes.Components;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
