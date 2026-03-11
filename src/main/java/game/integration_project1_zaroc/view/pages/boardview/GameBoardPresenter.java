@@ -4,11 +4,20 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class GameBoardPresenter {
     private GameBoardView view;
@@ -31,7 +40,17 @@ public class GameBoardPresenter {
     private void addEventHandlers(){
         view.getInfoButton().setOnAction(event -> {
             RuleView ruleView = new RuleView(view.getResourceManager());
-            view.getScene().setRoot(ruleView);
+            Scene ruleScene = new Scene(ruleView);
+            Stage ruleStage = new Stage();
+            ruleScene.setFill(Color.TRANSPARENT);
+            ruleStage.setScene(ruleScene);
+            ruleStage.setTitle("Regels");
+            ruleStage.initStyle(StageStyle.TRANSPARENT);
+            ruleStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            ruleStage.setResizable(false);
+            ruleStage.showAndWait();
+
+
         });
 
         for (Button button : buttons){
