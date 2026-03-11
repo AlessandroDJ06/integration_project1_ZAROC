@@ -7,8 +7,8 @@ public class PawnColorPickerModel {
     private int currentIndexOtherPicker;
     private int currentIndex;
 
-    public PawnColorPickerModel(int startIndex){
-        this.currentIndex = startIndex;
+    public PawnColorPickerModel(PawnColor color){
+        this.currentIndex = color.ordinal();
         this.currentIndexOtherPicker = 0 ;
     }
 

@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.pages.gamesetupview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.pawncolorpicker.PawnColorPickerModel;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
@@ -24,8 +25,8 @@ public class GameSetupPresenter {
         this.model = appController;
         this.buttons = Arrays.asList(view.getProfileButton(),view.getSettingsButton(),view.getInfoButton(),view.getColorPickerOne().getLeftButton(),view.getColorPickerOne().getRightButton(),view.getColorPickerTwo().getLeftButton(),view.getColorPickerTwo().getRightButton());
         this.generalEventhandlers = new GeneralEventhandlers();
-        this.colorOne = new PawnColorPickerModel(0);
-        this.colorTwo = new PawnColorPickerModel(1);
+        this.colorOne = new PawnColorPickerModel(PawnColor.BLACK);
+        this.colorTwo = new PawnColorPickerModel(PawnColor.WHITE);
         colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndexOtherPicker());
         colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndexOtherPicker());
         addEventHandlers();
