@@ -24,8 +24,10 @@ public class GameSetupPresenter {
         this.model = appController;
         this.buttons = Arrays.asList(view.getProfileButton(),view.getSettingsButton(),view.getInfoButton(),view.getColorPickerOne().getLeftButton(),view.getColorPickerOne().getRightButton(),view.getColorPickerTwo().getLeftButton(),view.getColorPickerTwo().getRightButton());
         this.generalEventhandlers = new GeneralEventhandlers();
-        this.colorOne = new PawnColorPickerModel();
-        this.colorTwo = new PawnColorPickerModel();
+        this.colorOne = new PawnColorPickerModel(0);
+        this.colorTwo = new PawnColorPickerModel(1);
+        colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndexOtherPicker());
+        colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndexOtherPicker());
         addEventHandlers();
         updateView();
     }
@@ -37,21 +39,25 @@ public class GameSetupPresenter {
 
         view.getColorPickerOne().getLeftButton().setOnAction(event -> {
             colorOne.decreaseCurrentIndex();
+            colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndex());
             updateView();
         });
 
         view.getColorPickerTwo().getLeftButton().setOnAction(event -> {
             colorTwo.decreaseCurrentIndex();
+            colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndex());
             updateView();
         });
 
         view.getColorPickerOne().getRightButton().setOnAction(event -> {
             colorOne.increaseCurrentIndex();
+            colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndex());
             updateView();
         });
 
         view.getColorPickerTwo().getRightButton().setOnAction(event -> {
             colorTwo.increaseCurrentIndex();
+            colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndex());
             updateView();
         });
     }
@@ -60,7 +66,6 @@ public class GameSetupPresenter {
         view.getColorPickerOne().getPawnColor().setImage(
                 view.getResourceManager().getPawnColor(PawnColorPaths.values()[colorOne.getCurrentIndex()])
         );
-
         view.getColorPickerTwo().getPawnColor().setImage(
                 view.getResourceManager().getPawnColor(PawnColorPaths.values()[colorTwo.getCurrentIndex()])
         );
