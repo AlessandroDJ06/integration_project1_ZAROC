@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 
 public class ImageSliderComponent extends BorderPane {
     private ResourceManager resourceManager;
@@ -29,6 +30,9 @@ public class ImageSliderComponent extends BorderPane {
     }
 
     private void layoutNodes(){
+        leftButton.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        rightButton.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+
         leftButton.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         leftButton.setBackground(Background.EMPTY);
 

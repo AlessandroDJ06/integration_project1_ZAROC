@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
@@ -58,23 +59,31 @@ public class GameSetupView extends BorderPane {
         centraContainer.setMinSize(500,500);
         Label title = new Label("Game Settings");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
-        Label top = new Label("Choose difficulty: ");
-        Label middle = new Label("Choose color 1: ");
-        Label bottom = new Label("Choose color 2: ");
+        title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        centraContainer.setTop(title);
+        BorderPane.setAlignment(title,Pos.TOP_CENTER);
+        title.setPadding(new Insets(20,0,0,0));
+           Label top = new Label("set difficulty : ");
+        Label middle = new Label("player1 color  : ");
+        Label bottom = new Label("player2 color  : ");
 
         HBox colorPickOne = new HBox(middle,colorPickerOne);
         HBox colorPickTwo = new HBox(bottom,colorPickerTwo);
+        HBox difficulty = new HBox(top);
 
 
-        VBox innerContainer = new VBox(top,colorPickOne,colorPickTwo);
+        VBox innerContainer = new VBox(difficulty,colorPickOne,colorPickTwo);
+        innerContainer.setSpacing(15);
+        innerContainer.setPadding(new Insets(0,0,0,20));
 
         for(Node hbox : innerContainer.getChildren()){
             if (hbox instanceof HBox){
-                ((HBox) hbox).setAlignment(Pos.CENTER);
+                ((HBox) hbox).setAlignment(Pos.CENTER_LEFT);
                 ((HBox) hbox).setMaxWidth(centraContainer.getMaxWidth());
                 for (Node label : ((HBox) hbox).getChildren()){
                     if (label instanceof Label){
                         ((Label) label).setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+                        ((Label) label).setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
                     }
                 }
             }
