@@ -119,4 +119,8 @@ public class RuleView extends BorderPane {
         this.setMinSize(800,800);
 
     }
+
+    public Button getReturnButton() {
+        return returnButton;
+    }
 }
