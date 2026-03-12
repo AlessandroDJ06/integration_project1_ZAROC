@@ -12,21 +12,12 @@ public class Peg {
     private MaxCapacity maxCapacity;
     private ArrayList<Pawn> pawns;
 
-    public Peg(int xPosition, int yPosition, LayerLevel layerLevel) {
+    public Peg(int xPosition, int yPosition) {
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        this.layerLevel=layerLevel;
-        initialiseMaxCapacity();
+        this.layerLevel= LayerLevel.values()[yPosition];
+        this.maxCapacity = MaxCapacity.values()[layerLevel.ordinal()];
         pawns = new ArrayList<>();
-    }
-
-    public void initialiseMaxCapacity() {
-        switch(getYPosition()){
-            case 0 -> this.maxCapacity=MaxCapacity.FIRST_ROW;
-            case 1 -> this.maxCapacity=MaxCapacity.SECOND_ROW;
-            case 2 -> this.maxCapacity=MaxCapacity.THIRD_ROW;
-            case 3 -> this.maxCapacity=MaxCapacity.FOURTH_ROW;
-        }
     }
 
     public void addPawnToPeg(Pawn pawn, Peg currentPeg){
@@ -52,5 +43,21 @@ public class Peg {
 
     public void setYPosition(int yPosition) {
         this.yPosition = yPosition;
+    }
+
+    public LayerLevel getLayerLevel() {
+        return layerLevel;
+    }
+
+    public void setLayerLevel(LayerLevel layerLevel) {
+        this.layerLevel = layerLevel;
+    }
+
+    public MaxCapacity getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(MaxCapacity maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 }
