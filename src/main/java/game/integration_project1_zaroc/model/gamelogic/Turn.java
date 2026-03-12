@@ -33,11 +33,12 @@ public class Turn {
     }
 
     //TODO: legal check - eerst de array van pegs volledig afwerken
-    /*public boolean isLegal(Move move){
+    public boolean isLegal(Move move){
         boolean legalCheck = false;
 
+        //if(move.getDestionationPeg()==move.getPawn().getCurrentPeg())
         return legalCheck;
-    }*/
+    }
 
     public void undoMove(Move move) {
         int index = move.getMoveNumber().getNumber() - 1;
