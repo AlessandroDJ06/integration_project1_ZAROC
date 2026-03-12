@@ -18,7 +18,6 @@ import java.util.List;
 public class GameBoardPresenter {
     private GameBoardView view;
     private AppController model;
-    private GeneralEventhandlers generalEventhandlers;
     private List<HBox> rows;
     private List<Button> buttons;
 
@@ -27,7 +26,6 @@ public class GameBoardPresenter {
         this.model = model;
         this.rows = Arrays.asList(view.getPegRowFour(),view.getPegRowThree(),view.getPegRowTwo());
         this.buttons = Arrays.asList(view.getUndoButton(),view.getSettingsButton(),view.getInfoButton());
-        this.generalEventhandlers = new GeneralEventhandlers();
         updateView();
         addEventHandlers();
     }
@@ -40,7 +38,7 @@ public class GameBoardPresenter {
         });
 
         for (Button button : buttons){
-            generalEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addHoverEffect(button);
         }
 
         for (HBox row : rows){

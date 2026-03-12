@@ -8,6 +8,7 @@ import game.integration_project1_zaroc.view.components.slidercomponents.TextSlid
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
+import game.integration_project1_zaroc.view.sharedlogic.utils.LayoutHelpers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -51,30 +52,14 @@ public class GameSetupView extends BorderPane {
     }
 
     public void layoutNodes(){
+        //center container (settings)
         BorderPane centraContainer = new BorderPane();
-        Image boardBackgroundImage = resourceManager.getImage(Components.PEGVIEW);
-        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
-        BackgroundImage backgroundImage = new BackgroundImage(
-                boardBackgroundImage,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                backgroundSize
-        );
-
-        centraContainer.setBackground(new Background(backgroundImage));
+        centraContainer.setBackground(new Background(LayoutHelpers.setBackground(resourceManager,100,100)));
         centraContainer.setMaxSize(500,500);
         centraContainer.setMinSize(500,500);
         BorderPane.setMargin(centraContainer,new Insets(100,0,0,0));
-        Label title = new Label("Game Settings");
-        title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
-        title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
-        title.setPadding(new Insets(30,0,0,0));
-        Label startingPlayer = new Label("Starting player: ");
-                   Label top = new Label("Set difficulty : ");
-                Label middle = new Label("Player1 color  : ");
-                Label bottom = new Label("Player2 color  : ");
 
+        //buttons in the container (start game and return)
         returnButton.setMaxSize(40,40);
         HBox titelSection = new HBox();
         titelSection.setAlignment(Pos.CENTER);
@@ -84,59 +69,63 @@ public class GameSetupView extends BorderPane {
         BorderPane.setAlignment(createGameButton,Pos.TOP_CENTER);
         createGameButton.setPadding(new Insets(0,0,15,0));
 
+        //title section (game settings)
+
+        //title property's
+        Label title = new Label("Game Settings");
+        title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
+        title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        title.setPadding(new Insets(30,0,0,0));
+
+        //layout title section
+        //spacers for layout
         Region rightSpacer = new Region();
         rightSpacer.prefWidthProperty().bind(returnButton.widthProperty());
         Region leftFiller = new Region();
         Region rightFiller = new Region();
         HBox.setHgrow(leftFiller, Priority.ALWAYS);
         HBox.setHgrow(rightFiller, Priority.ALWAYS);
-        titelSection.getChildren().addAll(returnButton, leftFiller, title, rightFiller, rightSpacer);
-        centraContainer.setTop(titelSection);
+
+        //padding and allignment for title section
         titelSection.setPadding(new Insets(15));
         centraContainer.setTop(titelSection);
         titelSection.setAlignment(Pos.CENTER);
         BorderPane.setAlignment(titelSection,Pos.CENTER);
-        HBox startingPlayerPick = new HBox(startingPlayer,startingPlayerPicker);
-        HBox colorPickOne = new HBox(middle,colorPickerOne);
-        HBox colorPickTwo = new HBox(bottom,colorPickerTwo);
-        HBox difficulty = new HBox(top,difficultyPicker);
+
+        //place title section
+        titelSection.getChildren().addAll(returnButton, leftFiller, title, rightFiller, rightSpacer);
+        centraContainer.setTop(titelSection);
 
 
-        VBox innerContainer = new VBox(startingPlayerPick,difficulty,colorPickOne,colorPickTwo);
-        innerContainer.setAlignment(Pos.TOP_CENTER);
-        innerContainer.setPadding(new Insets(0,0,20,0));
 
-        for(Node hbox : innerContainer.getChildren()){
-            if (hbox instanceof HBox){
-                ((HBox) hbox).setAlignment(Pos.CENTER);
-                ((HBox) hbox).setMaxWidth(centraContainer.getMaxWidth());
-                for (Node label : ((HBox) hbox).getChildren()){
-                    if (label instanceof Label){
-                        ((Label) label).setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
-                        ((Label) label).setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
-                        ((Label) label).setMinWidth(250);
-                        ((Label) label).setMinHeight(60);
-                    }
-                }
-            }
-        }
-        centraContainer.setCenter(innerContainer);
-        BorderPane.setAlignment(innerContainer,Pos.CENTER);
-        innerContainer.setAlignment(Pos.CENTER);
-        innerContainer.setSpacing(20);
+        //settings selectors
+        VBox innerRows = new VBox(
+                createSettingRow("Starting player: ", startingPlayerPicker),
+                createSettingRow("Set difficulty : ", difficultyPicker),
+                createSettingRow("Player1 color  : ", colorPickerOne),
+                createSettingRow("Player2 color  : ", colorPickerTwo)
+        );
+        innerRows.setAlignment(Pos.CENTER);
+        innerRows.setSpacing(20);
+        innerRows.setPadding(new Insets(0, 0, 20, 0));
+        centraContainer.setCenter(innerRows);
         setCenter(centraContainer);
 
-        //buttons
+        //buttons outside of the central container
+        //info and settings
         VBox infoAndSettingsVbox = new VBox(this.settingsButton,this.infoButton);
         setRight(infoAndSettingsVbox);
         BorderPane.setAlignment(infoAndSettingsVbox, Pos.TOP_RIGHT);
         infoAndSettingsVbox.setPadding(new Insets(30,30,0,0));
         infoAndSettingsVbox.setSpacing(15);
+
+        //profile buttons
         VBox profileButtonVbox = new VBox(this.profileButton);
         setLeft(profileButtonVbox);
         BorderPane.setAlignment(profileButtonVbox,Pos.TOP_LEFT);
         profileButtonVbox.setPadding(new Insets(30,0,0,30));
 
+        //leaderBoard button
         leaderBoardButton.setMaxSize(100,40);
         setBottom(leaderBoardButton);
         BorderPane.setAlignment(leaderBoardButton,Pos.CENTER_RIGHT);
@@ -148,47 +137,59 @@ public class GameSetupView extends BorderPane {
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
     }
 
-    public Button getInfoButton() {
+    private HBox createSettingRow(String labelText, Node component) {
+        Label label = new Label(labelText);
+        label.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+        label.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        label.setMinWidth(250);
+        label.setMinHeight(60);
+
+        HBox row = new HBox(label, component);
+        row.setAlignment(Pos.CENTER);
+        return row;
+    }
+
+    Button getInfoButton() {
         return infoButton;
     }
 
-    public Button getSettingsButton() {
+    Button getSettingsButton() {
         return settingsButton;
     }
 
-    public Button getProfileButton() {
+    Button getProfileButton() {
         return profileButton;
     }
 
-    public ImageSliderComponent getColorPickerTwo() {
+    ImageSliderComponent getColorPickerTwo() {
         return colorPickerTwo;
     }
 
-    public ImageSliderComponent getColorPickerOne() {
+    ImageSliderComponent getColorPickerOne() {
         return colorPickerOne;
     }
 
-    public ResourceManager getResourceManager() {
+    ResourceManager getResourceManager() {
         return resourceManager;
     }
 
-    public Button getLeaderBoardButton() {
+    Button getLeaderBoardButton() {
         return leaderBoardButton;
     }
 
-    public Button getReturnButton(){
+    Button getReturnButton(){
         return this.returnButton;
     }
 
-    public Button getCreateGameButton(){
+    Button getCreateGameButton(){
         return this.createGameButton;
     }
 
-    public TextSliderComponent getDifficultyPicker() {
+    TextSliderComponent getDifficultyPicker() {
         return difficultyPicker;
     }
 
-    public TextSliderComponent getStartingPlayerPicker() {
+    TextSliderComponent getStartingPlayerPicker() {
         return startingPlayerPicker;
     }
 }

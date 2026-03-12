@@ -20,7 +20,6 @@ public class GameSetupPresenter {
     private AppController model;
     private GameSetupView view;
     private List<Button> buttons;
-    private GeneralEventhandlers generalEventhandlers;
     private PawnColorPickerModel colorOne;
     private PawnColorPickerModel colorTwo;
     private DifficultyPickerModel difficultyPicker;
@@ -44,7 +43,6 @@ public class GameSetupPresenter {
                 view.getDifficultyPicker().getRightButton(),
                 view.getReturnButton()
         );
-        this.generalEventhandlers = new GeneralEventhandlers();
         this.colorOne = new PawnColorPickerModel(PawnColor.BLACK);
         this.colorTwo = new PawnColorPickerModel(PawnColor.WHITE);
         this.difficultyPicker = new DifficultyPickerModel();
@@ -60,7 +58,7 @@ public class GameSetupPresenter {
 
     private void addEventHandlers(){
         for (Button button : buttons){
-            generalEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addHoverEffect(button);
         }
 
         view.getColorPickerOne().getLeftButton().setOnAction(event -> {
