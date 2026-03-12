@@ -2,12 +2,11 @@ package game.integration_project1_zaroc.view.pages.gamesetupview;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
-import game.integration_project1_zaroc.model.pawncolorpicker.PawnColorPickerModel;
-import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
+import game.integration_project1_zaroc.model.selectionslider.DifficultyPickerModel;
+import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,16 +18,20 @@ public class GameSetupPresenter {
     private GeneralEventhandlers generalEventhandlers;
     private PawnColorPickerModel colorOne;
     private PawnColorPickerModel colorTwo;
+    private DifficultyPickerModel difficultyPicker;
+    private String[] difficulty;
 
     public GameSetupPresenter(GameSetupView view , AppController appController){
         this.view = view;
         this.model = appController;
-        this.buttons = Arrays.asList(view.getProfileButton(),view.getSettingsButton(),view.getInfoButton(),view.getColorPickerOne().getLeftButton(),view.getColorPickerOne().getRightButton(),view.getColorPickerTwo().getLeftButton(),view.getColorPickerTwo().getRightButton());
+        this.buttons = Arrays.asList(view.getProfileButton(),view.getSettingsButton(),view.getInfoButton(),view.getColorPickerOne().getLeftButton(),view.getColorPickerOne().getRightButton(),view.getColorPickerTwo().getLeftButton(),view.getColorPickerTwo().getRightButton(),view.getLeaderBoardButton(),view.getDifficultyPicker().getLeftButton(),view.getDifficultyPicker().getRightButton());
         this.generalEventhandlers = new GeneralEventhandlers();
         this.colorOne = new PawnColorPickerModel(PawnColor.BLACK);
         this.colorTwo = new PawnColorPickerModel(PawnColor.WHITE);
+        this.difficultyPicker = new DifficultyPickerModel();
         colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndexOtherPicker());
         colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndexOtherPicker());
+        this.difficulty = new String[] {"easy","medium","hard"};
         addEventHandlers();
         updateView();
     }
@@ -61,6 +64,17 @@ public class GameSetupPresenter {
             colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndex());
             updateView();
         });
+
+        view.getDifficultyPicker().getRightButton().setOnAction(event -> {
+            difficultyPicker.increaseCurrentIndex();
+            updateView();
+        });
+
+        view.getDifficultyPicker().getLeftButton().setOnAction(event -> {
+            difficultyPicker.decreaseCurrentIndex();
+            updateView();
+        });
+
     }
 
     private void updateView(){
@@ -70,5 +84,7 @@ public class GameSetupPresenter {
         view.getColorPickerTwo().getPawnColor().setImage(
                 view.getResourceManager().getPawnColor(PawnColorPaths.values()[colorTwo.getCurrentIndex()])
         );
+
+        view.getDifficultyPicker().getLabel().setText(difficulty[difficultyPicker.getCurrentIndex()]);
     }
 }

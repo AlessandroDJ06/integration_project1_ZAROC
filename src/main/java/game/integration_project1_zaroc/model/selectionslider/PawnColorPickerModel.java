@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.model.pawncolorpicker;
+package game.integration_project1_zaroc.model.selectionslider;
 
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 
@@ -29,7 +29,6 @@ public class PawnColorPickerModel {
         }
 
     }
-
 
     public int getCurrentIndex(){
         return currentIndex;
