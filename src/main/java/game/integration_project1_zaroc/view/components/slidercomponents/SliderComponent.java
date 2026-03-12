@@ -49,6 +49,9 @@ public abstract class SliderComponent extends BorderPane {
             javafx.scene.layout.Region region = (javafx.scene.layout.Region) centerNode;
             region.setMaxWidth(80);
             region.setMinWidth(80);
+
+            region.setMinHeight(60);
+            region.setMaxHeight(60);
         } else if (centerNode instanceof javafx.scene.image.ImageView) {
             ((javafx.scene.image.ImageView) centerNode).setFitWidth(80);
             ((javafx.scene.image.ImageView) centerNode).setPreserveRatio(true);

@@ -65,9 +65,9 @@ public class GameSetupView extends BorderPane {
         centraContainer.setTop(title);
         BorderPane.setAlignment(title,Pos.TOP_CENTER);
         title.setPadding(new Insets(30,0,0,0));
-           Label top = new Label("set difficulty : ");
-        Label middle = new Label("player1 color  : ");
-        Label bottom = new Label("player2 color  : ");
+           Label top = new Label("Set difficulty : ");
+        Label middle = new Label("Player1 color  : ");
+        Label bottom = new Label("Player2 color  : ");
 
         HBox colorPickOne = new HBox(middle,colorPickerOne);
         HBox colorPickTwo = new HBox(bottom,colorPickerTwo);
@@ -108,7 +108,7 @@ public class GameSetupView extends BorderPane {
         profileButtonVbox.setPadding(new Insets(30,0,0,30));
 
         setBottom(leaderBoardButton);
-        leaderBoardButton.setPadding(new Insets(0,30,30,0));
+        leaderBoardButton.setPadding(new Insets(10,30,30,0));
         leaderBoardButton.setMaxSize(60,40);
         BorderPane.setAlignment(leaderBoardButton,Pos.CENTER_RIGHT);
 
