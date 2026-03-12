@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        Themes theme = Themes.DEFAULT;
+        Themes theme = Themes.DONKEY_KONG;
         ResourceManager resourceManager = new ResourceManager(theme);
         //GameBoardView view = new GameBoardView(resourceManager);
         //new GameBoardPresenter(view,new AppController());

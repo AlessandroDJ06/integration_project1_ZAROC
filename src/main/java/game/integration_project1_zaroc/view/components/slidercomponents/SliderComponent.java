@@ -2,10 +2,12 @@ package game.integration_project1_zaroc.view.components.slidercomponents;
 
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -47,14 +49,14 @@ public abstract class SliderComponent extends BorderPane {
 
         if (centerNode instanceof javafx.scene.layout.Region) {
             javafx.scene.layout.Region region = (javafx.scene.layout.Region) centerNode;
-            region.setMaxWidth(80);
-            region.setMinWidth(80);
-
-            region.setMinHeight(60);
-            region.setMaxHeight(60);
+            region.setMaxWidth(90);
+            region.setMinWidth(90);
         } else if (centerNode instanceof javafx.scene.image.ImageView) {
-            ((javafx.scene.image.ImageView) centerNode).setFitWidth(80);
+            ((javafx.scene.image.ImageView) centerNode).setFitWidth(60);
+            ((ImageView) centerNode).setFitHeight(60);
             ((javafx.scene.image.ImageView) centerNode).setPreserveRatio(true);
+            leftButton.setPadding(new Insets(0,25,0,0));
+            rightButton.setPadding(new Insets(0,0,0,25));
         }
 
         setCenter(centerNode);

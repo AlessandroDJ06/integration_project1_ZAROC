@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.view.components;
+package game.integration_project1_zaroc.view.components.buttons;
 
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;

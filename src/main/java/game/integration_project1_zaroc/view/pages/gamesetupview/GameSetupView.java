@@ -1,8 +1,9 @@
 package game.integration_project1_zaroc.view.pages.gamesetupview;
 
-import game.integration_project1_zaroc.view.components.GeneralActionsComponent;
+import game.integration_project1_zaroc.view.components.buttons.GeneralActionsComponent;
+import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.components.slidercomponents.ImageSliderComponent;
-import game.integration_project1_zaroc.view.components.LongButtonComponent;
+import game.integration_project1_zaroc.view.components.buttons.LongButtonComponent;
 import game.integration_project1_zaroc.view.components.slidercomponents.TextSliderComponent;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
@@ -23,9 +24,12 @@ public class GameSetupView extends BorderPane {
     private Button settingsButton;
     private Button infoButton;
     private Button leaderBoardButton;
+    private Button returnButton;
+    private Button createGameButton;
     private ImageSliderComponent colorPickerOne;
     private ImageSliderComponent colorPickerTwo;
     private TextSliderComponent difficultyPicker;
+    private TextSliderComponent startingPlayerPicker;
 
     public GameSetupView(ResourceManager resourceManager){
         this.resourceManager = resourceManager;
@@ -37,10 +41,13 @@ public class GameSetupView extends BorderPane {
         this.infoButton = new GeneralActionsComponent(this.resourceManager, Components.RULES);
         this.settingsButton = new GeneralActionsComponent(this.resourceManager,Components.SETTINGS);
         this.profileButton = new GeneralActionsComponent(this.resourceManager,Components.PROFILE);
+        this.returnButton = new TextButton(resourceManager,"←");
+        this.createGameButton = new TextButton(resourceManager,"START");
         this.leaderBoardButton = new LongButtonComponent(this.resourceManager,"Leaderboard");
         this.colorPickerOne = new ImageSliderComponent(resourceManager);
         this.colorPickerTwo = new ImageSliderComponent(resourceManager);
         this.difficultyPicker = new TextSliderComponent(resourceManager);
+        this.startingPlayerPicker = new TextSliderComponent(resourceManager);
     }
 
     public void layoutNodes(){
@@ -62,21 +69,42 @@ public class GameSetupView extends BorderPane {
         Label title = new Label("Game Settings");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
-        centraContainer.setTop(title);
-        BorderPane.setAlignment(title,Pos.TOP_CENTER);
         title.setPadding(new Insets(30,0,0,0));
-           Label top = new Label("Set difficulty : ");
-        Label middle = new Label("Player1 color  : ");
-        Label bottom = new Label("Player2 color  : ");
+        Label startingPlayer = new Label("Starting player: ");
+                   Label top = new Label("Set difficulty : ");
+                Label middle = new Label("Player1 color  : ");
+                Label bottom = new Label("Player2 color  : ");
 
+        returnButton.setMaxSize(40,40);
+        HBox titelSection = new HBox();
+        titelSection.setAlignment(Pos.CENTER);
+        titelSection.setPadding(new Insets(15));
+
+        centraContainer.setBottom(createGameButton);
+        BorderPane.setAlignment(createGameButton,Pos.TOP_CENTER);
+        createGameButton.setPadding(new Insets(0,0,15,0));
+
+        Region rightSpacer = new Region();
+        rightSpacer.prefWidthProperty().bind(returnButton.widthProperty());
+        Region leftFiller = new Region();
+        Region rightFiller = new Region();
+        HBox.setHgrow(leftFiller, Priority.ALWAYS);
+        HBox.setHgrow(rightFiller, Priority.ALWAYS);
+        titelSection.getChildren().addAll(returnButton, leftFiller, title, rightFiller, rightSpacer);
+        centraContainer.setTop(titelSection);
+        titelSection.setPadding(new Insets(15));
+        centraContainer.setTop(titelSection);
+        titelSection.setAlignment(Pos.CENTER);
+        BorderPane.setAlignment(titelSection,Pos.CENTER);
+        HBox startingPlayerPick = new HBox(startingPlayer,startingPlayerPicker);
         HBox colorPickOne = new HBox(middle,colorPickerOne);
         HBox colorPickTwo = new HBox(bottom,colorPickerTwo);
         HBox difficulty = new HBox(top,difficultyPicker);
 
 
-        VBox innerContainer = new VBox(difficulty,colorPickOne,colorPickTwo);
-        innerContainer.setSpacing(15);
-        innerContainer.setPadding(new Insets(0,0,0,20));
+        VBox innerContainer = new VBox(startingPlayerPick,difficulty,colorPickOne,colorPickTwo);
+        innerContainer.setAlignment(Pos.TOP_CENTER);
+        innerContainer.setPadding(new Insets(0,0,20,0));
 
         for(Node hbox : innerContainer.getChildren()){
             if (hbox instanceof HBox){
@@ -86,6 +114,8 @@ public class GameSetupView extends BorderPane {
                     if (label instanceof Label){
                         ((Label) label).setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
                         ((Label) label).setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+                        ((Label) label).setMinWidth(250);
+                        ((Label) label).setMinHeight(60);
                     }
                 }
             }
@@ -107,10 +137,12 @@ public class GameSetupView extends BorderPane {
         BorderPane.setAlignment(profileButtonVbox,Pos.TOP_LEFT);
         profileButtonVbox.setPadding(new Insets(30,0,0,30));
 
+        leaderBoardButton.setMaxSize(100,40);
         setBottom(leaderBoardButton);
-        leaderBoardButton.setPadding(new Insets(10,30,30,0));
-        leaderBoardButton.setMaxSize(60,40);
         BorderPane.setAlignment(leaderBoardButton,Pos.CENTER_RIGHT);
+        leaderBoardButton.setPadding(new Insets(10,50,40,40));
+
+
 
 
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
@@ -144,7 +176,19 @@ public class GameSetupView extends BorderPane {
         return leaderBoardButton;
     }
 
+    public Button getReturnButton(){
+        return this.returnButton;
+    }
+
+    public Button getCreateGameButton(){
+        return this.createGameButton;
+    }
+
     public TextSliderComponent getDifficultyPicker() {
         return difficultyPicker;
+    }
+
+    public TextSliderComponent getStartingPlayerPicker() {
+        return startingPlayerPicker;
     }
 }
