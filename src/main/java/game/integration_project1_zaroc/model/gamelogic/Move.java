@@ -1,5 +1,6 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
+import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 
@@ -12,11 +13,13 @@ public class Move {
     private final LocalDateTime timestamp;
     private Peg startPeg;
     private Peg destinationPeg;
+    private Pawn pawn;
 
-    public Move(MoveNumber moveNumber, Peg startPeg, Peg destinationPeg) {
+    public Move(MoveNumber moveNumber, Pawn pawn, Peg destinationPeg) {
         this.moveNumber = moveNumber;
+        this.pawn = pawn;
         timestamp = LocalDateTime.now();
-        this.startPeg = startPeg;
+        this.startPeg = pawn.getCurrentPeg();
         this.destinationPeg = destinationPeg;
     }
 
@@ -35,6 +38,14 @@ public class Move {
     public void setDuration(Duration duration) {
         this.duration = duration;
     }*/
+
+    public Pawn getPawn() {
+        return pawn;
+    }
+
+    public void setPawn(Pawn pawn) {
+        this.pawn = pawn;
+    }
 
     public LocalDateTime getTimestamp() {
         return timestamp;

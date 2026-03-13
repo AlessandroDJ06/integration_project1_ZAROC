@@ -9,8 +9,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PlayersPlayingComponent extends HBox {
     private final ResourceManager resourceManager;
@@ -69,6 +73,12 @@ public class PlayersPlayingComponent extends HBox {
         secondPlayer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         pointPlayerOne.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
         pointPlayerTwo.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+
+        List<Label> setFontColors = Arrays.asList(firstPlayer,secondPlayer,pointPlayerOne,pointPlayerTwo);
+
+        for (Label label : setFontColors){
+            label.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        }
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);

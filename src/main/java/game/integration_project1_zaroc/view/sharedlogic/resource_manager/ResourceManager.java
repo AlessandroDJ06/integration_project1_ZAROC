@@ -6,6 +6,7 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profile
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Font;
 
 import java.util.HashMap;
@@ -57,7 +58,6 @@ public class ResourceManager {
         if (!loadedFonts.containsKey(font)){
             loadedFonts.put(font, Font.loadFont(getClass().getResourceAsStream(font.getPath()), font.getWeight()));
         }
-
         return loadedFonts.get(font);
     }
 
@@ -70,6 +70,13 @@ public class ResourceManager {
             );
         }
         return loadedPawnColors.get(color);
+    }
+
+    public ImageView getPawnImageView(PawnColorPaths color){
+        ImageView pawnImageview = new ImageView(this.getPawnColor(color));
+        pawnImageview.setScaleX(1.3);
+        pawnImageview.setScaleY(1.3);
+        return pawnImageview;
     }
 
     public Image getPawnSideView(PawnSideViews sideView){

@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -22,7 +23,6 @@ import java.util.Objects;
 public class GameBoardPresenter {
     private GameBoardView view;
     private AppController model;
-    private GeneralEventhandlers generalEventhandlers;
     private List<HBox> rows;
     private List<Button> buttons;
 
@@ -31,7 +31,6 @@ public class GameBoardPresenter {
         this.model = model;
         this.rows = Arrays.asList(view.getPegRowFour(),view.getPegRowThree(),view.getPegRowTwo());
         this.buttons = Arrays.asList(view.getUndoButton(),view.getSettingsButton(),view.getInfoButton());
-        this.generalEventhandlers = new GeneralEventhandlers();
         updateView();
         addEventHandlers();
     }
@@ -55,7 +54,7 @@ public class GameBoardPresenter {
         });
 
         for (Button button : buttons){
-            generalEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addHoverEffect(button);
         }
 
         for (HBox row : rows){
@@ -105,6 +104,29 @@ public class GameBoardPresenter {
         );
 
         view.getPegContainers().get(6).getChildren().add(new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)));
+        List<ImageView> pawns = Arrays.asList(
+                view.getResourceManager().getPawnImageView(PawnColorPaths.BLACK),
+                view.getResourceManager().getPawnImageView(PawnColorPaths.WHITE),
+                view.getResourceManager().getPawnImageView(PawnColorPaths.BLACK),
+                view.getResourceManager().getPawnImageView(PawnColorPaths.WHITE),
+                view.getResourceManager().getPawnImageView(PawnColorPaths.BLACK)
+
+        );
+
+
+
+        view.getBoard().getBoard().add(pawns.get(0),1,0);
+        view.getBoard().getBoard().add(pawns.get(1),3,0);
+        view.getBoard().getBoard().add(pawns.get(2),5,0);
+        view.getBoard().getBoard().add(pawns.get(3),7,0);
+        view.getBoard().getBoard().add(pawns.get(4),5,1);
+
+
+
+        for (int i = 0 ; i < pawns.toArray().length ; i++){
+            GridPane.setHalignment(pawns.get(i), HPos.CENTER);
+            GridPane.setValignment(pawns.get(i), VPos.CENTER);
+        }
 
 
 
