@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -74,10 +75,12 @@ public class RuleView extends BorderPane {
 
         for (Text text : small) {
             text.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+            text.setFill(Color.web(resourceManager.getTheme().getTextColor()));
         }
 
         for (Text text : big) {
             text.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+            text.setFill(Color.web(resourceManager.getTheme().getTextColor()));
         }
 
         TextFlow rules = new TextFlow(titel, hText1, sText1, hText2, sText2, hText3, sText3, hText4, sText4);
