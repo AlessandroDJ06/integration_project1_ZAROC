@@ -1,5 +1,6 @@
 package game.integration_project1_zaroc.model.boardinfo;
 
+
 public class Board {
     private Peg[][] pegPositions;
 
@@ -30,5 +31,13 @@ public class Board {
 
     public void setPegPosition(Peg peg, int row, int column) {
         pegPositions[row][column]=peg;
+    }
+
+    public Peg[][] getAmountOfRows() {
+        return pegPositions;
+    }
+
+    public Peg[] getAmountOfColumns(){
+        return pegPositions[10];
     }
 }

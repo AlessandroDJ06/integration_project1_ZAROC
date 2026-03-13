@@ -1,15 +1,9 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
 import game.integration_project1_zaroc.model.gameinfo.Game;
-import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
-import game.integration_project1_zaroc.model.gameinfo.GameStatus;
-import game.integration_project1_zaroc.model.players.AIPlayer;
-import game.integration_project1_zaroc.model.players.HumanPlayer;
+
 import game.integration_project1_zaroc.model.players.Player;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Turn {
     private Player currentPlayer;
@@ -17,7 +11,8 @@ public class Turn {
     private Move[] moves;
     private Game game;
 
-    public Turn(Player currentPlayer,Game game) {
+
+    public Turn(Player currentPlayer, Game game) {
         this.currentPlayer = currentPlayer;
         moves = new Move[2];
         turnNumber++;
@@ -27,17 +22,7 @@ public class Turn {
 
 
     public void addMove(Move move) {
-        //if(isLegal(move)){
             moves[move.getMoveNumber().getNumber() - 1] = move;
-        //}
-    }
-
-    //TODO: legal check - eerst de array van pegs volledig afwerken
-    public boolean isLegal(Move move){
-        boolean legalCheck = false;
-
-        //if(move.getDestionationPeg()==move.getPawn().getCurrentPeg())
-        return legalCheck;
     }
 
     public void undoMove(Move move) {
@@ -72,6 +57,10 @@ public class Turn {
 
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public Game getGame() {
+        return game;
     }
     /* public LocalDateTime getMoveDuration(Move firstMove, Move secondMove) {
 
