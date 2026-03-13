@@ -30,11 +30,23 @@ public class GameBoardPresenter {
     private List<HBox> rows;
     private List<Button> buttons;
 
+    private PawnSideViews sideViewPlayer1;
+    private PawnSideViews sideViewPlayer2;
+
+    private PawnColorPaths colorPlayerOne;
+    private PawnColorPaths colorPlayerTwo;
+
     public GameBoardPresenter(GameBoardView view,AppController model){
         this.view = view;
         this.model = model;
         this.rows = Arrays.asList(view.getPegRowFour(),view.getPegRowThree(),view.getPegRowTwo());
         this.buttons = Arrays.asList(view.getUndoButton(),view.getSettingsButton(),view.getInfoButton());
+
+        this.sideViewPlayer1 = PawnSideViews.values()[model.getGame().getParticipation1().getPawnColor().ordinal()];
+        this.sideViewPlayer2 = PawnSideViews.values()[model.getGame().getParticipation2().getPawnColor().ordinal()];
+
+        this.colorPlayerOne =  PawnColorPaths.values()[model.getGame().getParticipation1().getPawnColor().ordinal()];
+        this.colorPlayerTwo = PawnColorPaths.values()[model.getGame().getParticipation2().getPawnColor().ordinal()];
         updateView();
         addEventHandlers();
     }
@@ -81,14 +93,14 @@ public class GameBoardPresenter {
     private void updateView(){
         if (model.getGame() != null){
             view.getPlayersPlayingComponent().setFirstPlayer(
-                    model.getGame().getPlayer1().getUsername()
+                    model.getGame().getParticipation1().getPlayer().getUsername()
 
             );
 
-            System.out.println(model.getGame().getPlayer1().getUsername());
+            System.out.println(model.getGame().getParticipation1().getPlayer().getUsername());
 
             view.getPlayersPlayingComponent().setSecondPlayer(
-                    model.getGame().getPlayer2().getUsername()
+                    model.getGame().getParticipation2().getPlayer().getUsername()
             );
         } else {
             System.out.println("fatal error");
@@ -98,42 +110,41 @@ public class GameBoardPresenter {
 
 
         view.getPegContainers().get(0).getChildren().addAll(
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE))
-        );
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2)));
 
         view.getPegContainers().get(1).getChildren().addAll(
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK))
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2))
 
         );
 
 
         view.getPegContainers().get(2).getChildren().addAll(
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE))
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2))
         );
 
         view.getPegContainers().get(3).getChildren().addAll(
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
-                new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE))
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2)),
+                new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer1))
 
         );
 
-        view.getPegContainers().get(6).getChildren().add(new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)));
+        view.getPegContainers().get(6).getChildren().add(new ImageView(view.getResourceManager().getPawnSideView(sideViewPlayer2)));
         List<ImageView> pawns = Arrays.asList(
-                view.getResourceManager().getPawnImageView(PawnColorPaths.BLACK),
-                view.getResourceManager().getPawnImageView(PawnColorPaths.WHITE),
-                view.getResourceManager().getPawnImageView(PawnColorPaths.BLACK),
-                view.getResourceManager().getPawnImageView(PawnColorPaths.WHITE),
-                view.getResourceManager().getPawnImageView(PawnColorPaths.BLACK)
+                view.getResourceManager().getPawnImageView(colorPlayerOne),
+                view.getResourceManager().getPawnImageView(colorPlayerTwo),
+                view.getResourceManager().getPawnImageView(colorPlayerOne),
+                view.getResourceManager().getPawnImageView(colorPlayerTwo),
+                view.getResourceManager().getPawnImageView(colorPlayerOne)
 
         );
 

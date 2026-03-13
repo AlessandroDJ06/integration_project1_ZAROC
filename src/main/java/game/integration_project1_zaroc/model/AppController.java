@@ -33,6 +33,9 @@ public class AppController {
         colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndexOtherPicker());
         colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndexOtherPicker());
 
+        setPlayer1Color();
+        setPlayer2Color();
+
         this.difficultyPicker = new DifficultyPickerModel();
         this.startingPlayerSelector = new StartingPlayerSelector();
 
@@ -42,10 +45,12 @@ public class AppController {
 
     public void setPlayer1Color() {
         this.player1Color = PawnColor.values()[colorOne.getCurrentIndex()];
+        colorTwo.setCurrentIndexOtherPicker(player1Color.ordinal());
     }
 
     public void setPlayer2Color() {
         this.player2Color = PawnColor.values()[colorTwo.getCurrentIndex()];
+        colorOne.setCurrentIndexOtherPicker(player2Color.ordinal());
     }
 
     public void createGame(){
@@ -54,8 +59,6 @@ public class AppController {
                 new GameParticipation(this.player2,this.player2Color)
         );
 
-        System.out.println(game.getPlayer1().getUsername());
-        System.out.println(game.getPlayer2().getUsername());
     }
 
 

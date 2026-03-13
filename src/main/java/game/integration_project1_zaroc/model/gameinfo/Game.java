@@ -25,10 +25,10 @@ public class Game {
         if (getStatus() == GameStatus.PLAYING) {
             Turn lastTurn = turns.get(turns.size() - 1);
 
-            if (lastTurn.getCurrentPlayer() == getPlayer1()) {
-                startNewTurn(getPlayer2());
+            if (lastTurn.getCurrentPlayer() == getParticipation1().getPlayer()) {
+                startNewTurn(getParticipation2().getPlayer());
             } else {
-                startNewTurn(getPlayer1());
+                startNewTurn(getParticipation1().getPlayer());
             }
         }
     }
@@ -56,11 +56,11 @@ public class Game {
         this.board = board;
     }
 
-    public Player getPlayer1(){
-        return this.gameParticipations[0].getPlayer();
+    public GameParticipation getParticipation1(){
+        return this.gameParticipations[0];
     }
 
-    public Player getPlayer2(){
-        return this.gameParticipations[1].getPlayer();
+    public GameParticipation getParticipation2(){
+        return this.gameParticipations[1];
     }
 }
