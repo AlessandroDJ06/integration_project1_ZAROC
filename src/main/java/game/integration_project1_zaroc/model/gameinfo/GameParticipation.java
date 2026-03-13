@@ -38,5 +38,4 @@ public class GameParticipation {
         this.player = player;
     }
 
-
 }

@@ -31,12 +31,13 @@ public class GameSetupPresenter {
     private AppController model;
     private GameSetupView view;
     private List<Button> buttons;
+    private String[] difficulty;
+    private String[] players;
+
     private PawnColorPickerModel colorOne;
     private PawnColorPickerModel colorTwo;
     private DifficultyPickerModel difficultyPicker;
     private StartingPlayerSelector startingPlayerSelector;
-    private String[] difficulty;
-    private String[] players;
 
     public GameSetupPresenter(GameSetupView view , AppController appController){
         this.view = view;
@@ -54,14 +55,15 @@ public class GameSetupPresenter {
                 view.getDifficultyPicker().getRightButton(),
                 view.getReturnButton()
         );
-        this.colorOne = new PawnColorPickerModel(PawnColor.BLACK);
-        this.colorTwo = new PawnColorPickerModel(PawnColor.WHITE);
-        this.difficultyPicker = new DifficultyPickerModel();
-        colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndexOtherPicker());
-        colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndexOtherPicker());
+
+        this.colorOne = appController.getColorOne();
+        this.colorTwo = appController.getColorTwo();
+        this.difficultyPicker = appController.getDifficultyPicker();
+        this.startingPlayerSelector = appController.getStartingPlayerSelector();
+
         this.difficulty = new String[] {"easy","medium","hard"};
         this.players = new String[] {"player1","player2"};
-        this.startingPlayerSelector = new StartingPlayerSelector();
+
         addEventHandlers();
         updateView();
         addAnimations();
@@ -77,24 +79,28 @@ public class GameSetupPresenter {
         view.getColorPickerOne().getLeftButton().setOnAction(event -> {
             colorOne.decreaseCurrentIndex();
             colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndex());
+            model.setPlayer1Color();
             updateView();
         });
 
         view.getColorPickerTwo().getLeftButton().setOnAction(event -> {
             colorTwo.decreaseCurrentIndex();
             colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndex());
+            model.setPlayer2Color();
             updateView();
         });
 
         view.getColorPickerOne().getRightButton().setOnAction(event -> {
             colorOne.increaseCurrentIndex();
             colorTwo.setCurrentIndexOtherPicker(colorOne.getCurrentIndex());
+            model.setPlayer1Color();
             updateView();
         });
 
         view.getColorPickerTwo().getRightButton().setOnAction(event -> {
             colorTwo.increaseCurrentIndex();
             colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndex());
+            model.setPlayer2Color();
             updateView();
         });
 
@@ -118,6 +124,7 @@ public class GameSetupPresenter {
         });
 
         view.getCreateGameButton().setOnAction(event -> {
+            model.createGame();
             GameBoardView GameBoardView = new GameBoardView(this.view.getResourceManager());
             new GameBoardPresenter(GameBoardView,new AppController());
             view.getScene().setRoot(GameBoardView);

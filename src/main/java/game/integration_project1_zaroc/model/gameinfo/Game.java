@@ -10,15 +10,12 @@ public class Game {
     private GameStatus status;
     private GameParticipation[] gameParticipations;
     private ArrayList<Turn> turns;
-    private Player player1;
-    private Player player2;
+
     private Board board;
 
 
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
         this.status = GameStatus.PLAYING;
-        this.player1=gameParticipation1.getPlayer();
-        this.player2=gameParticipation2.getPlayer();
         board = new Board();
         turns = new ArrayList<>();
         gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
@@ -51,27 +48,19 @@ public class Game {
         turns.add(turn);
     }
 
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
     public Board getBoard() {
         return board;
     }
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public Player getPlayer1(){
+        return this.gameParticipations[0].getPlayer();
+    }
+
+    public Player getPlayer2(){
+        return this.gameParticipations[1].getPlayer();
     }
 }

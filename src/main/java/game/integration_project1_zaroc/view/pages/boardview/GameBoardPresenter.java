@@ -79,6 +79,22 @@ public class GameBoardPresenter {
     }
 
     private void updateView(){
+        if (model.getGame() != null){
+            view.getPlayersPlayingComponent().setFirstPlayer(
+                    model.getGame().getPlayer1().getUsername()
+
+            );
+
+            System.out.println(model.getGame().getPlayer1().getUsername());
+
+            view.getPlayersPlayingComponent().setSecondPlayer(
+                    model.getGame().getPlayer2().getUsername()
+            );
+        }
+
+
+
+
         view.getPegContainers().get(0).getChildren().addAll(
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.BLACK)),
                 new ImageView(view.getResourceManager().getPawnSideView(PawnSideViews.WHITE)),
