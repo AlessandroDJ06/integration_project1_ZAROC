@@ -126,7 +126,7 @@ public class GameSetupPresenter {
         view.getCreateGameButton().setOnAction(event -> {
             model.createGame();
             GameBoardView GameBoardView = new GameBoardView(this.view.getResourceManager());
-            new GameBoardPresenter(GameBoardView,new AppController());
+            new GameBoardPresenter(GameBoardView,model);
             view.getScene().setRoot(GameBoardView);
         });
 

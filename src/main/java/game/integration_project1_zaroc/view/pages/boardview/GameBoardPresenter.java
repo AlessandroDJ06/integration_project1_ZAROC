@@ -90,6 +90,8 @@ public class GameBoardPresenter {
             view.getPlayersPlayingComponent().setSecondPlayer(
                     model.getGame().getPlayer2().getUsername()
             );
+        } else {
+            System.out.println("fatal error");
         }
 
 
