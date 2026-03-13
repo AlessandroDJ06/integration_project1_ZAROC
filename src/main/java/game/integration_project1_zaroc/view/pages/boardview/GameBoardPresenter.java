@@ -2,9 +2,12 @@ package game.integration_project1_zaroc.view.pages.boardview;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;

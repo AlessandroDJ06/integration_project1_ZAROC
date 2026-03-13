@@ -19,8 +19,6 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Themes theme = Themes.DONKEY_KONG;
         ResourceManager resourceManager = new ResourceManager(theme);
-        //GameBoardView view = new GameBoardView(resourceManager);
-        //new GameBoardPresenter(view,new AppController());
         GameSetupView view = new GameSetupView(resourceManager);
         new GameSetupPresenter(view,new AppController());
         Scene scene = new Scene(view);

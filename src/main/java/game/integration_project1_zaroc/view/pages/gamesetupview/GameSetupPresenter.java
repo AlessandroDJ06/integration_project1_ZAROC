@@ -5,6 +5,8 @@ import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.selectionslider.DifficultyPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
+import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
+import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.animation.KeyFrame;
@@ -102,6 +104,12 @@ public class GameSetupPresenter {
         view.getStartingPlayerPicker().getLeftButton().setOnAction(event -> {
             startingPlayerSelector.decreaseCurrentIndex();
             updateView();
+        });
+
+        view.getCreateGameButton().setOnAction(event -> {
+            GameBoardView GameBoardView = new GameBoardView(this.view.getResourceManager());
+            new GameBoardPresenter(GameBoardView,new AppController());
+            view.getScene().setRoot(GameBoardView);
         });
 
     }

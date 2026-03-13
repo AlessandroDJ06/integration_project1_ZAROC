@@ -1,12 +1,5 @@
 package game.integration_project1_zaroc.model.boardinfo;
 
-import game.integration_project1_zaroc.model.boardinfo.layers.LayerLevel;
-import game.integration_project1_zaroc.view.core.themes.Components;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-
 public class Board {
     private Peg[][] pegPositions;
 
