@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -41,6 +42,7 @@ public class GameBoardPresenter {
 
     private void addEventHandlers(){
         view.getInfoButton().setOnAction(event -> {
+
             RuleView ruleView = new RuleView(view.getResourceManager());
             new RuleViewPresenter(ruleView,new AppController());
             Scene ruleScene = new Scene(ruleView);
@@ -49,6 +51,7 @@ public class GameBoardPresenter {
             ruleStage.setScene(ruleScene);
             ruleStage.setTitle("Regels");
             ruleStage.initStyle(StageStyle.TRANSPARENT);
+            ruleStage.initModality(Modality.APPLICATION_MODAL);
             ruleStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             ruleStage.setResizable(false);
             ruleStage.showAndWait();
