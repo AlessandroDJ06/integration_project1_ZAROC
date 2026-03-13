@@ -28,6 +28,7 @@ public class Main extends Application {
         stage.setFullScreen(true);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
         stage.show();
+
     }
 
     public static void main(String[] args) {
