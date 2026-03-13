@@ -1,7 +1,6 @@
 package game.integration_project1_zaroc.model.gameinfo;
 
 import game.integration_project1_zaroc.model.boardinfo.Board;
-import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.gamelogic.Turn;
 import game.integration_project1_zaroc.model.players.Player;
 
@@ -11,28 +10,25 @@ public class Game {
     private GameStatus status;
     private GameParticipation[] gameParticipations;
     private ArrayList<Turn> turns;
-    private Player player1;
-    private Player player2;
+
     private Board board;
 
 
-    public Game(Player player1, Player player2) {
+    public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
         this.status = GameStatus.PLAYING;
-        this.player1=player1;
-        this.player2=player2;
         board = new Board();
         turns = new ArrayList<>();
-        gameParticipations = new GameParticipation[]{new GameParticipation(player1,PawnColor.WHITE),new GameParticipation(player2,PawnColor.BLACK)};
+        gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
     }
 
     public void switchCurrentPlayer() {
         if (getStatus() == GameStatus.PLAYING) {
             Turn lastTurn = turns.get(turns.size() - 1);
 
-            if (lastTurn.getCurrentPlayer() == getPlayer1()) {
-                startNewTurn(getPlayer2());
+            if (lastTurn.getCurrentPlayer() == getParticipation1().getPlayer()) {
+                startNewTurn(getParticipation2().getPlayer());
             } else {
-                startNewTurn(getPlayer1());
+                startNewTurn(getParticipation1().getPlayer());
             }
         }
     }
@@ -52,27 +48,19 @@ public class Game {
         turns.add(turn);
     }
 
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
     public Board getBoard() {
         return board;
     }
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public GameParticipation getParticipation1(){
+        return this.gameParticipations[0];
+    }
+
+    public GameParticipation getParticipation2(){
+        return this.gameParticipations[1];
     }
 }

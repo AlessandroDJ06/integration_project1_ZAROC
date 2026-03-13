@@ -9,9 +9,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BoardComponent extends StackPane {
     private GridPane board;
     private final ResourceManager resourceManager;
+    private List<ImageView> pegPositions;
 
     public BoardComponent(ResourceManager resourceManager){
         this.resourceManager = resourceManager;
@@ -23,6 +27,7 @@ public class BoardComponent extends StackPane {
         this.board = new GridPane();
         this.board.setHgap(5);
         this.board.setVgap(5);
+        this.pegPositions = new ArrayList<>();
     }
 
     public void layoutComponent(){
@@ -66,7 +71,7 @@ public class BoardComponent extends StackPane {
                     location.setScaleY(1.3);
                     location.setScaleX(1.3);
                     board.add(location, column, row);
-
+                    pegPositions.add(location);
                     GridPane.setHalignment(location, HPos.CENTER);
                     GridPane.setValignment(location, VPos.CENTER);
                 }
@@ -92,5 +97,9 @@ public class BoardComponent extends StackPane {
 
     public GridPane getBoard() {
         return board;
+    }
+
+    public List<ImageView> getPegPositions(){
+        return this.pegPositions;
     }
 }

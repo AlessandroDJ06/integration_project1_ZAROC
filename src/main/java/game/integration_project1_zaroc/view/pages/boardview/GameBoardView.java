@@ -45,9 +45,6 @@ public class GameBoardView extends BorderPane {
         playersPlayingComponent.setPlayerOnePfp(ProfilePictures.JAMES);
         playersPlayingComponent.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
 
-        playersPlayingComponent.setFirstPlayer("Alessandro");
-        playersPlayingComponent.setSecondPlayer("JEFFRY");
-
         Region spacer = new Region();
         HBox boardWithPegView = new HBox(board,spacer,pegView);
         HBox.setHgrow(spacer, Priority.ALWAYS);
