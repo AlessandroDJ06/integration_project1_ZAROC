@@ -20,7 +20,7 @@ public class SettingsView extends BorderPane {
     private Text titel;
     private Text soundLabel;
     private Text volumeLabel;
-    private Text space;
+
 
     public SettingsView(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
@@ -35,7 +35,7 @@ public class SettingsView extends BorderPane {
         titel = new Text("Settings");
         soundLabel = new Text("Sound");
         volumeLabel = new Text("Volume");
-        space=new Text("");
+
     }
 
     public void layoutNodes(){
@@ -48,7 +48,7 @@ public class SettingsView extends BorderPane {
         returnButton.setFont(resourceManager.getFont(Fonts.PRESSSTART2BUTTONSTYLE));
         setTop(returnButton);
         setAlignment(returnButton, Pos.TOP_LEFT);
-        setMargin(returnButton, new Insets(30,0,0,400));
+        setMargin(returnButton, new Insets(15,0,0,400));
 
         // sliders
         volume.setMaxSize(300,0);
