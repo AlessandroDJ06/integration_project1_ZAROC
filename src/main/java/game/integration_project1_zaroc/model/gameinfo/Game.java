@@ -1,7 +1,6 @@
 package game.integration_project1_zaroc.model.gameinfo;
 
 import game.integration_project1_zaroc.model.boardinfo.Board;
-import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.gamelogic.Turn;
 import game.integration_project1_zaroc.model.players.Player;
 
@@ -16,13 +15,13 @@ public class Game {
     private Board board;
 
 
-    public Game(Player player1, Player player2) {
+    public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
         this.status = GameStatus.PLAYING;
-        this.player1=player1;
-        this.player2=player2;
+        this.player1=gameParticipation1.getPlayer();
+        this.player2=gameParticipation2.getPlayer();
         board = new Board();
         turns = new ArrayList<>();
-        gameParticipations = new GameParticipation[]{new GameParticipation(player1,PawnColor.WHITE),new GameParticipation(player2,PawnColor.BLACK)};
+        gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
     }
 
     public void switchCurrentPlayer() {
