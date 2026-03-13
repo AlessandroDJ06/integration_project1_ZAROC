@@ -8,7 +8,7 @@ public enum MaxCapacity {
         this.max=max;
     }
 
-    public int getMaxCapacity(){
+    public int getMaxCapacityNumber(){
         return this.max;
     }
 }

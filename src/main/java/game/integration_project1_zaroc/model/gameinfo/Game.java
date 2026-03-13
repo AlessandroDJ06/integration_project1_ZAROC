@@ -44,9 +44,6 @@ public class Game {
         this.status = status;
     }
 
-    public void startNewTurn(Turn turn){
-        turns.add(turn);
-    }
 
     public Board getBoard() {
         return board;

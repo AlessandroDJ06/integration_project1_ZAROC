@@ -5,7 +5,7 @@ public class Board {
     private Peg[][] pegPositions;
 
     public Board() {
-        this.pegPositions = new Peg[10][4];
+        this.pegPositions = new Peg[4][10];
         createPegs();
 
     }
@@ -18,7 +18,7 @@ public class Board {
                         || (row >= 2 && column % 2 == 0);
 
                 if (shouldAdd) {
-                    pegPositions[row][column] = new Peg(row,column);
+                    pegPositions[row][column] = new Peg(column, row);
 
                 }
             }
@@ -33,11 +33,11 @@ public class Board {
         pegPositions[row][column]=peg;
     }
 
-    public Peg[][] getAmountOfRows() {
-        return pegPositions;
+    public int getAmountOfRows() {
+        return pegPositions.length;
     }
 
-    public Peg[] getAmountOfColumns(){
-        return pegPositions[10];
+    public int getAmountOfColumns(){
+        return pegPositions[10].length;
     }
 }
