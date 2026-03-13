@@ -8,7 +8,6 @@ import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandle
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
