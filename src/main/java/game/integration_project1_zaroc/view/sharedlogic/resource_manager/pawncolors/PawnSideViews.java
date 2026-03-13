@@ -1,12 +1,13 @@
 package game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors;
 
 public enum PawnSideViews {
+    WHITE("white.png"),
     BLACK("black.png"),
-    BROWN("brown.png"),
-    DARKBLUE("dark_blue.png"),
-    GREEN("green.png"),
-    LIGHTBLUE("light_blue.png"),
-    WHITE("white.png");
+    BLUE("blue.png"),
+    RED("red.png"),
+    YELLOW("yellow.png"),
+    GREEN("green.png")
+   ;
 
     private String path;
     PawnSideViews(String path){
