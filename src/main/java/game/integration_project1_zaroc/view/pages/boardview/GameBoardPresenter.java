@@ -2,6 +2,8 @@ package game.integration_project1_zaroc.view.pages.boardview;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
+import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
+import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
@@ -58,6 +60,22 @@ public class GameBoardPresenter {
 
 
     private void addEventHandlers(){
+        view.getSettingsButton().setOnAction(actionEvent -> {
+            SettingsView settingsView = new SettingsView(view.getResourceManager());
+            new SettingsPresenter(settingsView,new AppController());
+            Scene settingsScene = new Scene(settingsView);
+            settingsScene.setFill(Color.TRANSPARENT);
+            Stage settingsStage = new Stage();
+            settingsStage.setScene(settingsScene);
+            settingsStage.setTitle("Settings");
+            settingsStage.initStyle(StageStyle.TRANSPARENT);
+            settingsStage.initModality(Modality.APPLICATION_MODAL);
+            settingsStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            settingsStage.setResizable(false);
+            settingsStage.showAndWait();
+
+        });
+
         view.getInfoButton().setOnAction(event -> {
 
             RuleView ruleView = new RuleView(view.getResourceManager());

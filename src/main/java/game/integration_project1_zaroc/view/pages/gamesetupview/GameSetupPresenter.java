@@ -9,6 +9,8 @@ import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
+import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
+import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.animation.KeyFrame;
@@ -145,6 +147,21 @@ public class GameSetupPresenter {
             ruleStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             ruleStage.setResizable(false);
             ruleStage.showAndWait();
+        });
+        view.getSettingsButton().setOnAction(actionEvent -> {
+            SettingsView settingsView = new SettingsView(view.getResourceManager());
+            new SettingsPresenter(settingsView,new AppController());
+            Scene settingsScene = new Scene(settingsView);
+            settingsScene.setFill(Color.TRANSPARENT);
+            Stage settingsStage = new Stage();
+            settingsStage.setScene(settingsScene);
+            settingsStage.setTitle("Settings");
+            settingsStage.initStyle(StageStyle.TRANSPARENT);
+            settingsStage.initModality(Modality.APPLICATION_MODAL);
+            settingsStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            settingsStage.setResizable(false);
+            settingsStage.showAndWait();
+
         });
 
     }

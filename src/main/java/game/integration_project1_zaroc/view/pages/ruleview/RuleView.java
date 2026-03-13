@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.pages.ruleview;
 
 
+import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
@@ -19,7 +20,7 @@ import java.util.List;
 public class RuleView extends BorderPane {
 
     private BorderPane ruleBorderPane;
-    private Button returnButton;
+    private TextButton returnButton;
     private ResourceManager resourceManager;
 
     public RuleView(ResourceManager resourceManager) {
@@ -30,13 +31,13 @@ public class RuleView extends BorderPane {
 
     public void initialiseNodes() {
         ruleBorderPane = new BorderPane();
-        returnButton = new Button("X");
+        returnButton = new TextButton(resourceManager,"X");
     }
 
     public void layoutNodes() {
 
         returnButton.setFont(resourceManager.getFont(Fonts.PRESSSTART2BUTTONSTYLE));
-        returnButton.setBackground(Background.EMPTY);
+
 
 
         Text titel = new Text("Regels:\n\n");
@@ -82,7 +83,7 @@ public class RuleView extends BorderPane {
             text.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
             text.setFill(Color.web(resourceManager.getTheme().getTextColor()));
         }
-
+        titel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         TextFlow rules = new TextFlow(titel, hText1, sText1, hText2, sText2, hText3, sText3, hText4, sText4);
         rules.setLineSpacing(5);
 
@@ -101,7 +102,7 @@ public class RuleView extends BorderPane {
         setCenter(ruleStackPane);
 
 
-//        this.setStyle("-fx-background-color: " + resourceManager.getTheme().getColor() + ";");
+
         this.setBackground(Background.EMPTY);
 
 
