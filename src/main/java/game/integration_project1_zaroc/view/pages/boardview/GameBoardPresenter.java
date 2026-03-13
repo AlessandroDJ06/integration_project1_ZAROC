@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -40,6 +41,8 @@ public class GameBoardPresenter {
     private PawnColorPaths colorPlayerTwo;
 
     private ImageView selectedPawn;
+    private ImageView sideViewOfSelectedPawn;
+    private VBox parentOfSideView;
 
     public GameBoardPresenter(GameBoardView view,AppController model){
         this.view = view;
@@ -54,6 +57,8 @@ public class GameBoardPresenter {
         this.colorPlayerTwo = PawnColorPaths.values()[model.getGame().getParticipation2().getPawnColor().ordinal()];
 
         this.selectedPawn = null;
+        this.sideViewOfSelectedPawn = null;
+        this.parentOfSideView = null;
         updateView();
         addEventHandlers();
     }
@@ -124,7 +129,8 @@ public class GameBoardPresenter {
             position.setOnMouseClicked(event -> {
                 int col = GridPane.getColumnIndex(position);
                 int row = GridPane.getRowIndex(position);
-                handlePegClick(col, row);
+                System.out.println(view.getBoard().getPegPositions().indexOf(position));
+                handlePegClick(col, row,view.getBoard().getPegPositions().indexOf(position));
             });
         }
     }
@@ -135,8 +141,6 @@ public class GameBoardPresenter {
                     model.getGame().getParticipation1().getPlayer().getUsername()
 
             );
-
-            System.out.println(model.getGame().getParticipation1().getPlayer().getUsername());
 
             view.getPlayersPlayingComponent().setSecondPlayer(
                     model.getGame().getParticipation2().getPlayer().getUsername()
@@ -164,7 +168,6 @@ public class GameBoardPresenter {
             }
         }
 
-
         // De 4 locaties (kolommen) waar de stapels van 4 moeten komen
         int[] kolommen = {1, 3, 5, 7};
         int row = 0; // De rij waar deze pegs staan
@@ -173,68 +176,81 @@ public class GameBoardPresenter {
             int col = kolommen[i];
 
             for (int laag = 0; laag < 4; laag++) {
-                PawnColorPaths kleur;
+                PawnColorPaths color;
                 if ((i + laag) % 2 == 0) {
-                    kleur = colorPlayerOne;
+                    color = colorPlayerOne;
                 } else {
-                    kleur = colorPlayerTwo;
+                    color = colorPlayerTwo;
                 }
 
-                ImageView pion = view.getResourceManager().getPawnImageView(kleur);
-                pion.setMouseTransparent(true);
-                GridPane.setHalignment(pion, HPos.CENTER);
-                GridPane.setValignment(pion, VPos.CENTER);
-                pion.setTranslateY(-7 * laag);
-                view.getBoard().getBoard().add(pion, col, row);
+                ImageView pawn = view.getResourceManager().getPawnImageView(color);
+                pawn.setMouseTransparent(true);
+                GridPane.setHalignment(pawn, HPos.CENTER);
+                GridPane.setValignment(pawn, VPos.CENTER);
+                pawn.setTranslateY(-5 * laag);
+                view.getBoard().getBoard().add(pawn, col, row);
             }
         }
 
     }
 
-    private void handlePegClick(int col, int row) {
+    private void handlePegClick(int col, int row , int index) {
         if (selectedPawn == null) {
-            ImageView bovenste = getBovenstePion(col, row);
+            ImageView bovenste = getTopPawn(col, row);
 
-            if (bovenste != null && getAantalPionnenInCel(col,row) >1) {
+            if (bovenste != null && getAmountInEachCell(col,row) >1) {
                 selectedPawn = bovenste;
+                if (index < 13){
+                    parentOfSideView = view.getPegContainers().get(index);
+                    sideViewOfSelectedPawn = ((ImageView) parentOfSideView.getChildren().getFirst());
+                }
                 selectedPawn.setOpacity(0.5);
+                sideViewOfSelectedPawn.setOpacity(0.5);
                 System.out.println("Pion opgepakt van " + col + "," + row);
             }
         }
         else {
             view.getBoard().getBoard().getChildren().remove(selectedPawn);
 
-            int aantalOpDoel = getAantalPionnenInCel(col, row);
-            selectedPawn.setTranslateY(-4 * aantalOpDoel);
+            int aantalOpDoel = getAmountInEachCell(col, row);
+            selectedPawn.setTranslateY(-5 * aantalOpDoel);
             view.getBoard().getBoard().add(selectedPawn, col, row);
+            if (index < 13) {
+                view.getPegContainers().get(index).getChildren().addFirst(sideViewOfSelectedPawn);
+            }  else {
+                parentOfSideView.getChildren().remove(sideViewOfSelectedPawn);
+            }
+
 
             selectedPawn.setOpacity(1.0);
+            sideViewOfSelectedPawn.setOpacity(1.0);
             selectedPawn = null;
+            sideViewOfSelectedPawn = null;
             System.out.println("Pion neergezet op " + col + "," + row);
         }
     }
 
-    private ImageView getBovenstePion(int col, int row) {
+    private ImageView getTopPawn(int col, int row) {
         ImageView bovenste = null;
         for (Node node : view.getBoard().getBoard().getChildren()) {
-            if (node instanceof ImageView && isOpPositie(node, col, row)) {
+            if (node instanceof ImageView && isAtPosition(node, col, row)) {
                 bovenste = (ImageView) node;
             }
         }
         return bovenste;
     }
 
-    private int getAantalPionnenInCel(int col, int row) {
+    private int getAmountInEachCell(int col, int row) {
         int count = 0;
         for (Node node : view.getBoard().getBoard().getChildren()) {
-            if (node instanceof ImageView && isOpPositie(node, col, row)) {
+            if (node instanceof ImageView && isAtPosition(node, col, row)) {
                 count++;
             }
         }
         return count;
     }
 
-    private boolean isOpPositie(Node node, int col, int row) {
+    private boolean isAtPosition(Node node, int col, int row) {
         Integer c = GridPane.getColumnIndex(node);
         Integer r = GridPane.getRowIndex(node);
         return c != null && r != null && c == col && r == row;

@@ -42,7 +42,7 @@ public class GameBoardView extends BorderPane {
     }
 
     public void layoutNodes() {
-        playersPlayingComponent.setPlayerOnePfp(ProfilePictures.JAMES);
+        playersPlayingComponent.setPlayerOnePfp(ProfilePictures.CHAN);
         playersPlayingComponent.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
 
         Region spacer = new Region();
