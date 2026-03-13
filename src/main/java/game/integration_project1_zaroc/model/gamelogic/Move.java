@@ -20,48 +20,33 @@ public class Move {
         this.pawn = pawn;
         this.turn = turn;
         timestamp = LocalDateTime.now();
-        while (!isLegal(pawn, destinationPeg)) {
-            try {
+        if(isLegal(pawn, destinationPeg)) {
                 this.startPeg = pawn.getCurrentPeg();
                 this.destinationPeg = destinationPeg;
-
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(e);
-            }
+        }
+        else{
+            throw new IllegalArgumentException("This move is not legal!");
         }
 
     }
 
-    public boolean isLegal(Pawn pawn, Peg destinationPeg){
-        boolean legalCheck = false;
+    public boolean isLegal(Pawn pawn, Peg destinationPeg) {
 
-        for (int row = 0; row < turn.getGame().getBoard().getAmountOfRows().length; row++) {
-            int xStart = pawn.getCurrentPeg().getXPosition();
-            int yStart = pawn.getCurrentPeg().getYPosition();
+        int xStart = pawn.getCurrentPeg().getXPosition();
+        int yStart = pawn.getCurrentPeg().getYPosition();
 
-            int xDest = destinationPeg.getXPosition();
-            int yDest = destinationPeg.getYPosition();
+        int xDest = destinationPeg.getXPosition();
+        int yDest = destinationPeg.getYPosition();
 
-            boolean xLegal = xDest == xStart + 2;
-            boolean yLegal = yDest == yStart + 1;
-
-            for (int column = 0; column < turn.getGame().getBoard().getAmountOfColumns().length; column++) {
-                // derde rij
-                if(yDest==2) {
-                    boolean diagonalCheck = (yLegal && (xDest == xStart + 1 || xDest == xStart -1)) || xLegal;
-                    if(diagonalCheck){
-                        legalCheck = true;
-                    }
-                }
-                else {
-                    if (xLegal || yLegal) {
-                        legalCheck = true;
-                    }
-
-                }
-            }
+        boolean xLegal = xDest == xStart + 2;
+        boolean yLegal = yDest == yStart + 1;
+        // derde rij
+        if (yDest == 2) {
+            boolean diagonalCheck = (yLegal && (xDest == xStart + 1 || xDest == xStart - 1)) || xLegal;
+            return diagonalCheck;
+        } else {
+            return xLegal || yLegal;
         }
-        return legalCheck;
     }
     public MoveNumber getMoveNumber() {
         return moveNumber;

@@ -37,7 +37,6 @@ public class AppController {
         this.startingPlayerSelector = new StartingPlayerSelector();
 
         this.game = null;
-
     }
 
     public void setPlayer1Color() {
