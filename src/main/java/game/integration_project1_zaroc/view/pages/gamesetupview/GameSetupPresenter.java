@@ -112,6 +112,12 @@ public class GameSetupPresenter {
             view.getScene().setRoot(GameBoardView);
         });
 
+
+
+        view.getInfoButton().setOnAction(event -> {
+            //TODO: add link to rules view
+        });
+
     }
 
     private void updateView(){

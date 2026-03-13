@@ -6,11 +6,9 @@ import javafx.stage.Stage;
 
 public class RuleViewPresenter {
 private final RuleView view;
-    private GeneralEventhandlers generalEventhandlers;
     private final AppController model;
 
     public RuleViewPresenter(RuleView ruleView, AppController model) {
-        this.generalEventhandlers = new GeneralEventhandlers();
         this.view = ruleView;
         this.model = model;
         addEventHandlers();
@@ -22,6 +20,6 @@ private final RuleView view;
             Stage stage = (Stage) view.getScene().getWindow();
             stage.close();
         });
-        generalEventhandlers.addHoverEffect(view.getReturnButton());
+        GeneralEventhandlers.addHoverEffect(view.getReturnButton());
     }
 }
