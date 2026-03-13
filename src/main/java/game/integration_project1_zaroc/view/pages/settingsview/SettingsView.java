@@ -22,6 +22,7 @@ public class SettingsView extends BorderPane {
     private Text volumeLabel;
 
 
+
     public SettingsView(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
         initialiseNodes();
@@ -36,19 +37,23 @@ public class SettingsView extends BorderPane {
         soundLabel = new Text("Sound");
         volumeLabel = new Text("Volume");
 
+
     }
 
     public void layoutNodes(){
 
         titel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
+        titel.setTranslateY(25);
         soundLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         volumeLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
-
+        Region spacer = new Region();
+        spacer.setMinWidth(returnButton.getMinWidth());
         // returnButton
         returnButton.setFont(resourceManager.getFont(Fonts.PRESSSTART2BUTTONSTYLE));
-        setTop(returnButton);
-        setAlignment(returnButton, Pos.TOP_LEFT);
-        setMargin(returnButton, new Insets(15,0,0,400));
+        HBox top = new HBox(spacer,titel, returnButton);
+        setTop(top);
+        setAlignment(top, Pos.TOP_CENTER);
+        setMargin(top, new Insets(30,0,0,220));
 
         // sliders
         volume.setMaxSize(300,0);
@@ -70,7 +75,7 @@ public class SettingsView extends BorderPane {
         volumeBox.setAlignment(Pos.CENTER);
         soundBox.setAlignment(Pos.CENTER);
 
-        VBox sliders = new VBox(60,titel, volumeBox, soundBox);
+        VBox sliders = new VBox(60, volumeBox, soundBox);
         setCenter(sliders);
         sliders.setAlignment(Pos.TOP_CENTER);
         setMargin(sliders,new Insets(10,0,0,0));
@@ -94,8 +99,8 @@ public class SettingsView extends BorderPane {
         );
 
         setBackground(new Background(backgroundImage));
-        this.setMaxSize(600,400);
-        this.setMinSize(600,400);
+        this.setMaxSize(600,340);
+        this.setMinSize(600,340);
     }
 
     public TextButton getReturnButton() {
