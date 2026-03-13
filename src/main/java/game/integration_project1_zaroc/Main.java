@@ -23,7 +23,7 @@ public class Main extends Application {
         new GameSetupPresenter(view,new AppController());
         Scene scene = new Scene(view);
         stage.setScene(scene);
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
         stage.show();
 
