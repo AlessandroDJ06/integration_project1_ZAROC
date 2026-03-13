@@ -53,8 +53,7 @@ public class BoardComponent extends StackPane {
         //voeg peg locaties toe
         for (int row = 0; row < 4; row++) {
             for (int column = 0; column < 10; column++) {
-                boolean shouldAdd = (row < 2 && column % 2 != 0 && column != 9)
-                        || (row >= 2 && column % 2 == 0);
+                boolean shouldAdd = (row < 2 && column % 2 != 0 && column != 9) || (row >= 2 && column % 2 == 0);
 
                 if (shouldAdd) {
                     Components path;
@@ -91,4 +90,7 @@ public class BoardComponent extends StackPane {
         getChildren().add(board);
     }
 
+    public GridPane getBoard() {
+        return board;
+    }
 }

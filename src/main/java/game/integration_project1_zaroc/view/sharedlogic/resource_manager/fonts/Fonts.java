@@ -1,6 +1,8 @@
 package game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts;
 
 public enum Fonts {
+    PRESSSTART2PTITLE("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",20),
+    PRESSSTART2PSLIDER("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",12),
     PRESSSTART2PLARGE("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",15),
     PRESSSTART2PSMALL("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",10);
 

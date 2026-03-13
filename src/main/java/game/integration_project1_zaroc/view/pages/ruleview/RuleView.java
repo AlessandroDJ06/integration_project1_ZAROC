@@ -1,7 +1,7 @@
 package game.integration_project1_zaroc.view.pages.ruleview;
 
 
-import game.integration_project1_zaroc.view.components.GeneralActionsComponent;
+import game.integration_project1_zaroc.view.components.buttons.GeneralActionsComponent;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
