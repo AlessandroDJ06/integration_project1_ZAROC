@@ -33,7 +33,11 @@ public class Board {
         pegPositions[row][column]=peg;
     }
 
-    public Peg[][] getAllPegPositions() {
+    public Peg[][] getAmountOfRows() {
         return pegPositions;
+    }
+
+    public Peg[] getAmountOfColumns(){
+        return pegPositions[10];
     }
 }
