@@ -17,8 +17,7 @@ public class DaoUtils {
 
     public static Connection createConnection() {
         try {                        //TODO:juiste databank opgeven met paswoord en user
-            Connection connection = DriverManager.getConnection("TODO","sa", "");
-            return connection;
+            return DriverManager.getConnection("TODO","sa", "");
         } catch (SQLException e){
             throw new ZarocDaoException("Cannot create connection with database", e);
         }
