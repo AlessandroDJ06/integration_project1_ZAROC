@@ -1,6 +1,6 @@
 package game.integration_project1_zaroc.dao;
 
-public class ZarocDaoException extends RuntimeException {
+public class ZarocDaoException extends Exception {
     public ZarocDaoException(String message) {
         super(message);
     }

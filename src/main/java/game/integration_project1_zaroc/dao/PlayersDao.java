@@ -6,22 +6,31 @@ import java.sql.SQLException;
 
 public class PlayersDao {
 
-    public void createPlayer(String naam,String email){
-        //gen player_id
-        //playstyle ??
-        //set name
-        //set email
-        //set difficulty human
+    public int createPlayer(String username, String email, String playStyle, String difficulty, String password) throws ZarocDaoException {
 
-        String sql = "CREATE  ";//TODO
+        String sql = "INSERT INTO PLAYERS (username, email, play_style, difficulty, password) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connection = DaoUtils.createConnection();
-             PreparedStatement ps = DaoUtils.createPreparedStatement(connection, sql)) {
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            //set values
-            ps.execute();
+            ps.setString(1, username);
+            ps.setString(2, email);
+            ps.setString(3, playStyle);       //voeg hier voor deze twee miss een onbepaald toe voor nu in de enum
+            ps.setString(4, difficulty);
+            ps.setString(5, password);
+
+            ps.executeUpdate();
+
+
+            try (var rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                throw new ZarocDaoException("Player werd aan de DB toegevoegd maar er werd geen ID teruggegeven");
+            }
+
         } catch (SQLException e) {
-            throw new ZarocDaoException("Oopsie, couldn't create new player",e);
+            throw new ZarocDaoException("Kon geen nieuwe speler maken", e);
         }
     }
 
