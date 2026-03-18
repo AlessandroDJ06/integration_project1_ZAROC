@@ -23,7 +23,7 @@ public class Turn {
 
 
     public void addMove(Move move) {
-        if(move.isLegal(move.getPawn(),move.getDestinationPeg()))
+        if(move.isLegal(move.getStartPeg(),move.getDestinationPeg()))
             moves[move.getMoveNumber().getNumber() - 1] = move;
     }
 

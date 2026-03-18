@@ -41,6 +41,10 @@ public class Peg {
         return pawnCount;
     }
 
+    public Pawn getUpperPawn(){
+        return getPawns().get(getPawnCount()-1);
+    }
+
     public int getXPosition() {
         return xPosition;
     }

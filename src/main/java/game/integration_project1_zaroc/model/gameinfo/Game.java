@@ -52,7 +52,7 @@ public class Game {
         Turn currentTurn = getCurrentTurn();
         MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
 
-        Move newMove = new Move(moveNumber, pawn, destinationPeg);
+        Move newMove = new Move(moveNumber, pawn.getCurrentPeg(), destinationPeg);
         currentTurn.addMove(newMove);
 
         Peg startPeg = pawn.getCurrentPeg();
@@ -66,12 +66,13 @@ public class Game {
 
 
     public void undoMove(Move move) {
-        Pawn pawn = move.getPawn();
         Peg startPeg = move.getStartPeg();
         Peg destPeg = move.getDestinationPeg();
 
-        destPeg.removePawnFromPeg(pawn);
-        startPeg.addPawnToPeg(pawn);
+        Pawn upperPawn = startPeg.getUpperPawn();
+
+        destPeg.removePawnFromPeg(upperPawn);
+        startPeg.addPawnToPeg(upperPawn);
 
         Turn currentTurn = getCurrentTurn();
 
@@ -79,7 +80,7 @@ public class Game {
 
     }
 
-    public List<Move> getLegalMoves(Pawn pawn) {
+    public List<Move> getLegalMoves(Peg startPeg) {
         List<Move> legalMoves = new ArrayList<>();
         Turn currentTurn = getCurrentTurn();
         MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
@@ -91,9 +92,9 @@ public class Game {
 
                 Peg destPeg = allPegs[row][column];
 
-                if (Move.isLegal(pawn,destPeg)) {
+                if (Move.isLegal(startPeg,destPeg)) {
 
-                    Move legalMove = new Move(moveNumber, pawn, destPeg);
+                    Move legalMove = new Move(moveNumber,startPeg, destPeg);
 
                     legalMoves.add(legalMove);
                 }
