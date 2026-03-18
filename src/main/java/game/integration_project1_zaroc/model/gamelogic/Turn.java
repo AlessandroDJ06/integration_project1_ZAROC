@@ -4,19 +4,20 @@ import game.integration_project1_zaroc.model.gameinfo.Game;
 
 import game.integration_project1_zaroc.model.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Turn {
     private Player currentPlayer;
     private static int turnNumber = 0;
     private Move[] moves;
-    private Game game;
 
 
-    public Turn(Player currentPlayer, Game game) {
+    public Turn(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
         moves = new Move[2];
         turnNumber++;
-        this.game = game;
 
     }
 
@@ -26,14 +27,8 @@ public class Turn {
             moves[move.getMoveNumber().getNumber() - 1] = move;
     }
 
-    public void undoMove(Move move) {
-        int index = move.getMoveNumber().getNumber() - 1;
-
-        moves[index].getPawn().setCurrentPeg(move.getStartPeg());
-        moves[index]=null;
-        if(index==0){
-            game.switchCurrentPlayer();
-        }
+    public void removeMove(Move move){
+        moves[move.getMoveNumber().getNumber() - 1]=null;
     }
 
 
@@ -60,9 +55,6 @@ public class Turn {
         this.currentPlayer = currentPlayer;
     }
 
-    public Game getGame() {
-        return game;
-    }
     /* public LocalDateTime getMoveDuration(Move firstMove, Move secondMove) {
 
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());

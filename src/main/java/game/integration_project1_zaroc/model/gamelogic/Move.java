@@ -12,13 +12,12 @@ public class Move {
     private Peg startPeg;
     private Peg destinationPeg;
     private Pawn pawn;
-    private Turn turn;
 
-    public Move(MoveNumber moveNumber, Pawn pawn, Peg destinationPeg, Turn turn) {
+
+    public Move(MoveNumber moveNumber, Pawn pawn, Peg destinationPeg) {
 
         this.moveNumber = moveNumber;
         this.pawn = pawn;
-        this.turn = turn;
         timestamp = LocalDateTime.now();
         if(isLegal(pawn, destinationPeg)) {
                 this.startPeg = pawn.getCurrentPeg();
@@ -30,7 +29,11 @@ public class Move {
 
     }
 
-    public boolean isLegal(Pawn pawn, Peg destinationPeg) {
+    public static boolean isLegal(Pawn pawn, Peg destinationPeg) {
+
+        if (destinationPeg.isFull()) {
+            return false;
+        }
 
         int xStart = pawn.getCurrentPeg().getXPosition();
         int yStart = pawn.getCurrentPeg().getYPosition();
@@ -38,14 +41,16 @@ public class Move {
         int xDest = destinationPeg.getXPosition();
         int yDest = destinationPeg.getYPosition();
 
-        boolean xLegal = xDest == xStart + 2;
+
+        boolean xLegal = yDest == yStart && (xDest == xStart + 2 || xDest == xStart -2);
         boolean yLegal = yDest == yStart + 1;
+
         // derde rij
         if (yDest == 2) {
             boolean diagonalCheck = (yLegal && (xDest == xStart + 1 || xDest == xStart - 1)) || xLegal;
             return diagonalCheck;
         } else {
-            return xLegal || yLegal;
+            return xLegal || (yLegal && xDest == xStart);
         }
     }
     public MoveNumber getMoveNumber() {

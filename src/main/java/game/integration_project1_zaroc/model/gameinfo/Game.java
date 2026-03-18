@@ -1,10 +1,15 @@
 package game.integration_project1_zaroc.model.gameinfo;
 
 import game.integration_project1_zaroc.model.boardinfo.Board;
+import game.integration_project1_zaroc.model.boardinfo.Pawn;
+import game.integration_project1_zaroc.model.boardinfo.Peg;
+import game.integration_project1_zaroc.model.gamelogic.Move;
+import game.integration_project1_zaroc.model.gamelogic.MoveNumber;
 import game.integration_project1_zaroc.model.gamelogic.Turn;
 import game.integration_project1_zaroc.model.players.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
     private GameStatus status;
@@ -32,8 +37,93 @@ public class Game {
             }
         }
     }
+
     public void startNewTurn(Player player){
-        Turn turn = new Turn(player,this);
+        Turn turn = new Turn(player);
+        turns.add(turn);
+    }
+
+    public Turn getCurrentTurn(){
+        if(turns.isEmpty()) return null;
+        return turns.get(turns.size()-1);
+    }
+
+    public void executeMove(Pawn pawn, Peg destinationPeg) {
+        Turn currentTurn = getCurrentTurn();
+        MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
+
+        Move newMove = new Move(moveNumber, pawn, destinationPeg);
+        currentTurn.addMove(newMove);
+
+        Peg startPeg = pawn.getCurrentPeg();
+        startPeg.removePawnFromPeg(pawn);
+        destinationPeg.addPawnToPeg(pawn);
+
+        if (moveNumber == MoveNumber.SECOND_MOVE) {
+            switchCurrentPlayer();
+        }
+    }
+
+
+    public void undoMove(Move move) {
+        Pawn pawn = move.getPawn();
+        Peg startPeg = move.getStartPeg();
+        Peg destPeg = move.getDestinationPeg();
+
+        destPeg.removePawnFromPeg(pawn);
+        startPeg.addPawnToPeg(pawn);
+
+        Turn currentTurn = getCurrentTurn();
+
+        currentTurn.removeMove(move);
+
+    }
+
+    public List<Move> getLegalMoves(Pawn pawn) {
+        List<Move> legalMoves = new ArrayList<>();
+        Turn currentTurn = getCurrentTurn();
+        MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
+
+        Peg[][] allPegs = board.getAllPegs();
+
+        for (int row = 0; row < allPegs.length; row++) {
+            for (int column = 0; column < allPegs[row].length; column++) {
+
+                Peg destPeg = allPegs[row][column];
+
+                if (Move.isLegal(pawn,destPeg)) {
+
+                    Move legalMove = new Move(moveNumber, pawn, destPeg);
+
+                    legalMoves.add(legalMove);
+                }
+            }
+        }
+        return legalMoves;
+    }
+
+
+    public Game GameCopy() {
+        Game gameCopy = new Game(this.getParticipation1(), this.getParticipation2());
+        gameCopy.setStatus(this.getStatus());
+
+        Board oldBoard = this.board;
+        Board newBoard = gameCopy.board;
+
+        for (int row = 0; row < oldBoard.getAmountOfRows(); row++) {
+            for (int column = 0; column < oldBoard.getAmountOfColumns(); column++) {
+
+                Peg oldPeg = oldBoard.getPegPosition(row, column);
+                Peg newPeg = newBoard.getPegPosition(row, column);
+
+                for (Pawn oldPawn : oldPeg.getPawns()) {
+                        Pawn newPawn = new Pawn(newPeg);
+                        newPeg.addPawnToPeg(newPawn);
+                }
+            }
+        }
+
+        return gameCopy;
     }
 
     public GameStatus getStatus() {
@@ -44,10 +134,6 @@ public class Game {
         this.status = status;
     }
 
-
-    public Board getBoard() {
-        return board;
-    }
 
     public void setBoard(Board board) {
         this.board = board;

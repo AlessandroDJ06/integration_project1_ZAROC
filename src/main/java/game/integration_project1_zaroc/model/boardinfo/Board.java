@@ -37,6 +37,10 @@ public class Board {
         return pegPositions.length;
     }
 
+    public Peg[][] getAllPegs() {
+        return pegPositions;
+    }
+
     public int getAmountOfColumns(){
         return pegPositions[10].length;
     }

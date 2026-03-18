@@ -11,6 +11,7 @@ public class Peg {
     private LayerLevel layerLevel;
     private MaxCapacity maxCapacity;
     private ArrayList<Pawn> pawns;
+    private int pawnCount = 0;
 
     public Peg(int xPosition, int yPosition) {
         this.xPosition = xPosition;
@@ -20,15 +21,24 @@ public class Peg {
         pawns = new ArrayList<>();
     }
 
-    public void addPawnToPeg(Pawn pawn, Peg currentPeg) {
+    public void addPawnToPeg(Pawn pawn) {
         if (!isFull()) {
-            pawn.setCurrentPeg(currentPeg);
+            pawn.setCurrentPeg(this);
             pawns.add(pawn);
+            pawnCount++;
         }
     }
-    public void removePawnFromPeg(Pawn pawn, Peg currentPeg){
-        pawn.setCurrentPeg(null);
+    public void removePawnFromPeg(Pawn pawn){
         pawns.remove(pawn);
+        pawnCount--;
+    }
+
+    public ArrayList<Pawn> getPawns() {
+        return pawns;
+    }
+
+    public int getPawnCount() {
+        return pawnCount;
     }
 
     public int getXPosition() {
@@ -63,7 +73,7 @@ public class Peg {
         this.maxCapacity = maxCapacity;
     }
 
-    public boolean isFull(){
-        return maxCapacity == MaxCapacity.values()[layerLevel.ordinal()];
+    public boolean isFull() {
+        return this.pawnCount >= this.maxCapacity.getMaxCapacityNumber();
     }
 }
