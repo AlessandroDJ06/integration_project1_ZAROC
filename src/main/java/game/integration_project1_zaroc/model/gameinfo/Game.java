@@ -39,7 +39,7 @@ public class Game {
     }
 
     public void startNewTurn(Player player){
-        Turn turn = new Turn(player,this);
+        Turn turn = new Turn(player);
         turns.add(turn);
     }
 
@@ -71,12 +71,11 @@ public class Game {
         Peg destPeg = move.getDestinationPeg();
 
         destPeg.removePawnFromPeg(pawn);
-
         startPeg.addPawnToPeg(pawn);
 
-        if (move.getMoveNumber() == MoveNumber.SECOND_MOVE) {
-            switchCurrentPlayer();
-        }
+        Turn currentTurn = getCurrentTurn();
+
+        currentTurn.removeMove(move);
 
     }
 

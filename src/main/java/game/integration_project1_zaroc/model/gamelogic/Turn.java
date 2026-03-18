@@ -12,14 +12,12 @@ public class Turn {
     private Player currentPlayer;
     private static int turnNumber = 0;
     private Move[] moves;
-    private Game game;
 
 
-    public Turn(Player currentPlayer, Game game) {
+    public Turn(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
         moves = new Move[2];
         turnNumber++;
-        this.game = game;
 
     }
 
@@ -27,6 +25,10 @@ public class Turn {
     public void addMove(Move move) {
         if(move.isLegal(move.getPawn(),move.getDestinationPeg()))
             moves[move.getMoveNumber().getNumber() - 1] = move;
+    }
+
+    public void removeMove(Move move){
+        moves[move.getMoveNumber().getNumber() - 1]=null;
     }
 
 
@@ -53,9 +55,6 @@ public class Turn {
         this.currentPlayer = currentPlayer;
     }
 
-    public Game getGame() {
-        return game;
-    }
     /* public LocalDateTime getMoveDuration(Move firstMove, Move secondMove) {
 
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());
