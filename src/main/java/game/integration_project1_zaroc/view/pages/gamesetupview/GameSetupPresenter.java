@@ -7,6 +7,8 @@ import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerMode
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
+import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPresenter;
+import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
@@ -162,6 +164,20 @@ public class GameSetupPresenter {
             settingsStage.setResizable(false);
             settingsStage.showAndWait();
 
+        });
+
+        view.getLeaderBoardButton().setOnAction(event -> {
+            LeaderboardView leaderboardView = new LeaderboardView(this.view.getResourceManager());
+            Scene leaderboardScene = new Scene(leaderboardView);
+            leaderboardScene.setFill(Color.TRANSPARENT);
+            Stage leaderboardStage = new Stage();
+            leaderboardStage.setScene(leaderboardScene);
+            leaderboardStage.setTitle("Settings");
+            leaderboardStage.initStyle(StageStyle.TRANSPARENT);
+            leaderboardStage.initModality(Modality.APPLICATION_MODAL);
+            leaderboardStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            leaderboardStage.setResizable(false);
+            leaderboardStage.showAndWait();
         });
 
     }
