@@ -48,16 +48,18 @@ public class Game {
         return turns.get(turns.size()-1);
     }
 
-    public void executeMove(Pawn pawn, Peg destinationPeg) {
+    public void executeMove(Peg startPeg, Peg destinationPeg) {
         Turn currentTurn = getCurrentTurn();
         MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
 
-        Move newMove = new Move(moveNumber, pawn.getCurrentPeg(), destinationPeg);
+        Move newMove = new Move(moveNumber, startPeg, destinationPeg);
         currentTurn.addMove(newMove);
 
-        Peg startPeg = pawn.getCurrentPeg();
-        startPeg.removePawnFromPeg(pawn);
-        destinationPeg.addPawnToPeg(pawn);
+        Pawn upperPawn = startPeg.getUpperPawn();
+
+        startPeg.removePawnFromPeg(upperPawn);
+        destinationPeg.addPawnToPeg(upperPawn);
+        upperPawn.setCurrentPeg(destinationPeg);
 
         if (moveNumber == MoveNumber.SECOND_MOVE) {
             switchCurrentPlayer();
