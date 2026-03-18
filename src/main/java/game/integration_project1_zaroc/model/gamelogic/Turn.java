@@ -4,6 +4,9 @@ import game.integration_project1_zaroc.model.gameinfo.Game;
 
 import game.integration_project1_zaroc.model.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Turn {
     private Player currentPlayer;
@@ -24,16 +27,6 @@ public class Turn {
     public void addMove(Move move) {
         if(move.isLegal(move.getPawn(),move.getDestinationPeg()))
             moves[move.getMoveNumber().getNumber() - 1] = move;
-    }
-
-    public void undoMove(Move move) {
-        int index = move.getMoveNumber().getNumber() - 1;
-
-        moves[index].getPawn().setCurrentPeg(move.getStartPeg());
-        moves[index]=null;
-        if(index==0){
-            game.switchCurrentPlayer();
-        }
     }
 
 
