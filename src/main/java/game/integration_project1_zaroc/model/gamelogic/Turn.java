@@ -1,11 +1,6 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
-import game.integration_project1_zaroc.model.gameinfo.Game;
-
 import game.integration_project1_zaroc.model.players.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Turn {

@@ -1,6 +1,6 @@
 package game.integration_project1_zaroc.model;
 
-import game.integration_project1_zaroc.model.gameinfo.Game;
+import game.integration_project1_zaroc.model.gamelogic.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.HumanPlayer;

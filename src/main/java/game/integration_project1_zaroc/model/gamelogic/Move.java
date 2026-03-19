@@ -41,7 +41,7 @@ public class Move {
 
 
         boolean xLegal = yDest == yStart && (xDest == xStart + 2 || xDest == xStart -2);
-        boolean yLegal = yDest == yStart + 1;
+        boolean yLegal = yDest == yStart + 1 && startPeg.isFull();
 
         // derde rij
         if (yDest == 2) {
