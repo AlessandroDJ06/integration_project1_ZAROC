@@ -15,7 +15,7 @@ public class Game {
     private GameStatus status;
     private GameParticipation[] gameParticipations;
     private ArrayList<Turn> turns;
-
+    private Move lastMove;
     private Board board;
 
 
@@ -24,6 +24,7 @@ public class Game {
         board = new Board(gameParticipation1.getPawnColor(),gameParticipation2.getPawnColor());
         turns = new ArrayList<>();
         gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
+        this.lastMove = null;
     }
 
     public void switchCurrentPlayer() {
@@ -50,7 +51,11 @@ public class Game {
     }
 
     public void executeMove(Peg startPeg, Peg destinationPeg) {
-        if (status == GameStatus.PLAYING){
+        if (status == GameStatus.PLAYING) {
+            if (isUndoMove(startPeg, destinationPeg)) {
+                return;
+            }
+
             Turn currentTurn = getCurrentTurn();
             MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
 
@@ -58,7 +63,6 @@ public class Game {
             currentTurn.addMove(newMove);
 
             Pawn upperPawn = startPeg.getUpperPawn();
-
             startPeg.removePawnFromPeg(upperPawn);
             destinationPeg.addPawnToPeg(upperPawn);
             upperPawn.setCurrentPeg(destinationPeg);
@@ -68,9 +72,17 @@ public class Game {
             }
 
             checkWinCondition();
+            this.lastMove = newMove;
         }
+    }
 
+    private boolean isUndoMove(Peg start, Peg dest) {
+        if (lastMove == null) return false;
 
+        return start.getXPosition() == lastMove.getDestinationPeg().getXPosition() &&
+                start.getYPosition() == lastMove.getDestinationPeg().getYPosition() &&
+                dest.getXPosition() == lastMove.getStartPeg().getXPosition() &&
+                dest.getYPosition() == lastMove.getStartPeg().getYPosition();
     }
 
 
@@ -98,17 +110,12 @@ public class Game {
 
         for (int row = 0; row < allPegs.length; row++) {
             for (int column = 0; column < allPegs[row].length; column++) {
-                if (allPegs[row][column] != null){
-                    Peg destPeg = allPegs[row][column];
-
-                    if (Move.isLegal(startPeg,destPeg)) {
-
-                        Move legalMove = new Move(moveNumber,startPeg, destPeg);
-
-                        legalMoves.add(legalMove);
+                Peg destPeg = allPegs[row][column];
+                if (destPeg != null && Move.isLegal(startPeg, destPeg)) {
+                    if (!isUndoMove(startPeg, destPeg)) {
+                        legalMoves.add(new Move(moveNumber, startPeg, destPeg));
                     }
                 }
-
             }
         }
         return legalMoves;
@@ -149,10 +156,10 @@ public class Game {
 
 
     public Game gameCopy() {
-        // Maak de nieuwe game aan
         Game copy = new Game(this.getParticipation1(), this.getParticipation2());
         copy.setStatus(this.getStatus());
         copy.setBoard(this.board.boardCopy());
+        copy.lastMove = this.lastMove;
 
         ArrayList<Turn> turnsCopy = new ArrayList<>();
         for (Turn originalTurn : this.turns) {
@@ -164,11 +171,9 @@ public class Game {
             if (originalTurn.getSecondMove() != null) {
                 newTurn.addMove(originalTurn.getSecondMove());
             }
-
             turnsCopy.add(newTurn);
         }
         copy.setTurns(turnsCopy);
-
         return copy;
     }
 
