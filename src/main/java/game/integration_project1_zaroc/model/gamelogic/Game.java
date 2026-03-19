@@ -124,30 +124,24 @@ public class Game {
         }
     }
 
-    public void checkWinCondition(){
-        List<PawnColor> finishRowColors = new ArrayList<>();
+    public void checkWinCondition() {
         int countColor1 = 0;
         int countColor2 = 0;
-        for (int i = 0 ; i < board.getAmountOfColumns() ; i++){
-            if (board.getPegPosition(3,i) != null){
-                if (board.getPegPosition(3,i).getPawns().getFirst() != null){
-                    finishRowColors.add( board.getPegPosition(3,i).getPawns().getFirst().getPawnColor());
-                }
+
+        for (int i = 0; i < board.getAmountOfColumns(); i++) {
+            Peg finishPeg = board.getPegPosition(3, i);
+
+            if (finishPeg != null && !finishPeg.getPawns().isEmpty()) {
+                PawnColor color = finishPeg.getPawns().getFirst().getPawnColor();
+                if (color == gameParticipations[0].getPawnColor()) countColor1++;
+                else if (color == gameParticipations[1].getPawnColor()) countColor2++;
             }
         }
 
-        for (PawnColor color : finishRowColors){
-            if (color == gameParticipations[0].getPawnColor()){
-                countColor1++;
-            } else {
-                countColor2++;
-            }
-        }
-
-        if (countColor1 == 3){
+        if (countColor1 >= 3) {
             gameParticipations[0].setWinner(true);
             setStatus(GameStatus.ENDED);
-        } else if (countColor2 == 3) {
+        } else if (countColor2 >= 3) {
             gameParticipations[1].setWinner(true);
             setStatus(GameStatus.ENDED);
         }
@@ -155,11 +149,31 @@ public class Game {
 
 
     public Game gameCopy() {
-        Game gameCopy = new Game(this.getParticipation1(), this.getParticipation2());
-        gameCopy.setStatus(this.getStatus());
-        gameCopy.setBoard(board.boardCopy());
+        // Maak de nieuwe game aan
+        Game copy = new Game(this.getParticipation1(), this.getParticipation2());
+        copy.setStatus(this.getStatus());
+        copy.setBoard(this.board.boardCopy());
 
-        return gameCopy;
+        ArrayList<Turn> turnsCopy = new ArrayList<>();
+        for (Turn originalTurn : this.turns) {
+            Turn newTurn = new Turn(originalTurn.getCurrentPlayer());
+            newTurn.setTurnNumber(originalTurn.getTurnNumber());
+            if (originalTurn.getFirstMove() != null) {
+                newTurn.addMove(originalTurn.getFirstMove());
+            }
+            if (originalTurn.getSecondMove() != null) {
+                newTurn.addMove(originalTurn.getSecondMove());
+            }
+
+            turnsCopy.add(newTurn);
+        }
+        copy.setTurns(turnsCopy);
+
+        return copy;
+    }
+
+    public void setTurns(ArrayList<Turn> turns) {
+        this.turns = turns;
     }
 
     public GameStatus getStatus() {

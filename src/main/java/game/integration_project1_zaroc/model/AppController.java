@@ -3,6 +3,8 @@ package game.integration_project1_zaroc.model;
 import game.integration_project1_zaroc.model.gamelogic.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
+import game.integration_project1_zaroc.model.players.AIPlayer;
+import game.integration_project1_zaroc.model.players.Difficulty;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.model.selectionslider.DifficultyPickerModel;
@@ -24,8 +26,10 @@ public class AppController {
     private Game game;
 
     public AppController(){
+        this.difficultyPicker = new DifficultyPickerModel();
+
         player1 = new HumanPlayer("Alessandro","test@gmail.com");
-        player2 = new HumanPlayer("jonas","test@gmail.com");
+        player2 = new AIPlayer(Difficulty.values()[difficultyPicker.getCurrentIndex()],"jonas");
 
         this.colorOne = new PawnColorPickerModel(PawnColor.BLACK);
         this.colorTwo = new PawnColorPickerModel(PawnColor.WHITE);
@@ -36,7 +40,7 @@ public class AppController {
         setPlayer1Color();
         setPlayer2Color();
 
-        this.difficultyPicker = new DifficultyPickerModel();
+
         this.startingPlayerSelector = new StartingPlayerSelector();
         this.startingPlayerSelector.setPlayer1(player1);
         this.startingPlayerSelector.setPlayer2(player2);

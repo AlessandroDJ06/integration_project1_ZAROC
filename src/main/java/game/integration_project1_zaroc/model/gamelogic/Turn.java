@@ -5,7 +5,7 @@ import game.integration_project1_zaroc.model.players.Player;
 
 public class Turn {
     private Player currentPlayer;
-    private int turnNumber = 0;
+    private int turnNumber;
     private Move[] moves;
 
 
@@ -29,8 +29,8 @@ public class Turn {
         this.turnNumber = turnNumber;
     }
 
-    public static int getTurnNumber() {
-        return turnNumber;
+    public int getTurnNumber() {
+        return this.turnNumber;
     }
 
     /*public Move[] getMoves() {

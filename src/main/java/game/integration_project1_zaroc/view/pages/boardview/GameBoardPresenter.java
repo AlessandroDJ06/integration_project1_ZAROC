@@ -3,7 +3,10 @@ package game.integration_project1_zaroc.view.pages.boardview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
+import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.gamelogic.Move;
+import game.integration_project1_zaroc.model.players.AIPlayer;
+import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
@@ -123,6 +126,55 @@ public class GameBoardPresenter {
 
             });
         }
+    }
+
+    private void processTurn() {
+        updateView(); // Ververs eerst de UI (animaties, labels)
+
+        // Check of het spel voorbij is
+        if (model.getGame().getStatus() == GameStatus.ENDED) {
+            System.out.println("Winnaar: " + model.getGame().getWinner().getUsername());
+            return;
+        }
+
+        // Wie is er nu aan de beurt?
+        Player currentPlayer = model.getGame().getCurrentTurn().getCurrentPlayer();
+
+        if (currentPlayer instanceof AIPlayer) {
+            // Blokkeer het bord zodat de mens niet kan klikken terwijl de AI denkt
+            view.getBoard().getBoard().setDisable(true);
+
+            // Start de AI-logica
+            executeAiLogic((game.integration_project1_zaroc.model.players.AIPlayer) currentPlayer);
+        } else {
+            // Het is een mens: zet het bord weer open
+            view.getBoard().getBoard().setDisable(false);
+        }
+    }
+
+    private void executeAiLogic(AIPlayer ai) {
+        Thread aiThread = new Thread(() -> {
+            // De AI kiest zijn zet (dit roept het AiModel aan)
+            Move bestMove = ai.decideMove(model.getGame());
+
+            javafx.application.Platform.runLater(() -> {
+                if (bestMove != null) {
+                    // Haal de pinnen uit het echte model via de coördinaten van de AI-move
+                    Peg start = model.getGame().getBoard().getPegPosition(
+                            bestMove.getStartPeg().getYPosition(),
+                            bestMove.getStartPeg().getXPosition()
+                    );
+                    Peg dest = model.getGame().getBoard().getPegPosition(
+                            bestMove.getDestinationPeg().getYPosition(),
+                            bestMove.getDestinationPeg().getXPosition()
+                    );
+                    model.getGame().executeMove(start, dest);
+                    processTurn();
+                }
+            });
+        });
+        aiThread.setDaemon(true);
+        aiThread.start();
     }
 
     private void updateView(){
@@ -282,7 +334,7 @@ public class GameBoardPresenter {
 
             selectedPawn = null;
             clearHighlights();
-            updateView();
+            processTurn();
         }
     }
 

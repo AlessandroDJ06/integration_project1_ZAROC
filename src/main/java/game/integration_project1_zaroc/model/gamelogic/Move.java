@@ -17,17 +17,15 @@ public class Move {
 
         this.moveNumber = moveNumber;
         timestamp = LocalDateTime.now();
-        if(isLegal(startPeg, destinationPeg)) {
-                this.startPeg = startPeg;
-                this.destinationPeg = destinationPeg;
-        }
-        else{
-            throw new IllegalArgumentException("This move is not legal!");
-        }
+        this.startPeg = startPeg;
+        this.destinationPeg = destinationPeg;
 
     }
 
     public static boolean isLegal(Peg startPeg, Peg destinationPeg) {
+        if (startPeg == null || destinationPeg == null) {
+            return false;
+        }
         if (destinationPeg.isFull()) return false;
 
         int xStart = startPeg.getXPosition();
