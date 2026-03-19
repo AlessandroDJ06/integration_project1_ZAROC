@@ -5,15 +5,14 @@ import game.integration_project1_zaroc.model.players.Player;
 
 public class Turn {
     private Player currentPlayer;
-    private static int turnNumber = 0;
+    private int turnNumber;
     private Move[] moves;
 
 
     public Turn(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
         moves = new Move[2];
-        turnNumber++;
-
+        turnNumber = 0;
     }
 
 
@@ -26,9 +25,12 @@ public class Turn {
         moves[move.getMoveNumber().getNumber() - 1]=null;
     }
 
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
+    }
 
-    public static int getTurnNumber() {
-        return turnNumber;
+    public int getTurnNumber() {
+        return this.turnNumber;
     }
 
     /*public Move[] getMoves() {
@@ -54,6 +56,23 @@ public class Turn {
 
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());
     }*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Turn turn = (Turn) o;
+
+        boolean firstMatch = java.util.Objects.equals(((Turn) o).getFirstMove(), this.getFirstMove());
+        boolean secondMatch = java.util.Objects.equals(((Turn) o).getSecondMove(), this.getSecondMove());
+
+        return firstMatch && secondMatch;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getFirstMove(),getSecondMove());
+    }
 }
 
 

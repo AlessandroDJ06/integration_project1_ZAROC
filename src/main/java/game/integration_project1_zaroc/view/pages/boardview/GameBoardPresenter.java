@@ -3,7 +3,11 @@ package game.integration_project1_zaroc.view.pages.boardview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
+import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.gamelogic.Move;
+import game.integration_project1_zaroc.model.gamelogic.Turn;
+import game.integration_project1_zaroc.model.players.AIPlayer;
+import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
@@ -125,6 +129,9 @@ public class GameBoardPresenter {
         }
     }
 
+    //----------------------------------------------------------------------------------------------
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~UPDATE METHODS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //----------------------------------------------------------------------------------------------
     private void updateView(){
         if (model.getGame() != null){
             view.getPlayersPlayingComponent().setFirstPlayer(
@@ -153,6 +160,7 @@ public class GameBoardPresenter {
         }
         renderBoard();
     }
+
     private void renderBoard() {
         Peg[][] allPegs = model.getGame().getBoard().getAllPegs();
 
@@ -197,7 +205,7 @@ public class GameBoardPresenter {
                     for (Pawn logicPawn : logicPawns) {
                         PawnSideViews sideColor = PawnSideViews.values()[logicPawn.getPawnColor().ordinal()];
                         ImageView sideImg = new ImageView(view.getResourceManager().getPawnSideView(sideColor));
-                        currentContainer.getChildren().add(0, sideImg);
+                        currentContainer.getChildren().addFirst(sideImg);
                     }
                     currentContainerIdx++;
                 }
@@ -205,45 +213,71 @@ public class GameBoardPresenter {
         }
     }
 
-    private void clearHighlights() {
-        if (highlightAnimation != null) {
-            highlightAnimation.stop();
+    //----------------------------------------------------------------------------------------------
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CURRENT PLAYER HANDLE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //----------------------------------------------------------------------------------------------
+    private void processTurn() {
+        updateView();
+        if (model.getGame().getStatus() == GameStatus.ENDED) {
+            System.out.println("Winnaar: " + model.getGame().getWinner().getUsername());
+            return;
         }
+        Player currentPlayer = model.getGame().getCurrentTurn().getCurrentPlayer();
 
-        for (Node node : view.getBoard().getBoard().getChildren()) {
-            node.setOpacity(1.0);
-            node.opacityProperty().unbind();
+        if (currentPlayer instanceof AIPlayer) {
+            view.getBoard().getBoard().setDisable(true);
+            executeAiLogic((game.integration_project1_zaroc.model.players.AIPlayer) currentPlayer);
+        } else {
+            view.getBoard().getBoard().setDisable(false);
         }
     }
 
 
-    private void highLightLegalMoves() {
-        clearHighlights();
+    //----------------------------------------------------------------------------------------------
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HANDLE   AI    MOVE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //----------------------------------------------------------------------------------------------
+    private void executeAiLogic(AIPlayer ai) {
+        Thread aiThread = new Thread(() -> {
+            Turn bestTurn = ai.decideTurn(model.getGame());
 
-        if (selectedPawn != null) {
-            selectedPawn.setOpacity(0.75);
+            javafx.application.Platform.runLater(() -> {
+                if (bestTurn != null) {
+                    executeSingleMove(bestTurn.getFirstMove());
+                    updateView();
 
-            int x = GridPane.getColumnIndex(selectedPawn);
-            int y = GridPane.getRowIndex(selectedPawn);
-            Peg start = model.getGame().getBoard().getAllPegs()[y][x];
-            List<Move> legalMoves = model.getGame().getLegalMoves(start);
-
-            List<Node> targets = new ArrayList<>();
-            for (Move move : legalMoves) {
-                int xDest = move.getDestinationPeg().getXPosition();
-                int yDest = move.getDestinationPeg().getYPosition();
-                for (Node node : view.getBoard().getBoard().getChildren()) {
-                    if (isInPosition(node, xDest, yDest)) {
-                        targets.add(node);
+                    if (bestTurn.getSecondMove() != null) {
+                        javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(800));
+                        pause.setOnFinished(event -> {
+                            executeSingleMove(bestTurn.getSecondMove());
+                            processTurn();
+                        });
+                        pause.play();
+                    } else {
+                        processTurn();
                     }
                 }
-            }
-            if (!targets.isEmpty()) {
-                startHighlightAnimation(targets);
-            }
-        }
+            });
+        });
+        aiThread.setDaemon(true);
+        aiThread.start();
     }
 
+    private void executeSingleMove(Move m) {
+        if (m == null) return;
+        Peg start = model.getGame().getBoard().getPegPosition(m.getStartPeg().getYPosition(), m.getStartPeg().getXPosition());
+        Peg dest = model.getGame().getBoard().getPegPosition(m.getDestinationPeg().getYPosition(), m.getDestinationPeg().getXPosition());
+
+        if (start != null && dest != null && !start.getPawns().isEmpty()) {
+            model.getGame().executeMove(start, dest);
+            System.out.println("Pion geselecteerd op positie: " + m.getStartPeg().getXPosition() + m.getStartPeg().getYPosition());
+            System.out.println(model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
+        }
+
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HANDLE HUMAN MOVE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //----------------------------------------------------------------------------------------------
     private void handlePegClick(int col, int row) {
         if (selectedPawn == null) {
             ImageView bovensteImg = getTopPawn(col, row);
@@ -282,7 +316,7 @@ public class GameBoardPresenter {
 
             selectedPawn = null;
             clearHighlights();
-            updateView();
+            processTurn();
         }
     }
 
@@ -297,12 +331,57 @@ public class GameBoardPresenter {
     }
 
     private boolean isInPosition(Node node, int col, int row) {
-        Integer c = GridPane.getColumnIndex(node);
-        Integer r = GridPane.getRowIndex(node);
-        return c != null && r != null && c == col && r == row;
+        Integer columnPos = GridPane.getColumnIndex(node);
+        Integer rowPos = GridPane.getRowIndex(node);
+        return columnPos != null && rowPos != null && columnPos == col && rowPos == row;
 
     }
 
+    //----------------------------------------------------------------------------------------------
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HIGH LIGHT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //----------------------------------------------------------------------------------------------
+
+    private void highLightLegalMoves() {
+        clearHighlights();
+
+        if (selectedPawn != null) {
+            selectedPawn.setOpacity(0.75);
+
+            int x = GridPane.getColumnIndex(selectedPawn);
+            int y = GridPane.getRowIndex(selectedPawn);
+            Peg start = model.getGame().getBoard().getAllPegs()[y][x];
+            List<Move> legalMoves = model.getGame().getLegalMoves(start);
+
+            List<Node> targets = new ArrayList<>();
+            for (Move move : legalMoves) {
+                int xDest = move.getDestinationPeg().getXPosition();
+                int yDest = move.getDestinationPeg().getYPosition();
+                for (Node node : view.getBoard().getBoard().getChildren()) {
+                    if (isInPosition(node, xDest, yDest)) {
+                        targets.add(node);
+                    }
+                }
+            }
+            if (!targets.isEmpty()) {
+                startHighlightAnimation(targets);
+            }
+        }
+    }
+
+    private void clearHighlights() {
+        if (highlightAnimation != null) {
+            highlightAnimation.stop();
+        }
+
+        for (Node node : view.getBoard().getBoard().getChildren()) {
+            node.setOpacity(1.0);
+            node.opacityProperty().unbind();
+        }
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ANIMATIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //----------------------------------------------------------------------------------------------
     private Timeline createPulseAnimation(Label name) {
         Timeline pulse = new Timeline();
         pulse.setCycleCount(Timeline.INDEFINITE);

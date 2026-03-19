@@ -72,21 +72,25 @@ public class Board {
     }
 
     public int getAmountOfColumns(){
-        return pegPositions[10].length;
+        return pegPositions[0].length;
     }
 
     public Board boardCopy() {
-        Board boardCopy = new Board(this.pawnColorPlayer1,this.pawnColorPlayer2);
+        Board boardCopy = new Board(this.pawnColorPlayer1, this.pawnColorPlayer2);
 
-        for (int row = 0; row < getAmountOfRows(); row++) {
-            for (int column = 0; column < getAmountOfColumns(); column++) {
+        for (int r = 0; r < getAmountOfRows(); r++) {
+            for (int c = 0; c < getAmountOfColumns(); c++) {
+                Peg oldPeg = getPegPosition(r, c);
+                if (oldPeg == null) continue;
 
-                Peg oldPeg = getPegPosition(row, column);
-                Peg newPeg = getPegPosition(row, column);
+                Peg newPeg = boardCopy.getPegPosition(r, c);
 
-                for (Pawn oldPawn : oldPeg.getPawns()) {
-                    Pawn newPawn = new Pawn(newPeg);
-                    newPeg.addPawnToPeg(newPawn);
+                // Veiligheidshalve checken of de nieuwe peg ook bestaat
+                if (newPeg != null) {
+                    for (Pawn oldPawn : oldPeg.getPawns()) {
+                        Pawn newPawn = new Pawn(newPeg, oldPawn.getPawnColor());
+                        newPeg.addPawnToPeg(newPawn);
+                    }
                 }
             }
         }

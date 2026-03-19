@@ -42,6 +42,9 @@ public class Peg {
     }
 
     public Pawn getUpperPawn(){
+        if (pawns == null || pawns.isEmpty()) {
+            return null;
+        }
         return getPawns().get(getPawnCount()-1);
     }
 
