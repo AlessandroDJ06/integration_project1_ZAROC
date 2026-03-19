@@ -88,4 +88,21 @@ public class Move {
         if(isLegal(startPeg, destinationPeg)) this.destinationPeg = destinationPeg;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return startPeg.getXPosition() == move.startPeg.getXPosition() &&
+                startPeg.getYPosition() == move.startPeg.getYPosition() &&
+                destinationPeg.getXPosition() == move.destinationPeg.getXPosition() &&
+                destinationPeg.getYPosition() == move.destinationPeg.getYPosition();
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(startPeg.getXPosition(), startPeg.getYPosition(),
+                destinationPeg.getXPosition(), destinationPeg.getYPosition());
+    }
+
 }

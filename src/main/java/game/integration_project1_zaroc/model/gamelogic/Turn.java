@@ -56,6 +56,23 @@ public class Turn {
 
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());
     }*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Turn turn = (Turn) o;
+
+        boolean firstMatch = java.util.Objects.equals(((Turn) o).getFirstMove(), this.getFirstMove());
+        boolean secondMatch = java.util.Objects.equals(((Turn) o).getSecondMove(), this.getSecondMove());
+
+        return firstMatch && secondMatch;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getFirstMove(),getSecondMove());
+    }
 }
 
 
