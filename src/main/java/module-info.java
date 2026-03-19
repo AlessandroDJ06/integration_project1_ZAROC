@@ -3,9 +3,5 @@ module game.integration_project1_zaroc {
     requires javafx.graphics;
     requires jdk.xml.dom;
     requires java.desktop;
-    requires javafx.base;
-    requires java.sql;
-
-
     exports game.integration_project1_zaroc;
 }
