@@ -21,18 +21,24 @@ public class ZarocNode {
         this.children = new ArrayList<>();
     }
 
-    public double getUCBValue() {
+    public double getUCBValue(double constant) {
         if (visits == 0) return Double.MAX_VALUE;
-        return (score / visits) + 1.41 * Math.sqrt(Math.log(parent.getVisits()) / visits);
+        return (score / visits) + constant * Math.sqrt(Math.log(parent.getVisits()) / visits);
     }
 
 
     public Game getState() { return state; }
+
     public List<ZarocNode> getChildren() { return children; }
+
     public void addChild(ZarocNode child) { children.add(child); }
+
     public int getVisits() { return visits; }
+
     public void addVisit() { this.visits++; }
+
     public void addScore(double points) { this.score += points; }
+
     public Turn getInboundTurn() { return inboundTurn; }
 
     public ZarocNode getParent() {

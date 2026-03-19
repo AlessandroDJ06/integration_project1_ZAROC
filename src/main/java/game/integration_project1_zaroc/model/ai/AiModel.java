@@ -10,11 +10,20 @@ import java.util.List;
 import java.util.Random;
 
 public class AiModel {
-    private final int iterations;
+    //model
+    private final int ITERATIONS;
+    private final int MAX_MOVES = 50;
+    private final double UCB_CONSTANT_VALUE = 1.41;
+    //backpropagation
+    private final double WIN_SCORE = 1.0;
+    private final double PROGRESS_WEIGHT = 0.05;
+    private final double REACHED_FINISH_BONUS = 0.1;
+    private final double HEURISTIC_MAX_SCORE = 0.8;
+
     private final Random random = new Random();
 
     public AiModel(int difficulty) {
-        this.iterations = switch (difficulty) {
+        this.ITERATIONS = switch (difficulty) {
             case 1 -> 200;
             case 2 -> 1500;
             case 3 -> 10000;
@@ -25,7 +34,7 @@ public class AiModel {
     public Turn getBestTurn(Game actualGame) {
         ZarocNode root = new ZarocNode(actualGame.gameCopy(), null, null);
 
-        for (int i = 0; i < iterations; i++) {
+        for (int i = 0; i < ITERATIONS; i++) {
             // 1. SELECT: Zoek het meest interessante blad in de huidige boom
             ZarocNode leaf = select(root);
 
@@ -57,8 +66,8 @@ public class AiModel {
             ZarocNode bestUCB = null;
             double bestValue = Double.NEGATIVE_INFINITY;
             for (ZarocNode child : node.getChildren()) {
-                if (child.getUCBValue() > bestValue) {
-                    bestValue = child.getUCBValue();
+                if (child.getUCBValue(UCB_CONSTANT_VALUE) > bestValue) {
+                    bestValue = child.getUCBValue(UCB_CONSTANT_VALUE);
                     bestUCB = child;
                 }
             }
@@ -96,7 +105,7 @@ public class AiModel {
 
     private Player simulate(ZarocNode node) {
         Game simGame = node.getState().gameCopy();
-        int maxMoves = 50;
+        int maxMoves = MAX_MOVES;
 
         while (simGame.getStatus() == GameStatus.PLAYING && maxMoves > 0) {
             List<Turn> options = MoveGenerator.getAllLegalTurns(simGame);
@@ -137,7 +146,7 @@ public class AiModel {
             if (winner != null && temp.getParent() != null) {
                 Player playerWhoMoved = temp.getParent().getState().getCurrentTurn().getCurrentPlayer();
                 if (winner.equals(playerWhoMoved)) {
-                    temp.addScore(1.0);
+                    temp.addScore(WIN_SCORE);
                 }
             } else if (temp.getParent() != null) {
                 Player p = temp.getParent().getState().getCurrentTurn().getCurrentPlayer();
@@ -161,13 +170,13 @@ public class AiModel {
                 if (peg != null && !peg.getPawns().isEmpty()) {
                     for (Pawn pawn : peg.getPawns()) {
                         if (pawn.getPawnColor() == myColor) {
-                            score += (peg.getYPosition() * 0.05);
-                            if (peg.getYPosition() == 3) score += 0.1;
+                            score += (peg.getYPosition() * PROGRESS_WEIGHT);
+                            if (peg.getYPosition() == 3) score += REACHED_FINISH_BONUS;
                         }
                     }
                 }
             }
         }
-        return Math.min(score, 0.8);
+        return Math.min(score, HEURISTIC_MAX_SCORE);
     }
 }
