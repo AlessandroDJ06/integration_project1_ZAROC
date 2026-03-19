@@ -5,6 +5,7 @@ import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
+import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.Player;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class Game {
 
     public void startNewTurn(Player player){
         Turn turn = new Turn(player);
+        turn.setTurnNumber(turns.size() + 1);
         turns.add(turn);
     }
 
@@ -48,21 +50,27 @@ public class Game {
     }
 
     public void executeMove(Peg startPeg, Peg destinationPeg) {
-        Turn currentTurn = getCurrentTurn();
-        MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
+        if (status == GameStatus.PLAYING){
+            Turn currentTurn = getCurrentTurn();
+            MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
 
-        Move newMove = new Move(moveNumber, startPeg, destinationPeg);
-        currentTurn.addMove(newMove);
+            Move newMove = new Move(moveNumber, startPeg, destinationPeg);
+            currentTurn.addMove(newMove);
 
-        Pawn upperPawn = startPeg.getUpperPawn();
+            Pawn upperPawn = startPeg.getUpperPawn();
 
-        startPeg.removePawnFromPeg(upperPawn);
-        destinationPeg.addPawnToPeg(upperPawn);
-        upperPawn.setCurrentPeg(destinationPeg);
+            startPeg.removePawnFromPeg(upperPawn);
+            destinationPeg.addPawnToPeg(upperPawn);
+            upperPawn.setCurrentPeg(destinationPeg);
 
-        if (moveNumber == MoveNumber.SECOND_MOVE) {
-            switchCurrentPlayer();
+            if (moveNumber == MoveNumber.SECOND_MOVE) {
+                switchCurrentPlayer();
+            }
+
+            checkWinCondition();
         }
+
+
     }
 
 
@@ -104,6 +112,45 @@ public class Game {
             }
         }
         return legalMoves;
+    }
+
+    public Player getWinner(){
+        if (getParticipation1().getWinner()){
+            return getParticipation1().getPlayer();
+        } else if (getParticipation2().getWinner()) {
+            return getParticipation2().getPlayer();
+        } else {
+            return null;
+        }
+    }
+
+    public void checkWinCondition(){
+        List<PawnColor> finishRowColors = new ArrayList<>();
+        int countColor1 = 0;
+        int countColor2 = 0;
+        for (int i = 0 ; i < board.getAmountOfColumns() ; i++){
+            if (board.getPegPosition(3,i) != null){
+                if (board.getPegPosition(3,i).getPawns().getFirst() != null){
+                    finishRowColors.add( board.getPegPosition(3,i).getPawns().getFirst().getPawnColor());
+                }
+            }
+        }
+
+        for (PawnColor color : finishRowColors){
+            if (color == gameParticipations[0].getPawnColor()){
+                countColor1++;
+            } else {
+                countColor2++;
+            }
+        }
+
+        if (countColor1 == 3){
+            gameParticipations[0].setWinner(true);
+            setStatus(GameStatus.ENDED);
+        } else if (countColor2 == 3) {
+            gameParticipations[1].setWinner(true);
+            setStatus(GameStatus.ENDED);
+        }
     }
 
 

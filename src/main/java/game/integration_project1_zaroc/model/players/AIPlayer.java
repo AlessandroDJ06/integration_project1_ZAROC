@@ -1,11 +1,20 @@
 package game.integration_project1_zaroc.model.players;
 
-public class AIPlayer extends Player{
-    private Difficulty difficulty;
+import game.integration_project1_zaroc.model.ai.AiModel;
+import game.integration_project1_zaroc.model.gamelogic.Game;
+import game.integration_project1_zaroc.model.gamelogic.Move;
 
-    public AIPlayer(Difficulty difficulty,String username) {
+public class AIPlayer extends Player {
+    private Difficulty difficulty;
+    private AiModel brain;
+
+    public AIPlayer(Difficulty difficulty, String username) {
         super(username);
         this.difficulty = difficulty;
+        this.brain = new AiModel(difficulty.ordinal());
+    }
+    public Move decideMove(Game game) {
+        return brain.getBestMove(game);
     }
 
     public Difficulty getDifficulty() {
