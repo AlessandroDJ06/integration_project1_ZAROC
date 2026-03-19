@@ -28,29 +28,31 @@ public class Move {
     }
 
     public static boolean isLegal(Peg startPeg, Peg destinationPeg) {
-
-        if (destinationPeg.isFull()) {
-            return false;
-        }
+        if (destinationPeg.isFull()) return false;
 
         int xStart = startPeg.getXPosition();
-        int yStart = destinationPeg.getYPosition();
-
+        int yStart = startPeg.getYPosition();
         int xDest = destinationPeg.getXPosition();
         int yDest = destinationPeg.getYPosition();
 
+        int deltaX = Math.abs(xDest - xStart);
+        int deltaY = yDest - yStart;
 
-        boolean xLegal = yDest == yStart && (xDest == xStart + 2 || xDest == xStart -2);
-        boolean yLegal = yDest == yStart + 1 && startPeg.isFull();
-
-        // derde rij
-        if (yDest == 2) {
-            boolean diagonalCheck = (yLegal && (xDest == xStart + 1 || xDest == xStart - 1)) || xLegal;
-            return diagonalCheck;
-        } else {
-            return xLegal || (yLegal && xDest == xStart);
+        if (yStart == 3){
+            return false;
         }
+        if (deltaY == 0 && deltaX == 2) {
+            return true;
+        }
+        if (deltaY == 1) {
+            if (!startPeg.isFull()) {
+                return false;
+            }
+            return (deltaX <= 2);
+        }
+        return false;
     }
+
     public MoveNumber getMoveNumber() {
         return moveNumber;
     }

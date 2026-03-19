@@ -22,4 +22,8 @@ public class Pawn {
     public void setCurrentPeg(Peg currentPeg) {
         this.currentPeg = currentPeg;
     }
+
+    public PawnColor getPawnColor() {
+        return pawnColor;
+    }
 }

@@ -1,6 +1,9 @@
 package game.integration_project1_zaroc.view.pages.boardview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.model.boardinfo.Pawn;
+import game.integration_project1_zaroc.model.boardinfo.Peg;
+import game.integration_project1_zaroc.model.gamelogic.Move;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
@@ -8,21 +11,28 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncol
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -32,12 +42,9 @@ public class GameBoardPresenter {
     private AppController model;
     private List<HBox> rows;
     private List<Button> buttons;
-
-    private PawnSideViews sideViewPlayer1;
-    private PawnSideViews sideViewPlayer2;
-
-    private PawnColorPaths colorPlayerOne;
-    private PawnColorPaths colorPlayerTwo;
+    private Timeline player1Animation;
+    private Timeline player2Animation;
+    private Timeline highlightAnimation;
 
     private ImageView selectedPawn;
 
@@ -46,12 +53,8 @@ public class GameBoardPresenter {
         this.model = model;
         this.rows = Arrays.asList(view.getPegRowFour(),view.getPegRowThree(),view.getPegRowTwo());
         this.buttons = Arrays.asList(view.getUndoButton(),view.getSettingsButton(),view.getInfoButton());
-
-        this.sideViewPlayer1 = PawnSideViews.values()[model.getGame().getParticipation1().getPawnColor().ordinal()];
-        this.sideViewPlayer2 = PawnSideViews.values()[model.getGame().getParticipation2().getPawnColor().ordinal()];
-
-        this.colorPlayerOne =  PawnColorPaths.values()[model.getGame().getParticipation1().getPawnColor().ordinal()];
-        this.colorPlayerTwo = PawnColorPaths.values()[model.getGame().getParticipation2().getPawnColor().ordinal()];
+        this.player1Animation = createPulseAnimation(view.getPlayersPlayingComponent().getFirstPlayer());
+        this.player2Animation = createPulseAnimation(view.getPlayersPlayingComponent().getSecondPlayer());
 
         this.selectedPawn = null;
         updateView();
@@ -113,18 +116,11 @@ public class GameBoardPresenter {
         }
 
         for (ImageView position : view.getBoard().getPegPositions()){
-            position.setOnMouseEntered(mouseEvent -> {
-                position.setOpacity(0.5);
-            });
-            position.setOnMouseExited(mouseEvent -> {
-                position.setOpacity(1);
-
-            });
-
             position.setOnMouseClicked(event -> {
                 int col = GridPane.getColumnIndex(position);
                 int row = GridPane.getRowIndex(position);
                 handlePegClick(col, row);
+
             });
         }
     }
@@ -136,8 +132,6 @@ public class GameBoardPresenter {
 
             );
 
-            System.out.println(model.getGame().getParticipation1().getPlayer().getUsername());
-
             view.getPlayersPlayingComponent().setSecondPlayer(
                     model.getGame().getParticipation2().getPlayer().getUsername()
             );
@@ -145,99 +139,196 @@ public class GameBoardPresenter {
             System.out.println("fatal error");
         }
 
-        int pionnenPerContainer = 4;
+        if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername().equals(model.getGame().getParticipation1().getPlayer().getUsername())){
+            player1Animation.play();
+            player2Animation.stop();
 
-        for (int c = 0; c < pionnenPerContainer; c++) {
-            var container = view.getPegContainers().get(c);
+        } else {
+            player1Animation.stop();
+            player2Animation.play();
+        }
+        renderBoard();
+    }
+    private void renderBoard() {
+        Peg[][] allPegs = model.getGame().getBoard().getAllPegs();
+
+        view.getBoard().getBoard().getChildren().removeIf(node ->
+                node.getStyleClass().contains("is-pion")
+        );
+
+        for (VBox container : view.getPegContainers()) {
             container.getChildren().clear();
-
-            for (int i = 0; i < pionnenPerContainer; i++) {
-                PawnSideViews sideColor;
-                if ((c + i) % 2 == 0) {
-                    sideColor = sideViewPlayer2;
-                } else {
-                    sideColor = sideViewPlayer1;
-                }
-
-                ImageView sidePawn = new ImageView(view.getResourceManager().getPawnSideView(sideColor));
-                container.getChildren().add(sidePawn);
-            }
         }
 
+        int currentContainerIdx = 0;
 
-        // De 4 locaties (kolommen) waar de stapels van 4 moeten komen
-        int[] kolommen = {1, 3, 5, 7};
-        int row = 0; // De rij waar deze pegs staan
+        for (int r = 0; r < allPegs.length; r++) {
+            for (int c = 0; c < allPegs[r].length; c++) {
 
-        for (int i = 0; i < kolommen.length; i++) {
-            int col = kolommen[i];
+                if (allPegs[r][c] == null) continue;
 
-            for (int laag = 0; laag < 4; laag++) {
-                PawnColorPaths kleur;
-                if ((i + laag) % 2 == 0) {
-                    kleur = colorPlayerOne;
-                } else {
-                    kleur = colorPlayerTwo;
+                Peg currentPeg = allPegs[r][c];
+                ArrayList<Pawn> logicPawns = currentPeg.getPawns();
+
+                for (int laag = 0; laag < logicPawns.size(); laag++) {
+                    Pawn logicPawn = logicPawns.get(laag);
+                    PawnColorPaths kleur = PawnColorPaths.values()[logicPawn.getPawnColor().ordinal()];
+
+                    ImageView pionImg = view.getResourceManager().getPawnImageView(kleur);
+                    pionImg.getStyleClass().add("is-pion");
+                    pionImg.setMouseTransparent(true);
+
+                    GridPane.setHalignment(pionImg, HPos.CENTER);
+                    GridPane.setValignment(pionImg, VPos.CENTER);
+                    pionImg.setTranslateY(-8 * laag);
+
+                    view.getBoard().getBoard().add(pionImg, currentPeg.getXPosition(), currentPeg.getYPosition());
                 }
 
-                ImageView pion = view.getResourceManager().getPawnImageView(kleur);
-                pion.setMouseTransparent(true);
-                GridPane.setHalignment(pion, HPos.CENTER);
-                GridPane.setValignment(pion, VPos.CENTER);
-                pion.setTranslateY(-7 * laag);
-                view.getBoard().getBoard().add(pion, col, row);
+                boolean hasSideView = (r < 3);
+
+                if (hasSideView && currentContainerIdx < view.getPegContainers().size()) {
+                    VBox currentContainer = view.getPegContainers().get(currentContainerIdx);
+
+                    for (Pawn logicPawn : logicPawns) {
+                        PawnSideViews sideColor = PawnSideViews.values()[logicPawn.getPawnColor().ordinal()];
+                        ImageView sideImg = new ImageView(view.getResourceManager().getPawnSideView(sideColor));
+                        currentContainer.getChildren().add(0, sideImg);
+                    }
+                    currentContainerIdx++;
+                }
             }
         }
+    }
 
+    private void clearHighlights() {
+        if (highlightAnimation != null) {
+            highlightAnimation.stop();
+        }
+
+        for (Node node : view.getBoard().getBoard().getChildren()) {
+            node.setOpacity(1.0);
+            node.opacityProperty().unbind();
+        }
+    }
+
+
+    private void highLightLegalMoves() {
+        clearHighlights();
+
+        if (selectedPawn != null) {
+            selectedPawn.setOpacity(0.75);
+
+            int x = GridPane.getColumnIndex(selectedPawn);
+            int y = GridPane.getRowIndex(selectedPawn);
+            Peg start = model.getGame().getBoard().getAllPegs()[y][x];
+            List<Move> legalMoves = model.getGame().getLegalMoves(start);
+
+            List<Node> targets = new ArrayList<>();
+            for (Move move : legalMoves) {
+                int xDest = move.getDestinationPeg().getXPosition();
+                int yDest = move.getDestinationPeg().getYPosition();
+                for (Node node : view.getBoard().getBoard().getChildren()) {
+                    if (isInPosition(node, xDest, yDest)) {
+                        targets.add(node);
+                    }
+                }
+            }
+            if (!targets.isEmpty()) {
+                startHighlightAnimation(targets);
+            }
+        }
+    }
+
+    private void startHighlightAnimation(List<Node> targets) {
+        if (highlightAnimation != null) {
+            highlightAnimation.stop();
+        }
+
+        highlightAnimation = new Timeline();
+        highlightAnimation.setCycleCount(Timeline.INDEFINITE);
+        highlightAnimation.setAutoReverse(true);
+
+        for (Node node : targets) {
+            KeyValue kv = new KeyValue(node.opacityProperty(), 0.5);
+            KeyFrame kf = new KeyFrame(Duration.millis(1000), kv);
+            highlightAnimation.getKeyFrames().add(kf);
+        }
+
+        highlightAnimation.play();
     }
 
     private void handlePegClick(int col, int row) {
         if (selectedPawn == null) {
-            ImageView bovenste = getBovenstePion(col, row);
+            ImageView bovensteImg = getTopPawn(col, row);
 
-            if (bovenste != null && getAantalPionnenInCel(col,row) >1) {
-                selectedPawn = bovenste;
+            if (bovensteImg != null && bovensteImg.getStyleClass().contains("is-pion")) {
+                selectedPawn = bovensteImg;
                 selectedPawn.setOpacity(0.5);
-                System.out.println("Pion opgepakt van " + col + "," + row);
+                highLightLegalMoves();
+
+                System.out.println("Pion geselecteerd op positie: " + col + "," + row);
+                System.out.println(model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
             }
         }
         else {
-            view.getBoard().getBoard().getChildren().remove(selectedPawn);
+            int startCol = GridPane.getColumnIndex(selectedPawn);
+            int startRow = GridPane.getRowIndex(selectedPawn);
+            Peg startPeg = model.getGame().getBoard().getAllPegs()[startRow][startCol];
+            Peg destinationPeg = model.getGame().getBoard().getAllPegs()[row][col];
+            List<Move> legalMoves = model.getGame().getLegalMoves(startPeg);
+            boolean isLegal = false;
 
-            int aantalOpDoel = getAantalPionnenInCel(col, row);
-            selectedPawn.setTranslateY(-4 * aantalOpDoel);
-            view.getBoard().getBoard().add(selectedPawn, col, row);
+            for (Move m : legalMoves) {
+                if (m.getDestinationPeg().equals(destinationPeg)) {
+                    isLegal = true;
+                    break;
+                }
+            }
 
-            selectedPawn.setOpacity(1.0);
+            if (isLegal) {
+                model.getGame().executeMove(startPeg, destinationPeg);
+                System.out.println("Zet uitgevoerd naar: " + col + "," + row);
+            } else {
+                selectedPawn.setOpacity(1.0);
+                System.out.println("Ongeldige zet naar: " + col + "," + row);
+            }
+
             selectedPawn = null;
-            System.out.println("Pion neergezet op " + col + "," + row);
+            clearHighlights();
+            updateView();
         }
     }
 
-    private ImageView getBovenstePion(int col, int row) {
+    private ImageView getTopPawn(int col, int row) {
         ImageView bovenste = null;
         for (Node node : view.getBoard().getBoard().getChildren()) {
-            if (node instanceof ImageView && isOpPositie(node, col, row)) {
+            if (node instanceof ImageView && isInPosition(node, col, row)) {
                 bovenste = (ImageView) node;
             }
         }
         return bovenste;
     }
 
-    private int getAantalPionnenInCel(int col, int row) {
-        int count = 0;
-        for (Node node : view.getBoard().getBoard().getChildren()) {
-            if (node instanceof ImageView && isOpPositie(node, col, row)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private boolean isOpPositie(Node node, int col, int row) {
+    private boolean isInPosition(Node node, int col, int row) {
         Integer c = GridPane.getColumnIndex(node);
         Integer r = GridPane.getRowIndex(node);
         return c != null && r != null && c == col && r == row;
+
+    }
+
+    private Timeline createPulseAnimation(Label name) {
+        Timeline pulse = new Timeline();
+        pulse.setCycleCount(Timeline.INDEFINITE);
+        pulse.setAutoReverse(true);
+
+        KeyValue kvX = new KeyValue(name.scaleXProperty(), 1.3);
+        KeyValue kvY = new KeyValue(name.scaleYProperty(), 1.3);
+
+        KeyFrame kf = new KeyFrame(Duration.millis(1000), kvX, kvY);
+        pulse.getKeyFrames().add(kf);
+
+        return pulse;
     }
 
 

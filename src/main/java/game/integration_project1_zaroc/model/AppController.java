@@ -38,6 +38,8 @@ public class AppController {
 
         this.difficultyPicker = new DifficultyPickerModel();
         this.startingPlayerSelector = new StartingPlayerSelector();
+        this.startingPlayerSelector.setPlayer1(player1);
+        this.startingPlayerSelector.setPlayer2(player2);
 
         this.game = null;
     }
@@ -57,7 +59,7 @@ public class AppController {
                 new GameParticipation(this.player1,this.player1Color),
                 new GameParticipation(this.player2,this.player2Color)
         );
-
+        this.game.startNewTurn(startingPlayerSelector.getPlayers()[startingPlayerSelector.getCurrentIndex()]);
     }
 
 

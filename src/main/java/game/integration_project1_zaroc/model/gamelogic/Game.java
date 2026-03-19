@@ -20,7 +20,7 @@ public class Game {
 
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
         this.status = GameStatus.PLAYING;
-        board = new Board();
+        board = new Board(gameParticipation1.getPawnColor(),gameParticipation2.getPawnColor());
         turns = new ArrayList<>();
         gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
     }
@@ -90,15 +90,17 @@ public class Game {
 
         for (int row = 0; row < allPegs.length; row++) {
             for (int column = 0; column < allPegs[row].length; column++) {
+                if (allPegs[row][column] != null){
+                    Peg destPeg = allPegs[row][column];
 
-                Peg destPeg = allPegs[row][column];
+                    if (Move.isLegal(startPeg,destPeg)) {
 
-                if (Move.isLegal(startPeg,destPeg)) {
+                        Move legalMove = new Move(moveNumber,startPeg, destPeg);
 
-                    Move legalMove = new Move(moveNumber,startPeg, destPeg);
-
-                    legalMoves.add(legalMove);
+                        legalMoves.add(legalMove);
+                    }
                 }
+
             }
         }
         return legalMoves;
@@ -124,6 +126,10 @@ public class Game {
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
     public GameParticipation getParticipation1(){
