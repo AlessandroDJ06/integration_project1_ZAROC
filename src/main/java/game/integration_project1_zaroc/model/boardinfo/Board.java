@@ -15,8 +15,6 @@ public class Board {
         this.pawnColorPlayer1 = pawnColorPlayer1;
         this.pawnColorPlayer2 = pawnColorPlayer2;
         createPegs();
-        setupStart(pawnColorPlayer1,pawnColorPlayer2);
-
     }
 
     private void createPegs() {
@@ -34,7 +32,7 @@ public class Board {
         }
     }
 
-    private void setupStart(PawnColor pawnColorPlayer1 , PawnColor pawnColorPlayer2){
+    public void setupStart(){
         int[] kolommen = {1, 3, 5, 7};
         int row = 0;
 
@@ -44,9 +42,9 @@ public class Board {
             for (int laag = 0; laag < 4; laag++) {
                 PawnColor kleur;
                 if ((i + laag) % 2 == 0) {
-                    kleur = pawnColorPlayer1;
+                    kleur = this.pawnColorPlayer1;
                 } else {
-                    kleur = pawnColorPlayer2;
+                    kleur = this.pawnColorPlayer2;
                 }
                 this.pegPositions[row][col].addPawnToPeg(
                         new Pawn(

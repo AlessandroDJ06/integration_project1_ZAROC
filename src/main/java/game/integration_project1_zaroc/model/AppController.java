@@ -59,6 +59,7 @@ public class AppController {
                 new GameParticipation(this.player1,this.player1Color),
                 new GameParticipation(this.player2,this.player2Color)
         );
+        this.game.getBoard().setupStart();
         this.game.startNewTurn(startingPlayerSelector.getPlayers()[startingPlayerSelector.getCurrentIndex()]);
     }
 

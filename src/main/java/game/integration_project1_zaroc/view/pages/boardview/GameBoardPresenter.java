@@ -142,10 +142,14 @@ public class GameBoardPresenter {
         if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername().equals(model.getGame().getParticipation1().getPlayer().getUsername())){
             player1Animation.play();
             player2Animation.stop();
+            view.getPlayersPlayingComponent().getSecondPlayer().setScaleX(1);
+            view.getPlayersPlayingComponent().getSecondPlayer().setScaleY(1);
 
         } else {
             player1Animation.stop();
             player2Animation.play();
+            view.getPlayersPlayingComponent().getFirstPlayer().setScaleX(1);
+            view.getPlayersPlayingComponent().getFirstPlayer().setScaleY(1);
         }
         renderBoard();
     }
@@ -240,24 +244,6 @@ public class GameBoardPresenter {
         }
     }
 
-    private void startHighlightAnimation(List<Node> targets) {
-        if (highlightAnimation != null) {
-            highlightAnimation.stop();
-        }
-
-        highlightAnimation = new Timeline();
-        highlightAnimation.setCycleCount(Timeline.INDEFINITE);
-        highlightAnimation.setAutoReverse(true);
-
-        for (Node node : targets) {
-            KeyValue kv = new KeyValue(node.opacityProperty(), 0.5);
-            KeyFrame kf = new KeyFrame(Duration.millis(1000), kv);
-            highlightAnimation.getKeyFrames().add(kf);
-        }
-
-        highlightAnimation.play();
-    }
-
     private void handlePegClick(int col, int row) {
         if (selectedPawn == null) {
             ImageView bovensteImg = getTopPawn(col, row);
@@ -322,13 +308,31 @@ public class GameBoardPresenter {
         pulse.setCycleCount(Timeline.INDEFINITE);
         pulse.setAutoReverse(true);
 
-        KeyValue kvX = new KeyValue(name.scaleXProperty(), 1.3);
-        KeyValue kvY = new KeyValue(name.scaleYProperty(), 1.3);
+        KeyValue kvX = new KeyValue(name.scaleXProperty(), 1.2);
+        KeyValue kvY = new KeyValue(name.scaleYProperty(), 1.2);
 
         KeyFrame kf = new KeyFrame(Duration.millis(1000), kvX, kvY);
         pulse.getKeyFrames().add(kf);
 
         return pulse;
+    }
+
+    private void startHighlightAnimation(List<Node> targets) {
+        if (highlightAnimation != null) {
+            highlightAnimation.stop();
+        }
+
+        highlightAnimation = new Timeline();
+        highlightAnimation.setCycleCount(Timeline.INDEFINITE);
+        highlightAnimation.setAutoReverse(true);
+
+        for (Node node : targets) {
+            KeyValue kv = new KeyValue(node.opacityProperty(), 0.7);
+            KeyFrame kf = new KeyFrame(Duration.millis(1000), kv);
+            highlightAnimation.getKeyFrames().add(kf);
+        }
+
+        highlightAnimation.play();
     }
 
 
