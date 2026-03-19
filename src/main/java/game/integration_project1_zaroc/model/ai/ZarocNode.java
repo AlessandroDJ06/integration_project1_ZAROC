@@ -21,7 +21,6 @@ public class ZarocNode {
         this.children = new ArrayList<>();
     }
 
-    // De beroemde UCB1 formule om de beste node te kiezen
     public double getUCBValue() {
         if (visits == 0) return Double.MAX_VALUE;
         return (score / visits) + 1.41 * Math.sqrt(Math.log(parent.getVisits()) / visits);

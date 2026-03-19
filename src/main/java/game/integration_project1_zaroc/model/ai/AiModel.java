@@ -15,12 +15,12 @@ public class AiModel {
         this.iterations = switch (difficulty) {
             case 1 -> 200;
             case 2 -> 1500;
-            case 3 -> 6000;
+            case 3 -> 10000;
             default -> 1000;
         };
     }
 
-    public Move getBestMove(Game actualGame) {
+    public Turn getBestTurn(Game actualGame) {
         ZarocNode root = new ZarocNode(actualGame.gameCopy(), null, null);
 
         for (int i = 0; i < iterations; i++) {
@@ -41,7 +41,7 @@ public class AiModel {
 
         if (bestChild == null) return null;
 
-        return bestChild.getInboundTurn().getFirstMove();
+        return bestChild.getInboundTurn();
     }
 
     private ZarocNode select(ZarocNode node) {

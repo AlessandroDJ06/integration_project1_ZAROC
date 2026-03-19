@@ -81,8 +81,6 @@ public class Board {
         for (int r = 0; r < getAmountOfRows(); r++) {
             for (int c = 0; c < getAmountOfColumns(); c++) {
                 Peg oldPeg = getPegPosition(r, c);
-
-                // CRUCIAAL: Als er op deze plek geen pin hoort, sla hem over
                 if (oldPeg == null) continue;
 
                 Peg newPeg = boardCopy.getPegPosition(r, c);

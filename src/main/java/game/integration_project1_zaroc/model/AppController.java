@@ -29,7 +29,6 @@ public class AppController {
         this.difficultyPicker = new DifficultyPickerModel();
 
         player1 = new HumanPlayer("Alessandro","test@gmail.com");
-        player2 = new AIPlayer(Difficulty.values()[difficultyPicker.getCurrentIndex()],"jonas");
 
         this.colorOne = new PawnColorPickerModel(PawnColor.BLACK);
         this.colorTwo = new PawnColorPickerModel(PawnColor.WHITE);
@@ -58,11 +57,18 @@ public class AppController {
         colorOne.setCurrentIndexOtherPicker(player2Color.ordinal());
     }
 
-    public void createGame(){
+    public void createGame() {
+        Difficulty gekozenDifficulty = Difficulty.values()[difficultyPicker.getCurrentIndex()];
+        this.player2 = new AIPlayer(gekozenDifficulty, "jonas");
+
+        this.player1Color = PawnColor.values()[colorOne.getCurrentIndex()];
+        this.player2Color = PawnColor.values()[colorTwo.getCurrentIndex()];
+
         this.game = new Game(
-                new GameParticipation(this.player1,this.player1Color),
-                new GameParticipation(this.player2,this.player2Color)
+                new GameParticipation(this.player1, this.player1Color),
+                new GameParticipation(this.player2, this.player2Color)
         );
+
         this.game.getBoard().setupStart();
         this.game.startNewTurn(startingPlayerSelector.getPlayers()[startingPlayerSelector.getCurrentIndex()]);
     }
