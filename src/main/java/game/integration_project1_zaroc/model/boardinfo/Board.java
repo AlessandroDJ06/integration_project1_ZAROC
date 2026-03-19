@@ -1,12 +1,21 @@
 package game.integration_project1_zaroc.model.boardinfo;
 
 
+import game.integration_project1_zaroc.model.gameinfo.PawnColor;
+
+
+
 public class Board {
     private Peg[][] pegPositions;
+    private PawnColor pawnColorPlayer1;
+    private PawnColor pawnColorPlayer2;
 
-    public Board() {
+    public Board(PawnColor pawnColorPlayer1 , PawnColor pawnColorPlayer2) {
         this.pegPositions = new Peg[4][10];
+        this.pawnColorPlayer1 = pawnColorPlayer1;
+        this.pawnColorPlayer2 = pawnColorPlayer2;
         createPegs();
+        setupStart(pawnColorPlayer1,pawnColorPlayer2);
 
     }
 
@@ -21,6 +30,29 @@ public class Board {
                     pegPositions[row][column] = new Peg(column, row);
 
                 }
+            }
+        }
+    }
+
+    private void setupStart(PawnColor pawnColorPlayer1 , PawnColor pawnColorPlayer2){
+        int[] kolommen = {1, 3, 5, 7};
+        int row = 0;
+
+        for (int i = 0; i < kolommen.length; i++) {
+            int col = kolommen[i];
+
+            for (int laag = 0; laag < 4; laag++) {
+                PawnColor kleur;
+                if ((i + laag) % 2 == 0) {
+                    kleur = pawnColorPlayer1;
+                } else {
+                    kleur = pawnColorPlayer2;
+                }
+                this.pegPositions[row][col].addPawnToPeg(
+                        new Pawn(
+                                this.pegPositions[0][1],
+                                kleur
+                        ));
             }
         }
     }
@@ -46,7 +78,7 @@ public class Board {
     }
 
     public Board boardCopy() {
-        Board boardCopy = new Board();
+        Board boardCopy = new Board(this.pawnColorPlayer1,this.pawnColorPlayer2);
 
         for (int row = 0; row < getAmountOfRows(); row++) {
             for (int column = 0; column < getAmountOfColumns(); column++) {

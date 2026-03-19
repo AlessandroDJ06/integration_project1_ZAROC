@@ -188,7 +188,6 @@ public class GameSetupPresenter {
         KeyValue kvX = new KeyValue(startBtn.scaleXProperty(), 1.1);
         KeyValue kvY = new KeyValue(startBtn.scaleYProperty(), 1.1);
 
-        // Maak een KeyFrame van 0.8 seconden
         KeyFrame kf = new KeyFrame(Duration.millis(800), kvX, kvY);
 
         pulse.getKeyFrames().add(kf);
