@@ -1,11 +1,10 @@
-package game.integration_project1_zaroc.model.gameinfo;
+package game.integration_project1_zaroc.model.gamelogic;
 
 import game.integration_project1_zaroc.model.boardinfo.Board;
 import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
-import game.integration_project1_zaroc.model.gamelogic.Move;
-import game.integration_project1_zaroc.model.gamelogic.MoveNumber;
-import game.integration_project1_zaroc.model.gamelogic.Turn;
+import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
+import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.players.Player;
 
 import java.util.ArrayList;
@@ -48,16 +47,18 @@ public class Game {
         return turns.get(turns.size()-1);
     }
 
-    public void executeMove(Pawn pawn, Peg destinationPeg) {
+    public void executeMove(Peg startPeg, Peg destinationPeg) {
         Turn currentTurn = getCurrentTurn();
         MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
 
-        Move newMove = new Move(moveNumber, pawn, destinationPeg);
+        Move newMove = new Move(moveNumber, startPeg, destinationPeg);
         currentTurn.addMove(newMove);
 
-        Peg startPeg = pawn.getCurrentPeg();
-        startPeg.removePawnFromPeg(pawn);
-        destinationPeg.addPawnToPeg(pawn);
+        Pawn upperPawn = startPeg.getUpperPawn();
+
+        startPeg.removePawnFromPeg(upperPawn);
+        destinationPeg.addPawnToPeg(upperPawn);
+        upperPawn.setCurrentPeg(destinationPeg);
 
         if (moveNumber == MoveNumber.SECOND_MOVE) {
             switchCurrentPlayer();
@@ -66,12 +67,13 @@ public class Game {
 
 
     public void undoMove(Move move) {
-        Pawn pawn = move.getPawn();
         Peg startPeg = move.getStartPeg();
         Peg destPeg = move.getDestinationPeg();
 
-        destPeg.removePawnFromPeg(pawn);
-        startPeg.addPawnToPeg(pawn);
+        Pawn upperPawn = startPeg.getUpperPawn();
+
+        destPeg.removePawnFromPeg(upperPawn);
+        startPeg.addPawnToPeg(upperPawn);
 
         Turn currentTurn = getCurrentTurn();
 
@@ -79,7 +81,7 @@ public class Game {
 
     }
 
-    public List<Move> getLegalMoves(Pawn pawn) {
+    public List<Move> getLegalMoves(Peg startPeg) {
         List<Move> legalMoves = new ArrayList<>();
         Turn currentTurn = getCurrentTurn();
         MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
@@ -91,9 +93,9 @@ public class Game {
 
                 Peg destPeg = allPegs[row][column];
 
-                if (Move.isLegal(pawn,destPeg)) {
+                if (Move.isLegal(startPeg,destPeg)) {
 
-                    Move legalMove = new Move(moveNumber, pawn, destPeg);
+                    Move legalMove = new Move(moveNumber,startPeg, destPeg);
 
                     legalMoves.add(legalMove);
                 }
@@ -103,25 +105,10 @@ public class Game {
     }
 
 
-    public Game GameCopy() {
+    public Game gameCopy() {
         Game gameCopy = new Game(this.getParticipation1(), this.getParticipation2());
         gameCopy.setStatus(this.getStatus());
-
-        Board oldBoard = this.board;
-        Board newBoard = gameCopy.board;
-
-        for (int row = 0; row < oldBoard.getAmountOfRows(); row++) {
-            for (int column = 0; column < oldBoard.getAmountOfColumns(); column++) {
-
-                Peg oldPeg = oldBoard.getPegPosition(row, column);
-                Peg newPeg = newBoard.getPegPosition(row, column);
-
-                for (Pawn oldPawn : oldPeg.getPawns()) {
-                        Pawn newPawn = new Pawn(newPeg);
-                        newPeg.addPawnToPeg(newPawn);
-                }
-            }
-        }
+        gameCopy.setBoard(board.boardCopy());
 
         return gameCopy;
     }

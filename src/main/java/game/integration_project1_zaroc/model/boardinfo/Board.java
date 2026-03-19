@@ -44,4 +44,22 @@ public class Board {
     public int getAmountOfColumns(){
         return pegPositions[10].length;
     }
+
+    public Board boardCopy() {
+        Board boardCopy = new Board();
+
+        for (int row = 0; row < getAmountOfRows(); row++) {
+            for (int column = 0; column < getAmountOfColumns(); column++) {
+
+                Peg oldPeg = getPegPosition(row, column);
+                Peg newPeg = getPegPosition(row, column);
+
+                for (Pawn oldPawn : oldPeg.getPawns()) {
+                    Pawn newPawn = new Pawn(newPeg);
+                    newPeg.addPawnToPeg(newPawn);
+                }
+            }
+        }
+        return boardCopy;
+    }
 }

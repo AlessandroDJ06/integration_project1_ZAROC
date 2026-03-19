@@ -11,16 +11,14 @@ public class Move {
     private final LocalDateTime timestamp;
     private Peg startPeg;
     private Peg destinationPeg;
-    private Pawn pawn;
 
 
-    public Move(MoveNumber moveNumber, Pawn pawn, Peg destinationPeg) {
+    public Move(MoveNumber moveNumber,Peg startPeg, Peg destinationPeg) {
 
         this.moveNumber = moveNumber;
-        this.pawn = pawn;
         timestamp = LocalDateTime.now();
-        if(isLegal(pawn, destinationPeg)) {
-                this.startPeg = pawn.getCurrentPeg();
+        if(isLegal(startPeg, destinationPeg)) {
+                this.startPeg = startPeg;
                 this.destinationPeg = destinationPeg;
         }
         else{
@@ -29,21 +27,21 @@ public class Move {
 
     }
 
-    public static boolean isLegal(Pawn pawn, Peg destinationPeg) {
+    public static boolean isLegal(Peg startPeg, Peg destinationPeg) {
 
         if (destinationPeg.isFull()) {
             return false;
         }
 
-        int xStart = pawn.getCurrentPeg().getXPosition();
-        int yStart = pawn.getCurrentPeg().getYPosition();
+        int xStart = startPeg.getXPosition();
+        int yStart = destinationPeg.getYPosition();
 
         int xDest = destinationPeg.getXPosition();
         int yDest = destinationPeg.getYPosition();
 
 
         boolean xLegal = yDest == yStart && (xDest == xStart + 2 || xDest == xStart -2);
-        boolean yLegal = yDest == yStart + 1;
+        boolean yLegal = yDest == yStart + 1 && startPeg.isFull();
 
         // derde rij
         if (yDest == 2) {
@@ -69,13 +67,6 @@ public class Move {
         this.duration = duration;
     }*/
 
-    public Pawn getPawn() {
-        return pawn;
-    }
-
-    public void setPawn(Pawn pawn) {
-        this.pawn = pawn;
-    }
 
     public LocalDateTime getTimestamp() {
         return timestamp;
@@ -94,7 +85,7 @@ public class Move {
     }
 
     public void setDestinationPeg(Pawn pawn, Peg destinationPeg) {
-        if(isLegal(pawn, destinationPeg)) this.destinationPeg = destinationPeg;
+        if(isLegal(startPeg, destinationPeg)) this.destinationPeg = destinationPeg;
     }
 
 }

@@ -1,11 +1,6 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
-import game.integration_project1_zaroc.model.gameinfo.Game;
-
 import game.integration_project1_zaroc.model.players.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Turn {
@@ -23,7 +18,7 @@ public class Turn {
 
 
     public void addMove(Move move) {
-        if(move.isLegal(move.getPawn(),move.getDestinationPeg()))
+        if(move.isLegal(move.getStartPeg(),move.getDestinationPeg()))
             moves[move.getMoveNumber().getNumber() - 1] = move;
     }
 

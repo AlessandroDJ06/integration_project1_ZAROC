@@ -11,7 +11,7 @@ public class GameParticipation {
     public GameParticipation(Player player,PawnColor pawnColor) {
         this.player=player;
         this.pawnColor= pawnColor;
-
+        this.winner =null;
     }
 
     public Player getWinner() {
