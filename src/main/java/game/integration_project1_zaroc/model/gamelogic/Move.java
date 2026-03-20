@@ -11,58 +11,46 @@ public class Move {
     private final LocalDateTime timestamp;
     private Peg startPeg;
     private Peg destinationPeg;
-    private Pawn pawn;
-    private Turn turn;
 
-    public Move(MoveNumber moveNumber, Pawn pawn, Peg destinationPeg, Turn turn) {
+
+    public Move(MoveNumber moveNumber,Peg startPeg, Peg destinationPeg) {
 
         this.moveNumber = moveNumber;
-        this.pawn = pawn;
-        this.turn = turn;
         timestamp = LocalDateTime.now();
-        while (!isLegal(pawn, destinationPeg)) {
-            try {
-                this.startPeg = pawn.getCurrentPeg();
-                this.destinationPeg = destinationPeg;
-
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
+        this.startPeg = startPeg;
+        this.destinationPeg = destinationPeg;
 
     }
 
-    public boolean isLegal(Pawn pawn, Peg destinationPeg){
-        boolean legalCheck = false;
-
-        for (int row = 0; row < turn.getGame().getBoard().getAmountOfRows().length; row++) {
-            int xStart = pawn.getCurrentPeg().getXPosition();
-            int yStart = pawn.getCurrentPeg().getYPosition();
-
-            int xDest = destinationPeg.getXPosition();
-            int yDest = destinationPeg.getYPosition();
-
-            boolean xLegal = xDest == xStart + 2;
-            boolean yLegal = yDest == yStart + 1;
-
-            for (int column = 0; column < turn.getGame().getBoard().getAmountOfColumns().length; column++) {
-                // derde rij
-                if(yDest==2) {
-                    boolean diagonalCheck = (yLegal && (xDest == xStart + 1 || xDest == xStart -1)) || xLegal;
-                    if(diagonalCheck){
-                        legalCheck = true;
-                    }
-                }
-                else {
-                    if (xLegal || yLegal) {
-                        legalCheck = true;
-                    }
-
-                }
-            }
+    public static boolean isLegal(Peg startPeg, Peg destinationPeg) {
+        if (startPeg == null || destinationPeg == null) {
+            return false;
         }
-        return legalCheck;
+        if (destinationPeg.isFull()) return false;
+
+        int xStart = startPeg.getXPosition();
+        int yStart = startPeg.getYPosition();
+        int xDest = destinationPeg.getXPosition();
+        int yDest = destinationPeg.getYPosition();
+
+        int deltaX = Math.abs(xDest - xStart);
+        int deltaY = yDest - yStart;
+
+        if (yStart == 3){
+            return false;
+        }
+        if (deltaY == 0 && deltaX == 2) {
+            return true;
+        }
+        if (deltaY == 1) {
+            if (!startPeg.isFull()) {
+                return false;
+            }
+            return (deltaX <= 2);
+        }
+        return false;
     }
+
     public MoveNumber getMoveNumber() {
         return moveNumber;
     }
@@ -79,13 +67,6 @@ public class Move {
         this.duration = duration;
     }*/
 
-    public Pawn getPawn() {
-        return pawn;
-    }
-
-    public void setPawn(Pawn pawn) {
-        this.pawn = pawn;
-    }
 
     public LocalDateTime getTimestamp() {
         return timestamp;
@@ -104,7 +85,24 @@ public class Move {
     }
 
     public void setDestinationPeg(Pawn pawn, Peg destinationPeg) {
-        if(isLegal(pawn, destinationPeg)) this.destinationPeg = destinationPeg;
+        if(isLegal(startPeg, destinationPeg)) this.destinationPeg = destinationPeg;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return startPeg.getXPosition() == move.startPeg.getXPosition() &&
+                startPeg.getYPosition() == move.startPeg.getYPosition() &&
+                destinationPeg.getXPosition() == move.destinationPeg.getXPosition() &&
+                destinationPeg.getYPosition() == move.destinationPeg.getYPosition();
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(startPeg.getXPosition(), startPeg.getYPosition(),
+                destinationPeg.getXPosition(), destinationPeg.getYPosition());
     }
 
     public Turn getTurn() {

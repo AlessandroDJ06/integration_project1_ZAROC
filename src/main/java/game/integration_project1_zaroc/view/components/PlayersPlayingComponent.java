@@ -128,4 +128,12 @@ public class PlayersPlayingComponent extends HBox {
     public void setPointPlayerOne(String pointPlayerOne) {
         this.pointPlayerOne.setText("Points: " + pointPlayerOne);
     }
+
+    public Label getFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public Label getSecondPlayer() {
+        return secondPlayer;
+    }
 }

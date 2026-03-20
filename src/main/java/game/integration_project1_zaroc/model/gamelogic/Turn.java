@@ -7,38 +7,34 @@ import game.integration_project1_zaroc.model.players.Player;
 
 public class Turn {
     private Player currentPlayer;
-    private static int turnNumber = 0;
+    private int turnNumber;
     private Move[] moves;
     private Game game;
     private int turnId;
 
 
-    public Turn(Player currentPlayer, Game game) {
+    public Turn(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
         moves = new Move[2];
-        turnNumber++;
-        this.game = game;
-
+        turnNumber = 0;
     }
 
 
     public void addMove(Move move) {
+        if(move.isLegal(move.getStartPeg(),move.getDestinationPeg()))
             moves[move.getMoveNumber().getNumber() - 1] = move;
     }
 
-    public void undoMove(Move move) {
-        int index = move.getMoveNumber().getNumber() - 1;
-
-        moves[index].getPawn().setCurrentPeg(move.getStartPeg());
-        moves[index]=null;
-        if(index==0){
-            game.switchCurrentPlayer();
-        }
+    public void removeMove(Move move){
+        moves[move.getMoveNumber().getNumber() - 1]=null;
     }
 
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
+    }
 
-    public static int getTurnNumber() {
-        return turnNumber;
+    public int getTurnNumber() {
+        return this.turnNumber;
     }
 
     /*public Move[] getMoves() {
@@ -60,9 +56,6 @@ public class Turn {
         this.currentPlayer = currentPlayer;
     }
 
-    public Game getGame() {
-        return game;
-    }
     /* public LocalDateTime getMoveDuration(Move firstMove, Move secondMove) {
 
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());
@@ -70,6 +63,23 @@ public class Turn {
 
     public int getTurnId() {
         return turnId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Turn turn = (Turn) o;
+
+        boolean firstMatch = java.util.Objects.equals(((Turn) o).getFirstMove(), this.getFirstMove());
+        boolean secondMatch = java.util.Objects.equals(((Turn) o).getSecondMove(), this.getSecondMove());
+
+        return firstMatch && secondMatch;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getFirstMove(),getSecondMove());
     }
 }
 

@@ -1,12 +1,10 @@
 package game.integration_project1_zaroc.model.gameinfo;
 
-import game.integration_project1_zaroc.model.players.AIPlayer;
-import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 
 
 public class GameParticipation {
-    private Player winner;
+    private boolean winner;
     private PawnColor pawnColor;
     private Player player;
 
@@ -14,14 +12,14 @@ public class GameParticipation {
     public GameParticipation(Player player,PawnColor pawnColor) {
         this.player=player;
         this.pawnColor= pawnColor;
-
+        this.winner = false;
     }
 
-    public Player getWinner() {
+    public boolean getWinner() {
         return winner;
     }
 
-    public void setWinner(Player winner) {
+    public void setWinner(boolean winner) {
         this.winner = winner;
     }
 

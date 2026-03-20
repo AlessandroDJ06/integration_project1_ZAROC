@@ -1,13 +1,20 @@
 package game.integration_project1_zaroc.model.boardinfo;
 
 
+import game.integration_project1_zaroc.model.gameinfo.PawnColor;
+
+
+
 public class Board {
     private Peg[][] pegPositions;
+    private PawnColor pawnColorPlayer1;
+    private PawnColor pawnColorPlayer2;
 
-    public Board() {
-        this.pegPositions = new Peg[10][4];
+    public Board(PawnColor pawnColorPlayer1 , PawnColor pawnColorPlayer2) {
+        this.pegPositions = new Peg[4][10];
+        this.pawnColorPlayer1 = pawnColorPlayer1;
+        this.pawnColorPlayer2 = pawnColorPlayer2;
         createPegs();
-
     }
 
     private void createPegs() {
@@ -18,9 +25,32 @@ public class Board {
                         || (row >= 2 && column % 2 == 0);
 
                 if (shouldAdd) {
-                    pegPositions[row][column] = new Peg(row,column);
+                    pegPositions[row][column] = new Peg(column, row);
 
                 }
+            }
+        }
+    }
+
+    public void setupStart(){
+        int[] kolommen = {1, 3, 5, 7};
+        int row = 0;
+
+        for (int i = 0; i < kolommen.length; i++) {
+            int col = kolommen[i];
+
+            for (int laag = 0; laag < 4; laag++) {
+                PawnColor kleur;
+                if ((i + laag) % 2 == 0) {
+                    kleur = this.pawnColorPlayer1;
+                } else {
+                    kleur = this.pawnColorPlayer2;
+                }
+                this.pegPositions[row][col].addPawnToPeg(
+                        new Pawn(
+                                this.pegPositions[0][1],
+                                kleur
+                        ));
             }
         }
     }
@@ -33,11 +63,37 @@ public class Board {
         pegPositions[row][column]=peg;
     }
 
-    public Peg[][] getAmountOfRows() {
+    public int getAmountOfRows() {
+        return pegPositions.length;
+    }
+
+    public Peg[][] getAllPegs() {
         return pegPositions;
     }
 
-    public Peg[] getAmountOfColumns(){
-        return pegPositions[10];
+    public int getAmountOfColumns(){
+        return pegPositions[0].length;
+    }
+
+    public Board boardCopy() {
+        Board boardCopy = new Board(this.pawnColorPlayer1, this.pawnColorPlayer2);
+
+        for (int r = 0; r < getAmountOfRows(); r++) {
+            for (int c = 0; c < getAmountOfColumns(); c++) {
+                Peg oldPeg = getPegPosition(r, c);
+                if (oldPeg == null) continue;
+
+                Peg newPeg = boardCopy.getPegPosition(r, c);
+
+                // Veiligheidshalve checken of de nieuwe peg ook bestaat
+                if (newPeg != null) {
+                    for (Pawn oldPawn : oldPeg.getPawns()) {
+                        Pawn newPawn = new Pawn(newPeg, oldPawn.getPawnColor());
+                        newPeg.addPawnToPeg(newPawn);
+                    }
+                }
+            }
+        }
+        return boardCopy;
     }
 }
