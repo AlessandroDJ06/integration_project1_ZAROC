@@ -5,6 +5,8 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
+import game.integration_project1_zaroc.view.pages.startview.StartPresenter;
+import game.integration_project1_zaroc.view.pages.startview.StartView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
@@ -20,8 +22,12 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Themes theme = Themes.DEFAULT;
         ResourceManager resourceManager = new ResourceManager(theme);
-        GameSetupView view = new GameSetupView(resourceManager);
-        new GameSetupPresenter(view,new AppController());
+        //GameSetupView view = new GameSetupView(resourceManager);
+        //new GameSetupPresenter(view,new AppController());
+
+        StartView view = new StartView(resourceManager);
+        new StartPresenter(new AppController(),view);
+
         Scene scene = new Scene(view);
         stage.setScene(scene);
         stage.setMaximized(true);
