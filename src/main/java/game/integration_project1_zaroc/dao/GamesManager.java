@@ -1,7 +1,7 @@
 package game.integration_project1_zaroc.dao;
 
-import game.integration_project1_zaroc.model.gameinfo.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
+import game.integration_project1_zaroc.model.gamelogic.Game;
 
 
 public class GamesManager {

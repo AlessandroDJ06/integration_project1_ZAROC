@@ -1,5 +1,6 @@
 package game.integration_project1_zaroc;
 
+import game.integration_project1_zaroc.dao.DaoUtils;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
@@ -26,6 +27,7 @@ public class Main extends Application {
         stage.setMaximized(true);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
         stage.show();
+        DaoUtils.createTable();
 
     }
 

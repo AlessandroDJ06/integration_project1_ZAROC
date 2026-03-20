@@ -1,7 +1,7 @@
 package game.integration_project1_zaroc.dao;
 
 
-import game.integration_project1_zaroc.model.gameinfo.Game;
+import game.integration_project1_zaroc.model.gamelogic.Game;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

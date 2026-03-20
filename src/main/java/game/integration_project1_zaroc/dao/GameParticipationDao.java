@@ -1,8 +1,8 @@
 package game.integration_project1_zaroc.dao;
 
 
-import game.integration_project1_zaroc.model.gameinfo.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
+import game.integration_project1_zaroc.model.gamelogic.Game;
 import game.integration_project1_zaroc.model.players.Player;
 
 import java.sql.Connection;

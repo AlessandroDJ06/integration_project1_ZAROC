@@ -17,6 +17,7 @@ public class Game {
     private ArrayList<Turn> turns;
     private Move lastMove;
     private Board board;
+    private int gameId;
 
 
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
@@ -25,6 +26,7 @@ public class Game {
         turns = new ArrayList<>();
         gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
         this.lastMove = null;
+        this.gameId = -1;
     }
 
     public void switchCurrentPlayer() {
@@ -180,6 +182,9 @@ public class Game {
     public void setTurns(ArrayList<Turn> turns) {
         this.turns = turns;
     }
+    public List<Turn> getTurns(){
+        return turns;
+    }
 
     public GameStatus getStatus() {
         return status;
@@ -204,5 +209,17 @@ public class Game {
 
     public GameParticipation getParticipation2(){
         return this.gameParticipations[1];
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+
+    public GameParticipation[] getGameParticipations() {
+        return gameParticipations;
     }
 }

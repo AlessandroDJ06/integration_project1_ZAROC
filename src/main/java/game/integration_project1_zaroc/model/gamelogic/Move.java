@@ -105,7 +105,4 @@ public class Move {
                 destinationPeg.getXPosition(), destinationPeg.getYPosition());
     }
 
-    public Turn getTurn() {
-        return turn;
-    }
 }
