@@ -107,4 +107,7 @@ public class Move {
         if(isLegal(pawn, destinationPeg)) this.destinationPeg = destinationPeg;
     }
 
+    public Turn getTurn() {
+        return turn;
+    }
 }

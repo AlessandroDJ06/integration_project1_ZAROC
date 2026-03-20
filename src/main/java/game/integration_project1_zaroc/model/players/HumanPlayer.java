@@ -6,6 +6,7 @@ public class HumanPlayer extends Player {
     private String username;
     private String email;
 
+
     public HumanPlayer(String username, String email) {
         this.username = username;
         this.email = email;

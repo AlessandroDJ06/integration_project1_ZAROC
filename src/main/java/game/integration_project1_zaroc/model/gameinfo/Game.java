@@ -14,7 +14,7 @@ public class Game {
     private Player player1;
     private Player player2;
     private Board board;
-
+    private int gameId;
 
     public Game(Player player1, Player player2) {
         this.status = GameStatus.PLAYING;
@@ -23,6 +23,7 @@ public class Game {
         board = new Board();
         turns = new ArrayList<>();
         gameParticipations = new GameParticipation[]{new GameParticipation(player1,PawnColor.WHITE),new GameParticipation(player2,PawnColor.BLACK)};
+        gameId=-1;
     }
 
     public void switchCurrentPlayer() {
@@ -74,5 +75,17 @@ public class Game {
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+
+    public GameParticipation[] getGameParticipations() {
+        return gameParticipations;
     }
 }

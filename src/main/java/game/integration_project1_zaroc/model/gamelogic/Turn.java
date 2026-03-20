@@ -10,6 +10,7 @@ public class Turn {
     private static int turnNumber = 0;
     private Move[] moves;
     private Game game;
+    private int turnId;
 
 
     public Turn(Player currentPlayer, Game game) {
@@ -66,6 +67,10 @@ public class Turn {
 
         return secondMove.getTimestamp().minusSeconds(firstMove.getTimestamp().getSecond());
     }*/
+
+    public int getTurnId() {
+        return turnId;
+    }
 }
 
 

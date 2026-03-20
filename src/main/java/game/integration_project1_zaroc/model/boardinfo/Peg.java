@@ -29,6 +29,11 @@ public class Peg {
         pawns.remove(pawn);
     }
 
+    @Override
+    public String toString() {
+        return xPosition+","+yPosition;
+    }
+
     public int getXPosition() {
         return xPosition;
     }

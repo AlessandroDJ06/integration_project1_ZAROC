@@ -6,5 +6,9 @@ public enum PawnColor {
     BLUE,
     RED,
     YELLOW,
-    GREEN
+    GREEN;
+    @Override
+    public String toString() {
+        return name().charAt(0) + name().substring(1).toLowerCase();
+    }
 }
