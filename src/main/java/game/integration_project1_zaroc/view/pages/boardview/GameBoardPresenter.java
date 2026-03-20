@@ -268,11 +268,12 @@ public class GameBoardPresenter {
         Peg dest = model.getGame().getBoard().getPegPosition(m.getDestinationPeg().getYPosition(), m.getDestinationPeg().getXPosition());
 
         if (start != null && dest != null && !start.getPawns().isEmpty()) {
+            String playerName = model.getGame().getCurrentTurn().getCurrentPlayer().getUsername();
             model.getGame().executeMove(start, dest);
-            System.out.println("Pion geselecteerd op positie: " + m.getStartPeg().getXPosition() + m.getStartPeg().getYPosition());
-            System.out.println(model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
+            System.out.println("Pion geselecteerd op positie: " + m.getStartPeg().getXPosition() + "," + m.getStartPeg().getYPosition());
+            System.out.println(playerName);
+            System.out.println("Zet uitgevoerd naar: " + m.getDestinationPeg().getXPosition() + "," + m.getDestinationPeg().getYPosition());
         }
-
     }
 
     //----------------------------------------------------------------------------------------------
