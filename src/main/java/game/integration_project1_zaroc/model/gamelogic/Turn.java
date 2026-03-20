@@ -1,5 +1,7 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
+import game.integration_project1_zaroc.model.gameinfo.Game;
+
 import game.integration_project1_zaroc.model.players.Player;
 
 
@@ -7,7 +9,7 @@ public class Turn {
     private Player currentPlayer;
     private int turnNumber;
     private Move[] moves;
-
+    private int turnId;
 
     public Turn(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
@@ -72,6 +74,10 @@ public class Turn {
     @Override
     public int hashCode() {
         return java.util.Objects.hash(getFirstMove(),getSecondMove());
+    }
+
+    public int getTurnId() {
+        return turnId;
     }
 }
 

@@ -5,6 +5,7 @@ import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 public class HumanPlayer extends Player {
     private String email;
 
+
     public HumanPlayer(String username, String email) {
         super(username);
         this.email = email;

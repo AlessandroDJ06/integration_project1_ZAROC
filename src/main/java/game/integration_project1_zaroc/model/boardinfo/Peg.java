@@ -48,6 +48,11 @@ public class Peg {
         return getPawns().get(getPawnCount()-1);
     }
 
+    @Override
+    public String toString() {
+        return xPosition+","+yPosition;
+    }
+
     public int getXPosition() {
         return xPosition;
     }

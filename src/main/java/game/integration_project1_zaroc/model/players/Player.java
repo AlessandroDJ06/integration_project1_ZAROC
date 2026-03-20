@@ -1,9 +1,11 @@
 package game.integration_project1_zaroc.model.players;
 
+import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 
 public abstract class Player {
     private PlayerStyle playerStyle;
     private String username;
+    private int playerId;
 
     // in het begin is de playerstyle null;
     public Player(String username) {
@@ -32,4 +34,12 @@ public abstract class Player {
         this.username = username;
     }
 
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
 }

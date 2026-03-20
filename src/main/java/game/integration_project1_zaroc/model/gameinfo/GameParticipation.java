@@ -8,6 +8,7 @@ public class GameParticipation {
     private PawnColor pawnColor;
     private Player player;
 
+
     public GameParticipation(Player player,PawnColor pawnColor) {
         this.player=player;
         this.pawnColor= pawnColor;
