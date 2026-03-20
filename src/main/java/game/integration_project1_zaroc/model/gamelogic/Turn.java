@@ -77,6 +77,10 @@ public class Turn {
     public int getTurnId() {
         return turnId;
     }
+
+    public void setTurnId(int turnId) {
+        this.turnId = turnId;
+    }
 }
 
 

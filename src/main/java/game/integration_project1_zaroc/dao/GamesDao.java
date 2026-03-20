@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class GamesDao {
-    public int createGame(Game game) throws ZarocDaoException {
+    public int createGame() throws ZarocDaoException {
         String sql = "INSERT INTO GAMES (game_status) VALUES (?)";
 
         try (Connection conn = DaoUtils.createConnection();

@@ -1,5 +1,8 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
+import game.integration_project1_zaroc.dao.MovesDao;
+import game.integration_project1_zaroc.dao.TurnsDao;
+import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.boardinfo.Board;
 import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
@@ -8,6 +11,9 @@ import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.Player;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +24,9 @@ public class Game {
     private Move lastMove;
     private Board board;
     private int gameId;
+    private TurnsDao turnsDao;
+    private MovesDao movesDao;
+    private boolean allowedSave;
 
 
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
@@ -27,6 +36,9 @@ public class Game {
         gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
         this.lastMove = null;
         this.gameId = -1;
+        this.allowedSave = true;
+        this.turnsDao = new TurnsDao();
+        this.movesDao = new MovesDao();
     }
 
     public void switchCurrentPlayer() {
@@ -45,6 +57,13 @@ public class Game {
         Turn turn = new Turn(player);
         turn.setTurnNumber(turns.size() + 1);
         turns.add(turn);
+        if (allowedSave){
+            try {
+                turn.setTurnId(turnsDao.saveTurn(gameId,turn));
+            } catch (ZarocDaoException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public Turn getCurrentTurn(){
@@ -69,7 +88,20 @@ public class Game {
             destinationPeg.addPawnToPeg(upperPawn);
             upperPawn.setCurrentPeg(destinationPeg);
 
-            if (moveNumber == MoveNumber.SECOND_MOVE) {
+            newMove.setEndTime(Timestamp.from(Instant.now()));
+
+
+            if (allowedSave && newMove != null){
+                try{
+                    movesDao.createMove(currentTurn.getTurnId(), newMove);
+                } catch (ZarocDaoException e) {
+                    System.out.println("skibidi");
+                    throw new RuntimeException(e);
+
+                }
+            }
+
+            if (moveNumber == MoveNumber.SECOND_MOVE){
                 switchCurrentPlayer();
             }
 
@@ -162,6 +194,7 @@ public class Game {
         copy.setStatus(this.getStatus());
         copy.setBoard(this.board.boardCopy());
         copy.lastMove = this.lastMove;
+        copy.setAllowedSave(false);
 
         ArrayList<Turn> turnsCopy = new ArrayList<>();
         for (Turn originalTurn : this.turns) {
@@ -221,5 +254,9 @@ public class Game {
 
     public GameParticipation[] getGameParticipations() {
         return gameParticipations;
+    }
+
+    public void setAllowedSave(boolean allowedSave) {
+        this.allowedSave = allowedSave;
     }
 }

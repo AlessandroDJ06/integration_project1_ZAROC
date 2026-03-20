@@ -3,12 +3,15 @@ package game.integration_project1_zaroc.model.gamelogic;
 import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class Move {
     private MoveNumber moveNumber;
     //private Duration duration;
-    private final LocalDateTime timestamp;
+    private final Timestamp startTime;
+    private Timestamp endTime;
     private Peg startPeg;
     private Peg destinationPeg;
 
@@ -16,9 +19,10 @@ public class Move {
     public Move(MoveNumber moveNumber,Peg startPeg, Peg destinationPeg) {
 
         this.moveNumber = moveNumber;
-        timestamp = LocalDateTime.now();
+        startTime = Timestamp.from(Instant.now());
         this.startPeg = startPeg;
         this.destinationPeg = destinationPeg;
+        this.endTime = null;
 
     }
 
@@ -68,8 +72,12 @@ public class Move {
     }*/
 
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public Timestamp getStartTime() {
+        return startTime;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
     }
 
     public Peg getStartPeg() {
@@ -86,6 +94,10 @@ public class Move {
 
     public void setDestinationPeg(Pawn pawn, Peg destinationPeg) {
         if(isLegal(startPeg, destinationPeg)) this.destinationPeg = destinationPeg;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 
     @Override

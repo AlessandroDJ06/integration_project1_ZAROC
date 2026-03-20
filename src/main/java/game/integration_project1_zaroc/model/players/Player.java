@@ -11,6 +11,7 @@ public abstract class Player {
     public Player(String username) {
         this.username = username;
         playerStyle=null;
+        playerId=-1;
     }
 
     public Player(PlayerStyle playerStyle,String username) {

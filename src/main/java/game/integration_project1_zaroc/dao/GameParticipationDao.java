@@ -15,13 +15,13 @@ public class GameParticipationDao {
         GameParticipation[] gameParticipations = game.getGameParticipations();
         String sql = "INSERT INTO GAME_PARTICIPATION (game_id, player_id, pawn_color, winner_id) VALUES (?, ?, ?, NULL)";
 
-        for(GameParticipation gameParticipation: gameParticipations){
+        for(int i = 0 ; i < gameParticipations.length ; i++){
         try (Connection conn = DaoUtils.createConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, game.getGameId());
-            ps.setInt(2, gameParticipation.getPlayer().getPlayerId());
-            ps.setString(3, gameParticipation.getPawnColor().toString());
+            ps.setInt(2, gameParticipations[i].getPlayer().getPlayerId());
+            ps.setString(3, gameParticipations[i].getPawnColor().toString());
 
             ps.executeUpdate();
 
