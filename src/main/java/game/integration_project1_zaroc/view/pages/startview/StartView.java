@@ -84,4 +84,8 @@ public class StartView extends BorderPane {
     Button getInfoButton() {
         return infoButton;
     }
+
+    ResourceManager getResourceManager() {
+        return resourceManager;
+    }
 }

@@ -5,6 +5,7 @@ module game.integration_project1_zaroc {
     requires java.desktop;
     requires java.sql;
     //requires game.integration_project1_zaroc;
+    //requires game.integration_project1_zaroc;
 
 
     exports game.integration_project1_zaroc;
