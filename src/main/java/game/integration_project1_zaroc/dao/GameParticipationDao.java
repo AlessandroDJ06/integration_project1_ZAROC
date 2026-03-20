@@ -8,7 +8,7 @@ import game.integration_project1_zaroc.model.players.Player;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
+
 
 public class GameParticipationDao {
     public void createGameParticipation(Game game) throws ZarocDaoException {
