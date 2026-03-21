@@ -1,6 +1,11 @@
 package game.integration_project1_zaroc.view.pages.startview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountPresenter;
+import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountView;
+import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
+import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
+import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
 import game.integration_project1_zaroc.view.pages.loginview.LoginView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Scene;
@@ -19,6 +24,8 @@ public class StartPresenter {
     private AppController model;
     private StartView view;
     private List<Button> buttons;
+    private Stage loginStage;
+    private Stage createAccountStage;
 
     public StartPresenter(AppController model , StartView view){
         this.model = model;
@@ -40,9 +47,10 @@ public class StartPresenter {
 
         view.getLoginButton().setOnAction(event -> {
             LoginView loginView = new LoginView(this.view.getResourceManager());
+            new LoginPresenter(this.model, loginView);
             Scene loginScene = new Scene(loginView);
             loginScene.setFill(Color.TRANSPARENT);
-            Stage loginStage = new Stage();
+            this.loginStage = new Stage();
             loginStage.setScene(loginScene);
             loginStage.setTitle("login");
             loginStage.initStyle(StageStyle.TRANSPARENT);
@@ -50,9 +58,35 @@ public class StartPresenter {
             loginStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             loginStage.setResizable(false);
             loginStage.showAndWait();
+            if (model.isLoggedIn()) {
+                navigateToGameSetup();
+            }
+        });
 
+        view.getCreateAccountButton().setOnAction(event -> {
+            CreateAccountView createAccountView = new CreateAccountView(this.view.getResourceManager());
+            new CreateAccountPresenter(this.model, createAccountView);
+            Scene createAccountScene = new Scene(createAccountView);
+            createAccountScene.setFill(Color.TRANSPARENT);
+            this.createAccountStage = new Stage();
+            createAccountStage.setScene(createAccountScene);
+            createAccountStage.setTitle("createAccount");
+            createAccountStage.initStyle(StageStyle.TRANSPARENT);
+            createAccountStage.initModality(Modality.APPLICATION_MODAL);
+            createAccountStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            createAccountStage.setResizable(false);
+            createAccountStage.showAndWait();
+            if (model.isLoggedIn()) {
+                navigateToGameSetup();
+            }
         });
 
 
+
+    }
+    private void navigateToGameSetup() {
+        GameSetupView setupView = new GameSetupView(view.getResourceManager());
+        new GameSetupPresenter(setupView, model);
+        view.getScene().setRoot(setupView);
     }
 }
