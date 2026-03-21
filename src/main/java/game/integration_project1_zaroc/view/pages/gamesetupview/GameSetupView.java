@@ -69,7 +69,6 @@ public class GameSetupView extends BorderPane {
         createGameButton.setPadding(new Insets(0,0,15,0));
 
         //title section (game settings)
-
         //title property's
         Label title = new Label("Game Settings");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
