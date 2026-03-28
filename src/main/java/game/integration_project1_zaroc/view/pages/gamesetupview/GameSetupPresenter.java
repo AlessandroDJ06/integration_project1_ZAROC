@@ -136,7 +136,7 @@ public class GameSetupPresenter {
 
         view.getInfoButton().setOnAction(event -> {
             RuleView ruleView = new RuleView(view.getResourceManager());
-            new RuleViewPresenter(ruleView,new AppController());
+            new RuleViewPresenter(ruleView,this.model);
             Scene ruleScene = new Scene(ruleView);
             ruleScene.setFill(Color.TRANSPARENT);
             Stage ruleStage = new Stage();
@@ -150,7 +150,7 @@ public class GameSetupPresenter {
         });
         view.getSettingsButton().setOnAction(actionEvent -> {
             SettingsView settingsView = new SettingsView(view.getResourceManager());
-            new SettingsPresenter(settingsView,new AppController());
+            new SettingsPresenter(settingsView,this.model);
             Scene settingsScene = new Scene(settingsView);
             settingsScene.setFill(Color.TRANSPARENT);
             Stage settingsStage = new Stage();

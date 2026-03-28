@@ -26,7 +26,9 @@ public class Game {
     private int gameId;
     private TurnsDao turnsDao;
     private MovesDao movesDao;
+    private boolean canUseDatabase;
     private boolean allowedSave;
+
 
 
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
@@ -37,6 +39,7 @@ public class Game {
         this.lastMove = null;
         this.gameId = -1;
         this.allowedSave = true;
+        this.canUseDatabase = true;
         this.turnsDao = new TurnsDao();
         this.movesDao = new MovesDao();
     }
@@ -57,7 +60,7 @@ public class Game {
         Turn turn = new Turn(player);
         turn.setTurnNumber(turns.size() + 1);
         turns.add(turn);
-        if (allowedSave){
+        if (allowedSave && canUseDatabase){
             try {
                 turn.setTurnId(turnsDao.saveTurn(gameId,turn));
             } catch (ZarocDaoException e) {
@@ -91,11 +94,10 @@ public class Game {
             newMove.setEndTime(Timestamp.from(Instant.now()));
 
 
-            if (allowedSave && newMove != null){
+            if (allowedSave && (newMove != null) && canUseDatabase){
                 try{
                     movesDao.createMove(currentTurn.getTurnId(), newMove);
                 } catch (ZarocDaoException e) {
-                    System.out.println("skibidi");
                     throw new RuntimeException(e);
 
                 }
@@ -258,5 +260,9 @@ public class Game {
 
     public void setAllowedSave(boolean allowedSave) {
         this.allowedSave = allowedSave;
+    }
+
+    public void setCanUseDatabase(boolean canUseDatabase) {
+        this.canUseDatabase = canUseDatabase;
     }
 }
