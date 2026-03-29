@@ -1,0 +1,90 @@
+package game.integration_project1_zaroc.dao;
+
+
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class LeaderboardDao {
+
+    public List<LeaderboardEntry> fetchLeaderboard() throws SQLException, ZarocDaoException {
+
+        String sql = """
+            SELECT
+                p.username,
+                COUNT(DISTINCT gp.game_id)                              AS games_played,
+                SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
+                                                                        AS wins,
+                COUNT(DISTINCT gp.game_id)
+                    - SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
+                                                                        AS losses,
+                ROUND(
+                    100.0 * SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
+                    / NULLIF(COUNT(DISTINCT gp.game_id), 0), 1
+                )                                                       AS win_percentage,
+                COALESCE(
+                    SUM(EXTRACT(EPOCH FROM (m.end_time - m.start_time))::BIGINT), 0
+                )                                                       AS total_play_time_sec,
+                COALESCE(
+                    ROUND(COUNT(m.move_id)::NUMERIC
+                          / NULLIF(COUNT(DISTINCT gp.game_id), 0), 2), 0
+                )                                                       AS avg_moves_per_game,
+                COALESCE(
+                    ROUND(
+                        SUM(EXTRACT(EPOCH FROM (m.end_time - m.start_time)))
+                        / NULLIF(COUNT(m.move_id), 0), 2
+                    ), 0
+                )                                                       AS avg_sec_per_move,
+                SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
+                                                                        AS total_score
+            FROM
+                PLAYERS p
+                JOIN GAME_PARTICIPATION gp ON p.player_id = gp.player_id
+                JOIN GAMES g              ON gp.game_id  = g.game_id
+                LEFT JOIN TURNS t         ON t.player_id = p.player_id
+                                         AND t.game_id  = gp.game_id
+                LEFT JOIN MOVES m         ON m.turn_id   = t.turn_id
+            WHERE
+                g.game_status = 'FINISHED'
+            GROUP BY
+                p.player_id, p.username
+            ORDER BY
+                win_percentage DESC,
+                wins           DESC,
+                p.username     ASC
+            """;
+
+        List<LeaderboardEntry> entries = new ArrayList<>();
+
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            int rank = 1;
+            while (rs.next()) {
+                LeaderboardEntry entry = new LeaderboardEntry(
+                    rank++,
+                    rs.getString("username"),
+                    rs.getInt("games_played"),
+                    rs.getInt("wins"),
+                    rs.getInt("losses"),
+                    rs.getDouble("win_percentage"),
+                    rs.getLong("total_play_time_sec"),
+                    rs.getDouble("avg_moves_per_game"),
+                    rs.getDouble("avg_sec_per_move"),
+                    rs.getInt("total_score")
+                );
+                entries.add(entry);
+            }
+        } catch (ZarocDaoException e) {
+            throw new ZarocDaoException("Kon niets ophalen.", e);
+        }
+
+        System.out.println("[DB] Leaderboard fetched: " + entries.size() + " players.");
+        return entries;
+    }
+
+
+    }
+

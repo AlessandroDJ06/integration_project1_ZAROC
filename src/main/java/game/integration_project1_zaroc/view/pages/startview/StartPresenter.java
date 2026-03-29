@@ -5,6 +5,8 @@ import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccoun
 import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountView;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
+import game.integration_project1_zaroc.view.pages.leaderboardView.LeaderboardPresenter;
+import game.integration_project1_zaroc.view.pages.leaderboardView.LeaderboardView;
 import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
 import game.integration_project1_zaroc.view.pages.loginview.LoginView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
@@ -79,6 +81,22 @@ public class StartPresenter {
             if (model.isLoggedIn()) {
                 navigateToGameSetup();
             }
+        });
+
+        view.getLeaderboardButton().setOnAction(actionEvent -> {
+            LeaderboardView leaderboardView = new LeaderboardView(view.getResourceManager());
+            new LeaderboardPresenter(leaderboardView,new AppController());
+            Scene leaderboardScene = new Scene(leaderboardView);
+            leaderboardScene.setFill(Color.TRANSPARENT);
+            Stage leaderboardStage = new Stage();
+            leaderboardStage.setScene(leaderboardScene);
+            leaderboardStage.setTitle("Leaderboard");
+            leaderboardStage.initStyle(StageStyle.TRANSPARENT);
+            leaderboardStage.initModality(Modality.APPLICATION_MODAL);
+            leaderboardStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            leaderboardStage.setResizable(false);
+            leaderboardStage.showAndWait();
+
         });
 
 
