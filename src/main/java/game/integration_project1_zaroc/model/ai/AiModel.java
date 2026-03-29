@@ -95,10 +95,12 @@ public class AiModel {
             if (!alreadyExpanded) {
                 Game nextState = node.getState().gameCopy();
                 if (turn.getFirstMove() != null) {
-                    nextState.executeMove(turn.getFirstMove().getStartPeg(), turn.getFirstMove().getDestinationPeg());
+                    nextState.selectStartPeg(turn.getFirstMove().getStartPeg());
+                    nextState.executeMove(turn.getFirstMove().getDestinationPeg());
                 }
                 if (nextState.getStatus() == GameStatus.PLAYING && turn.getSecondMove() != null) {
-                    nextState.executeMove(turn.getSecondMove().getStartPeg(), turn.getSecondMove().getDestinationPeg());
+                    nextState.selectStartPeg(turn.getSecondMove().getStartPeg());
+                    nextState.executeMove(turn.getSecondMove().getDestinationPeg());
                 }
 
                 ZarocNode newNode = new ZarocNode(nextState, node, turn);
@@ -126,10 +128,12 @@ public class AiModel {
             }
 
             if (chosenTurn.getFirstMove() != null) {
-                simGame.executeMove(chosenTurn.getFirstMove().getStartPeg(), chosenTurn.getFirstMove().getDestinationPeg());
+                simGame.selectStartPeg(chosenTurn.getFirstMove().getStartPeg());
+                simGame.executeMove(chosenTurn.getFirstMove().getDestinationPeg());
             }
             if (simGame.getStatus() == GameStatus.PLAYING && chosenTurn.getSecondMove() != null) {
-                simGame.executeMove(chosenTurn.getSecondMove().getStartPeg(), chosenTurn.getSecondMove().getDestinationPeg());
+                simGame.selectStartPeg(chosenTurn.getSecondMove().getStartPeg());
+                simGame.executeMove(chosenTurn.getSecondMove().getDestinationPeg());
             }
 
             maxTurns--;

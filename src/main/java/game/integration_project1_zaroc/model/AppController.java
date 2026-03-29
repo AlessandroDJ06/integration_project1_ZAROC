@@ -102,7 +102,7 @@ public class AppController {
         );
 
         this.game.getBoard().setupStart();
-        this.game.setCanUseDatabase(allowedToUseDatabase);
+        this.game.setAllowedToUseDatabase(allowedToUseDatabase);
         if (allowedToUseDatabase){
             createGameId();
             saveGameParticipations(this.game);
@@ -167,7 +167,4 @@ public class AppController {
         this.player1 = player1;
     }
 
-    public boolean isAllowedToUseDatabase() {
-        return allowedToUseDatabase;
-    }
 }

@@ -269,7 +269,8 @@ public class GameBoardPresenter {
 
         if (start != null && dest != null && !start.getPawns().isEmpty()) {
             String playerName = model.getGame().getCurrentTurn().getCurrentPlayer().getUsername();
-            model.getGame().executeMove(start, dest);
+            model.getGame().selectStartPeg(start);
+            model.getGame().executeMove(dest);
             System.out.println("Pion geselecteerd op positie: " + m.getStartPeg().getXPosition() + "," + m.getStartPeg().getYPosition());
             System.out.println(playerName);
             System.out.println("Zet uitgevoerd naar: " + m.getDestinationPeg().getXPosition() + "," + m.getDestinationPeg().getYPosition());
@@ -297,6 +298,7 @@ public class GameBoardPresenter {
             int startRow = GridPane.getRowIndex(selectedPawn);
             Peg startPeg = model.getGame().getBoard().getAllPegs()[startRow][startCol];
             Peg destinationPeg = model.getGame().getBoard().getAllPegs()[row][col];
+
             List<Move> legalMoves = model.getGame().getLegalMoves(startPeg);
             boolean isLegal = false;
 
@@ -308,7 +310,8 @@ public class GameBoardPresenter {
             }
 
             if (isLegal) {
-                model.getGame().executeMove(startPeg, destinationPeg);
+                model.getGame().selectStartPeg(startPeg);
+                model.getGame().executeMove(destinationPeg);
                 System.out.println("Zet uitgevoerd naar: " + col + "," + row);
             } else {
                 selectedPawn.setOpacity(1.0);
