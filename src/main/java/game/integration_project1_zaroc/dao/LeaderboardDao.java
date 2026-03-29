@@ -20,9 +20,9 @@ public class LeaderboardDao {
                     - SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
                                                                         AS losses,
                 ROUND(
-                    100.0 * SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
-                    / NULLIF(COUNT(DISTINCT gp.game_id), 0), 1
-                )                                                       AS win_percentage,
+                    (100.0 * SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
+                    / NULLIF(COUNT(DISTINCT gp.game_id), 0))::NUMERIC, 1
+                )                                                      AS win_percentage,
                 COALESCE(
                     SUM(EXTRACT(EPOCH FROM (m.end_time - m.start_time))::BIGINT), 0
                 )                                                       AS total_play_time_sec,
@@ -31,11 +31,10 @@ public class LeaderboardDao {
                           / NULLIF(COUNT(DISTINCT gp.game_id), 0), 2), 0
                 )                                                       AS avg_moves_per_game,
                 COALESCE(
-                    ROUND(
-                        SUM(EXTRACT(EPOCH FROM (m.end_time - m.start_time)))
-                        / NULLIF(COUNT(m.move_id), 0), 2
-                    ), 0
-                )                                                       AS avg_sec_per_move,
+                   ROUND(
+                       (SUM(EXTRACT(EPOCH FROM (m.end_time - m.start_time)))
+                       / NULLIF(COUNT(m.move_id), 0))::NUMERIC, 2
+                   )            )                                          AS avg_sec_per_move,
                 SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)
                                                                         AS total_score
             FROM
