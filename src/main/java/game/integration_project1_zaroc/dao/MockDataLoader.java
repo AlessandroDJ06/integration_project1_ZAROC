@@ -3,29 +3,16 @@ package game.integration_project1_zaroc.dao;
 import java.sql.*;
 
 /**
- * Checks whether the database has any game data and, if not, automatically
- * inserts mock data so the leaderboard always has something to show.
- *
- * Board positions use "x,y" format matching Zaroc's Peg(column, row):
- *   rows 0-1 : odd columns  → valid pegs: (1,0)(3,0)(5,0)(7,0)(1,1)(3,1)(5,1)(7,1)
- *   rows 2-3 : even columns → valid pegs: (0,2)(2,2)(4,2)(6,2)(8,2)(0,3)(2,3)(4,3)(6,3)(8,3)
- *
- * Legal moves (from isLegal):
- *   lateral : same row, deltaX = 2       e.g. "1,0" → "3,0"
- *   forward : deltaY = +1, deltaX ≤ 2    e.g. "3,0" → "2,2"  (col parity shifts row 0→2)
- *                                              "2,2" → "2,3"  (row 2 → finish row)
- *   row 3   : pieces can only arrive here, never move from it
- *
- * TRIGGERED: Call loadIfEmpty() once from Application.start() before any
+  * TRIGGERED: Call loadIfEmpty() once from Application.start() before any
  *            scene is shown.
  */
 public class MockDataLoader {
-
-    private final Connection conn;
-
-    public MockDataLoader() throws SQLException, ZarocDaoException {
-        this.conn = DaoUtils.createConnection();
-    }
+//
+//    private final Connection conn;
+//
+//    public MockDataLoader() throws SQLException, ZarocDaoException {
+//        this.conn = DaoUtils.createConnection();
+//    }
 
     // ══════════════════════════════════════════════════════════════════════
     //  Public entry point
@@ -35,16 +22,17 @@ public class MockDataLoader {
      * Loads mock data only when the GAMES table is empty.
      * Safe to call every startup — it does nothing if data already exists.
      */
-    public void loadIfEmpty() throws SQLException {
-        if (isDatabaseEmpty()) {
+    public void loadIfEmpty() throws SQLException, ZarocDaoException {
+        try(Connection conn = DaoUtils.createConnection()){
+        if (isDatabaseEmpty(conn)) {
             System.out.println("[MockDataLoader] Database empty — loading mock data.");
             conn.setAutoCommit(false);
             try {
-                insertPlayers();
-                insertGames();
-                insertParticipations();
-                insertTurns();
-                insertMoves();
+                insertPlayers(conn);
+                insertGames(conn);
+                insertParticipations(conn);
+                insertTurns(conn);
+                insertMoves(conn);
                 conn.commit();
                 System.out.println("[MockDataLoader] Mock data loaded successfully.");
             } catch (SQLException e) {
@@ -57,13 +45,14 @@ public class MockDataLoader {
         } else {
             System.out.println("[MockDataLoader] Data already present — skipping.");
         }
+        }
     }
 
     // ══════════════════════════════════════════════════════════════════════
     //  Empty check
     // ══════════════════════════════════════════════════════════════════════
 
-    private boolean isDatabaseEmpty() throws SQLException {
+    private boolean isDatabaseEmpty(Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM GAMES");
              ResultSet rs = ps.executeQuery()) {
             return rs.next() && rs.getInt(1) == 0;
@@ -74,17 +63,17 @@ public class MockDataLoader {
     //  Players
     // ══════════════════════════════════════════════════════════════════════
 
-    private void insertPlayers() throws SQLException {
+    private void insertPlayers(Connection conn) throws SQLException {
         String sql = """
-            INSERT INTO PLAYERS (username, email, difficulty, play_style, password)
-            VALUES (?, ?, ?, ?, ?) ON CONFLICT DO NOTHING
+            INSERT INTO PLAYERS (username, email, play_style, password)
+            VALUES (?, ?, ?, ?) ON CONFLICT DO NOTHING
             """;
         Object[][] players = {
-                {"Alice",   "alice@game.com",   "MEDIUM", "AGGRESSIVE", "hashed_alice"},
-                {"Bob",     "bob@game.com",     "EASY",   "PASSIVE",    "hashed_bob"},
-                {"Charlie", "charlie@game.com", "HARD",   "AGGRESSIVE", "hashed_charlie"},
-                {"Diana",   "diana@game.com",   "MEDIUM", "PASSIVE",    "hashed_diana"},
-                {"Eve",     "eve@game.com",     "HARD",   "AGGRESSIVE", "hashed_eve"},
+                {"Alice",   "alice@game.com",    "AGGRESSIVE", "hashed_alice"},
+                {"Bob",     "bob@game.com",        "PASSIVE",    "hashed_bob"},
+                {"Charlie", "charlie@game.com",    "AGGRESSIVE", "hashed_charlie"},
+                {"Diana",   "diana@game.com",    "PASSIVE",    "hashed_diana"},
+                {"Eve",     "eve@game.com",    "AGGRESSIVE", "hashed_eve"},
         };
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (Object[] p : players) {
@@ -92,7 +81,6 @@ public class MockDataLoader {
                 ps.setString(2, (String) p[1]);
                 ps.setString(3, (String) p[2]);
                 ps.setString(4, (String) p[3]);
-                ps.setString(5, (String) p[4]);
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -103,11 +91,11 @@ public class MockDataLoader {
     //  Games
     // ══════════════════════════════════════════════════════════════════════
 
-    private void insertGames() throws SQLException {
+    private void insertGames(Connection conn) throws SQLException {
         String sql = "INSERT INTO GAMES (game_status) VALUES (?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            for (int i = 0; i < 13; i++) { ps.setString(1, "FINISHED");    ps.addBatch(); }
-            for (int i = 0; i < 2;  i++) { ps.setString(1, "IN_PROGRESS"); ps.addBatch(); }
+            for (int i = 0; i < 13; i++) { ps.setString(1, "ENDED");    ps.addBatch(); }
+            for (int i = 0; i < 2;  i++) { ps.setString(1, "PAUSED"); ps.addBatch(); }
             ps.executeBatch();
         }
     }
@@ -116,7 +104,7 @@ public class MockDataLoader {
     //  Game Participation — no hardcoded IDs, subselects on username
     // ══════════════════════════════════════════════════════════════════════
 
-    private void insertParticipations() throws SQLException {
+    private void insertParticipations(Connection conn) throws SQLException {
         // { playerUsername, gameOffset(0-based), pawnColor, winnerUsername or null }
         Object[][] rows = {
                 {"Alice",   0, "RED",    "Alice"},   // Game 1: Alice beats Bob
@@ -192,7 +180,7 @@ public class MockDataLoader {
     //  Turns
     // ══════════════════════════════════════════════════════════════════════
 
-    private void insertTurns() throws SQLException {
+    private void insertTurns(Connection conn) throws SQLException {
         // { turnNumber, playerUsername, gameOffset }
         Object[][] turns = {
                 {1,"Alice",0},{2,"Bob",0},{3,"Alice",0},{4,"Bob",0},
@@ -231,7 +219,7 @@ public class MockDataLoader {
 
 
 
-    private void insertMoves() throws SQLException {
+    private void insertMoves(Connection conn) throws SQLException {
         // { moveNumber, turnNumber, playerUsername, gameOffset,
         //   startTime, endTime, startLoc, endLoc }
         Object[][] moves = {
@@ -382,6 +370,17 @@ public class MockDataLoader {
                 ps.addBatch();
             }
             ps.executeBatch();
+        }
+    }
+    public void clearDatabase() throws SQLException, ZarocDaoException {
+        try (Connection conn = DaoUtils.createConnection();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.executeUpdate(
+                    "TRUNCATE TABLE MOVES, TURNS, GAME_PARTICIPATION, GAMES, PLAYERS RESTART IDENTITY CASCADE"
+            );
+
+            System.out.println("[MockDataLoader] Database cleared.");
         }
     }
 }

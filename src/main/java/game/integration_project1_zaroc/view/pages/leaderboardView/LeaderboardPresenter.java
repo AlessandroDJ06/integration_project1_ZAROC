@@ -4,6 +4,7 @@ package game.integration_project1_zaroc.view.pages.leaderboardView;
 import game.integration_project1_zaroc.dao.LeaderboardDao;
 
 import game.integration_project1_zaroc.dao.LeaderboardEntry;
+import game.integration_project1_zaroc.dao.MockDataLoader;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 
 
@@ -59,7 +60,7 @@ public class LeaderboardPresenter {
             case "Avg Sec / Move"  -> Comparator.comparingDouble(LeaderboardEntry::getAvgSecPerMove).reversed();
             case "Total Score"     -> Comparator.comparingInt(LeaderboardEntry::getTotalScore).reversed();
             default                -> // "Win Rate" — default
-                    Comparator.comparingDouble(LeaderboardEntry::getWinPercentage).reversed()
+                    Comparator.comparingDouble(LeaderboardEntry::getWinPercentage)
                             .thenComparingInt(LeaderboardEntry::getWins).reversed();
         };
 
@@ -77,10 +78,17 @@ public class LeaderboardPresenter {
 
     public void loadLeaderboard(){
         view.setStatusText("Loading leaderboard…");
+       // load mock data if db empty
+        try{
+            new MockDataLoader().loadIfEmpty();
+        }catch(SQLException|ZarocDaoException e){
+            System.out.println("Mock data loader not working" + e.getMessage());
+        }
 
         Thread dbThread = new Thread(() -> {
             try {
                 List<LeaderboardEntry> entries = dao.fetchLeaderboard();
+                cachedEntries=entries;
                 List<String> rows = formatEntries(entries);
 
                 Platform.runLater(() -> {
@@ -104,18 +112,16 @@ public class LeaderboardPresenter {
 
 
     private List<String> formatEntries(List<LeaderboardEntry> entries) {
-        String[] medals = {"🥇", "🥈", "🥉"};
+
         List<String> rows = new ArrayList<>();
 
         for (LeaderboardEntry e : entries) {
-            String rankPrefix = (e.getRank() <= 3)
-                    ? medals[e.getRank() - 1]
-                    : "#" + e.getRank();
+
 
             String row = String.format(
-                    "%s %-18s | Played: %2d | W: %2d | L: %2d | Win%%: %5.1f%% | " +
+                    "# %-18s | Played: %2d | W: %4d | L: %4d | Win%%: %5.1f%% | " +
                             "Time: %s | Avg Moves: %5.1f | Avg s/Move: %5.1f | Score: %3d",
-                    rankPrefix,
+
                     e.getUsername(),
                     e.getGamesPlayed(),
                     e.getWins(),
