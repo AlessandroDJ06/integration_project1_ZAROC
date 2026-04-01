@@ -119,9 +119,9 @@ public class LeaderboardPresenter {
 
 
             String row = String.format(
-                    "# %-18s | Played: %2d | W: %4d | L: %4d | Win%%: %5.1f%% | " +
+                    "#%s %-18s | Played: %2d | W: %4d | L: %4d | Win%%: %5.1f%% | " +
                             "Time: %s | Avg Moves: %5.1f | Avg s/Move: %5.1f | Score: %3d",
-
+                    e.getRank(),
                     e.getUsername(),
                     e.getGamesPlayed(),
                     e.getWins(),
