@@ -5,13 +5,13 @@ import game.integration_project1_zaroc.model.players.Player;
 
 public class GameParticipation {
     private boolean winner;
-    private PawnColor pawnColor;
+    private PawnColor chosenPawnColor;
     private Player player;
 
 
-    public GameParticipation(Player player,PawnColor pawnColor) {
+    public GameParticipation(Player player,PawnColor chosenPawnColor) {
         this.player=player;
-        this.pawnColor= pawnColor;
+        this.chosenPawnColor = chosenPawnColor;
         this.winner = false;
     }
 
@@ -23,12 +23,12 @@ public class GameParticipation {
         this.winner = winner;
     }
 
-    public PawnColor getPawnColor() {
-        return pawnColor;
+    public PawnColor getChosenPawnColor() {
+        return chosenPawnColor;
     }
 
-    public void setPawnColor(PawnColor pawnColor) {
-        this.pawnColor = pawnColor;
+    public void setChosenPawnColor(PawnColor chosenPawnColor) {
+        this.chosenPawnColor = chosenPawnColor;
     }
 
     public Player getPlayer() {

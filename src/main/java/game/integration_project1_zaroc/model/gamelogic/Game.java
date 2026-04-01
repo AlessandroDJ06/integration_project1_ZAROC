@@ -26,13 +26,13 @@ public class Game {
     private TurnsDao turnsDao;
     private MovesDao movesDao;
     private boolean allowedSave;
-    private Peg startPeg;
+    private Peg selectedPeg;
 
 
 
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
         this.status = GameStatus.PLAYING;
-        board = new Board(gameParticipation1.getPawnColor(),gameParticipation2.getPawnColor());
+        board = new Board(gameParticipation1.getChosenPawnColor(),gameParticipation2.getChosenPawnColor());
         turns = new ArrayList<>();
         gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
         this.lastMove = null;
@@ -40,7 +40,7 @@ public class Game {
         this.allowedSave = true;
         this.turnsDao = new TurnsDao();
         this.movesDao = new MovesDao();
-        this.startPeg = null;
+        this.selectedPeg = null;
     }
 
     public void switchCurrentPlayer() {
@@ -74,14 +74,14 @@ public class Game {
     }
 
     public void selectStartPeg(Peg startPeg){
-        this.startPeg = startPeg;
+        this.selectedPeg = startPeg;
     }
 
     public void executeMove(Peg destinationPeg) {
-        if (status != GameStatus.PLAYING || isUndoMove(this.startPeg, destinationPeg)) {
+        if (status != GameStatus.PLAYING || isUndoMove(this.selectedPeg, destinationPeg)) {
             return;
         }
-        Move newMove = processGameLogic(this.startPeg, destinationPeg);
+        Move newMove = processGameLogic(this.selectedPeg, destinationPeg);
         saveMoveToDatabase(newMove);
         checkWinCondition();
         this.lastMove = newMove;
@@ -181,8 +181,8 @@ public class Game {
 
             if (finishPeg != null && !finishPeg.getPawns().isEmpty()) {
                 PawnColor color = finishPeg.getPawns().getFirst().getPawnColor();
-                if (color == gameParticipations[0].getPawnColor()) countColor1++;
-                else if (color == gameParticipations[1].getPawnColor()) countColor2++;
+                if (color == gameParticipations[0].getChosenPawnColor()) countColor1++;
+                else if (color == gameParticipations[1].getChosenPawnColor()) countColor2++;
             }
         }
 
@@ -200,7 +200,7 @@ public class Game {
         Game copy = new Game(this.getParticipation1(), this.getParticipation2());
         copy.setStatus(this.getStatus());
         copy.setBoard(this.board.boardCopy());
-        copy.lastMove = this.lastMove;
+        copy.lastMove = this.lastMove;  // ← dit was de bug
         copy.setAllowedSave(false);
 
         ArrayList<Turn> turnsCopy = new ArrayList<>();

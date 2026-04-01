@@ -10,16 +10,11 @@ import java.util.List;
 import java.util.Random;
 
 public class AiModel {
-    //model
     private final int ITERATIONS;
-    private final int MAX_MOVES = 5;
+    private final int MAX_MOVES = 20;
     private final double UCB_CONSTANT_VALUE = 1.41;
-    //backpropagation
+
     private final double WIN_SCORE = 1.0;
-    private final double PROGRESS_WEIGHT = 2.0;
-    private final double REACHED_FINISH_BONUS = 50.0;
-    private final double HEURISTIC_MAX_SCORE = 0.9;
-    private final double FULL_PEG_BONUS = 0.5;
 
     private final Random random = new Random();
 
@@ -36,17 +31,10 @@ public class AiModel {
         ZarocNode root = new ZarocNode(actualGame.gameCopy(), null, null);
 
         for (int i = 0; i < ITERATIONS; i++) {
-            // 1. SELECT: Zoek het meest interessante blad in de huidige boom
             ZarocNode leaf = select(root);
-
-            // 2. EXPAND: Voeg een nieuwe, nog niet geprobeerde zet toe aan dat blad
             ZarocNode newNode = expand(leaf);
-
-            // 3. SIMULATE: "Droom" vanaf die nieuwe zet hoe het spel afloopt
-            Player winner = simulate(newNode);
-
-            // 4. BACKPROPAGATE: Vertel de hele route terug naar boven hoe goed de droom was
-            backpropagate(newNode, winner);
+            double score = simulate(newNode);
+            backpropagate(newNode, score);
         }
 
         ZarocNode bestChild = null;
@@ -94,15 +82,7 @@ public class AiModel {
 
             if (!alreadyExpanded) {
                 Game nextState = node.getState().gameCopy();
-                if (turn.getFirstMove() != null) {
-                    nextState.selectStartPeg(turn.getFirstMove().getStartPeg());
-                    nextState.executeMove(turn.getFirstMove().getDestinationPeg());
-                }
-                if (nextState.getStatus() == GameStatus.PLAYING && turn.getSecondMove() != null) {
-                    nextState.selectStartPeg(turn.getSecondMove().getStartPeg());
-                    nextState.executeMove(turn.getSecondMove().getDestinationPeg());
-                }
-
+                applyTurn(nextState, turn);
                 ZarocNode newNode = new ZarocNode(nextState, node, turn);
                 node.addChild(newNode);
                 return newNode;
@@ -111,47 +91,62 @@ public class AiModel {
         return node;
     }
 
-    private Player simulate(ZarocNode node) {
+    private double simulate(ZarocNode node) {
         Game simGame = node.getState().gameCopy();
         int maxTurns = MAX_MOVES;
+
+        // Sla de speler op die VOOR de simulatie aan de beurt was
+        // (= de speler die de zet naar dit blad heeft gedaan)
+        Player movingPlayer = (node.getParent() != null)
+                ? node.getParent().getState().getCurrentTurn().getCurrentPlayer()
+                : simGame.getCurrentTurn().getCurrentPlayer();
 
         while (simGame.getStatus() == GameStatus.PLAYING && maxTurns > 0) {
             List<Turn> options = MoveGenerator.getAllLegalTurns(simGame);
             if (options.isEmpty()) break;
 
             Turn chosenTurn;
-
-            if (random.nextDouble() > 0.1) {
+            if (random.nextDouble() > 0.15) {
                 chosenTurn = getHeuristicBestTurn(options, simGame);
             } else {
                 chosenTurn = options.get(random.nextInt(options.size()));
             }
 
-            if (chosenTurn.getFirstMove() != null) {
-                simGame.selectStartPeg(chosenTurn.getFirstMove().getStartPeg());
-                simGame.executeMove(chosenTurn.getFirstMove().getDestinationPeg());
-            }
-            if (simGame.getStatus() == GameStatus.PLAYING && chosenTurn.getSecondMove() != null) {
-                simGame.selectStartPeg(chosenTurn.getSecondMove().getStartPeg());
-                simGame.executeMove(chosenTurn.getSecondMove().getDestinationPeg());
-            }
-
+            applyTurn(simGame, chosenTurn);
             maxTurns--;
         }
-        return simGame.getWinner();
+
+        if (simGame.getStatus() != GameStatus.PLAYING) {
+            Player winner = simGame.getWinner();
+            return (winner != null && winner.equals(movingPlayer)) ? WIN_SCORE : 0.0;
+        }
+
+        return calculateProgress(simGame, movingPlayer);
+    }
+
+    // Helper: past een volledige turn toe op een game (eerste + tweede zet)
+    private void applyTurn(Game game, Turn turn) {
+        if (turn.getFirstMove() != null) {
+            game.selectStartPeg(turn.getFirstMove().getStartPeg());
+            game.executeMove(turn.getFirstMove().getDestinationPeg());
+        }
+        if (game.getStatus() == GameStatus.PLAYING && turn.getSecondMove() != null) {
+            game.selectStartPeg(turn.getSecondMove().getStartPeg());
+            game.executeMove(turn.getSecondMove().getDestinationPeg());
+        }
     }
 
     private Turn getHeuristicBestTurn(List<Turn> options, Game game) {
         Turn bestTurn = options.get(0);
-        int bestScore = -999;
+        int bestScore = Integer.MIN_VALUE;
 
         Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         PawnColor myColor = (game.getParticipation1().getPlayer().equals(currentPlayer))
-                ? game.getParticipation1().getPawnColor()
-                : game.getParticipation2().getPawnColor();
+                ? game.getParticipation1().getChosenPawnColor()
+                : game.getParticipation2().getChosenPawnColor();
 
         for (Turn turn : options) {
-            int score = getTurnForwardScore(turn, myColor);
+            int score = getTurnScore(turn, myColor);
             if (score > bestScore) {
                 bestScore = score;
                 bestTurn = turn;
@@ -160,17 +155,12 @@ public class AiModel {
         return bestTurn;
     }
 
-    private int getTurnForwardScore(Turn turn, PawnColor myColor) {
+    private int getTurnScore(Turn turn, PawnColor myColor) {
         int score = 0;
-        if (turn.getFirstMove() != null) {
-            score += evaluateSingleMove(turn.getFirstMove(), myColor);
-        }
-        if (turn.getSecondMove() != null) {
-            score += evaluateSingleMove(turn.getSecondMove(), myColor);
-        }
+        if (turn.getFirstMove() != null) score += evaluateSingleMove(turn.getFirstMove(), myColor);
+        if (turn.getSecondMove() != null) score += evaluateSingleMove(turn.getSecondMove(), myColor);
         return score;
     }
-
 
     private int evaluateSingleMove(Move move, PawnColor myColor) {
         Peg start = move.getStartPeg();
@@ -179,53 +169,44 @@ public class AiModel {
         if (start == null || start.getPawns().isEmpty()) return 0;
 
         PawnColor pieceColor = start.getUpperPawn().getPawnColor();
-        int yDiff = dest.getYPosition() - start.getYPosition();
-        if (pieceColor != myColor && dest.getYPosition() == 3) return -999999;
-        if (pieceColor == myColor && dest.getYPosition() == 3) return 100000;
+        int yStart = start.getYPosition();
+        int yDest = dest.getYPosition();
+        int yDiff = yDest - yStart;
 
-        int score = 0;
-        int pawnsOnStart = start.getPawns().size();
         int pawnsOnDest = dest.getPawns().size();
 
         if (pieceColor == myColor) {
-            score = (yDiff * 20);
+            if (yDest == 3) return 1_000_000;
 
-            score += (pawnsOnDest * 5);
-            if (pawnsOnDest == 2) {
-                score += 50;
-            }
+            int score = yDiff * 30;
+
+            score += pawnsOnDest * 10;
+            if (pawnsOnDest == 2) score += 60;
+
+            if (yDest == 2) score += 80;
+
+            return score;
         } else {
-            if (pawnsOnStart == 3) {
-                score += 200;
 
-                if (pawnsOnDest == 0) {
-                    score += 100;
-                } else if (pawnsOnDest == 2) {
-                    score -= 300;
-                }
-            } else {
-                score -= 100;
-            }
+            if (yStart == 2 && yDest < yStart) return 500;
+
+            if (yDest == 3) return -1_000_000;
+
+            if (yDiff < 0) return 100 + (-yDiff * 20);
+
+            if (pawnsOnDest == 0) return 50;
+
+            if (pawnsOnDest == 2) return -200;
+
+            return -50;
         }
-
-        return score;
     }
 
-    private void backpropagate(ZarocNode node, Player winner) {
+    private void backpropagate(ZarocNode node, double simulationScore) {
         ZarocNode temp = node;
         while (temp != null) {
             temp.addVisit();
-
-            if (winner != null && temp.getParent() != null) {
-                Player playerWhoMoved = temp.getParent().getState().getCurrentTurn().getCurrentPlayer();
-                if (winner.equals(playerWhoMoved)) {
-                    temp.addScore(WIN_SCORE);
-                }
-            } else if (temp.getParent() != null) {
-                Player p = temp.getParent().getState().getCurrentTurn().getCurrentPlayer();
-                temp.addScore(calculateProgress(node.getState(), p));
-            }
-
+            temp.addScore(simulationScore);
             temp = temp.getParent();
         }
     }
@@ -237,43 +218,43 @@ public class AiModel {
         double opponentScore = 0;
 
         PawnColor myColor = (game.getParticipation1().getPlayer().equals(p))
-                ? game.getParticipation1().getPawnColor()
-                : game.getParticipation2().getPawnColor();
+                ? game.getParticipation1().getChosenPawnColor()
+                : game.getParticipation2().getChosenPawnColor();
 
         for (Peg[] row : game.getBoard().getAllPegs()) {
             for (Peg peg : row) {
-                if (peg != null && !peg.getPawns().isEmpty()) {
+                if (peg == null || peg.getPawns().isEmpty()) continue;
 
-                    for (Pawn pawn : peg.getPawns()) {
-                        double pieceValue = (peg.getYPosition() * 2.0);
-                        if (peg.getYPosition() == 2) pieceValue += 15.0;
-                        if (peg.getYPosition() == 3) pieceValue += 100.0;
-                        if (pawn.getPawnColor() == myColor) {
-                            myScore += pieceValue;
-                        } else {
-                            opponentScore += pieceValue;
-                        }
+                for (Pawn pawn : peg.getPawns()) {
+                    // y=3 is de winnende positie → enorm gewicht
+                    double pieceValue = switch (peg.getYPosition()) {
+                        case 3 -> 200.0;
+                        case 2 -> 30.0;
+                        case 1 -> 8.0;
+                        default -> 1.0;
+                    };
+
+                    if (pawn.getPawnColor() == myColor) {
+                        myScore += pieceValue;
+                    } else {
+                        opponentScore += pieceValue;
                     }
+                }
 
-                    if (peg.getPawns().size() == 3) {
-                        if (peg.getUpperPawn().getPawnColor() == myColor) {
-                            myScore += 1.0;
-                        } else {
-                            opponentScore += 1.0;
-                        }
+                // Extra bonus voor volledige stapel op hoge positie
+                if (peg.getPawns().size() == 3) {
+                    double stackBonus = (peg.getYPosition() + 1) * 5.0;
+                    if (peg.getUpperPawn().getPawnColor() == myColor) {
+                        myScore += stackBonus;
+                    } else {
+                        opponentScore += stackBonus;
                     }
                 }
             }
         }
 
-        // Balans opmaken
-        double scoreDifference = myScore - opponentScore;
-
-        // Zorg dat de scores netjes rond de 0.5 balanceren
-        double finalScore = 0.5 + (scoreDifference / 100.0);
-
-        // We geven hier NOOIT 1.0 of 0.0 terug, want dat reserveren we voor échte winst/verlies.
+        double scoreDiff = myScore - opponentScore;
+        double finalScore = 0.5 + (scoreDiff / 300.0);
         return Math.max(0.01, Math.min(finalScore, 0.99));
     }
-
 }

@@ -21,7 +21,7 @@ public class GameParticipationDao {
 
             ps.setInt(1, game.getGameId());
             ps.setInt(2, gameParticipations[i].getPlayer().getPlayerId());
-            ps.setString(3, gameParticipations[i].getPawnColor().toString());
+            ps.setString(3, gameParticipations[i].getChosenPawnColor().toString());
 
             ps.executeUpdate();
 
