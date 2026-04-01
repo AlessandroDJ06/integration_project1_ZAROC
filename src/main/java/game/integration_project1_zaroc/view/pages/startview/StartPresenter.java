@@ -85,7 +85,7 @@ public class StartPresenter {
 
         view.getLeaderboardButton().setOnAction(actionEvent -> {
             LeaderboardView leaderboardView = new LeaderboardView(view.getResourceManager());
-            new LeaderboardPresenter(leaderboardView,new AppController());
+            new LeaderboardPresenter(leaderboardView,this.model);
             Scene leaderboardScene = new Scene(leaderboardView);
             leaderboardScene.setFill(Color.TRANSPARENT);
             Stage leaderboardStage = new Stage();
