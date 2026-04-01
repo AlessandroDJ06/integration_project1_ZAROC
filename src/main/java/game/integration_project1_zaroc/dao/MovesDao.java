@@ -1,17 +1,15 @@
 package game.integration_project1_zaroc.dao;
 import game.integration_project1_zaroc.model.gamelogic.Move;
-import game.integration_project1_zaroc.model.gamelogic.Turn;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 
 public class MovesDao {
 
 
-    public void createMove(int turnId,Move move) throws ZarocDaoException {
+    public void saveMove(int turnId, Move move) throws ZarocDaoException {
         try (Connection conn = DaoUtils.createConnection()) {
 
 

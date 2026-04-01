@@ -112,7 +112,7 @@ public class Game {
     private void saveMoveToDatabase(Move newMove) {
         if (allowedSave && (newMove != null) && allowedToUseDatabase) {
             try {
-                movesDao.createMove(getCurrentTurn().getTurnId(), newMove);
+                movesDao.saveMove(getCurrentTurn().getTurnId(), newMove);
             } catch (ZarocDaoException e) {
                 throw new RuntimeException(e);
             }
