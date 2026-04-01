@@ -17,9 +17,10 @@ public class LeaderboardDao {
                     COUNT(DISTINCT CASE WHEN gp.winner_id = p.player_id THEN gp.game_id END) AS wins,
                     COUNT(DISTINCT gp.game_id) - COUNT(DISTINCT CASE WHEN gp.winner_id = p.player_id THEN gp.game_id END) AS losses,
                     ROUND(
-                        (100.0 * (SUM(CASE WHEN gp.winner_id = p.player_id THEN 1 ELSE 0 END)/2)
-                        / NULLIF(COUNT(DISTINCT gp.game_id), 0))::NUMERIC, 1
-                    )                                                      AS win_percentage,
+                        (100.0 * COUNT(DISTINCT CASE WHEN gp.winner_id = p.player_id THEN gp.game_id END)
+                        /NULLIF(COUNT(DISTINCT gp.game_id), 0)
+                        )::NUMERIC, 1
+                    ) AS win_percentage,
                     COALESCE(
                         SUM(EXTRACT(EPOCH FROM (m.end_time - m.start_time))::BIGINT), 0
                     )                                                       AS total_play_time_sec,
