@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.view.pages.leaderboardView;
+package game.integration_project1_zaroc.view.pages.leaderboardview;
 
 
 import game.integration_project1_zaroc.dao.LeaderboardDao;

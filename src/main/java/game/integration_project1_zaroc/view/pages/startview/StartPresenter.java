@@ -5,8 +5,8 @@ import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccoun
 import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountView;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
-import game.integration_project1_zaroc.view.pages.leaderboardView.LeaderboardPresenter;
-import game.integration_project1_zaroc.view.pages.leaderboardView.LeaderboardView;
+import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPresenter;
+import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
 import game.integration_project1_zaroc.view.pages.loginview.LoginView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;

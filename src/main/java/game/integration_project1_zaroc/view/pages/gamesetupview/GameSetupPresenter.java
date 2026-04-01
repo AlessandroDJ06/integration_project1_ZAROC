@@ -1,14 +1,13 @@
 package game.integration_project1_zaroc.view.pages.gamesetupview;
 
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.selectionslider.DifficultyPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
-import game.integration_project1_zaroc.view.pages.leaderboardView.LeaderboardPresenter;
-import game.integration_project1_zaroc.view.pages.leaderboardView.LeaderboardView;
+import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPresenter;
+import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
