@@ -25,7 +25,6 @@ public class Game {
     private int gameId;
     private TurnsDao turnsDao;
     private MovesDao movesDao;
-    private boolean allowedToUseDatabase;
     private boolean allowedSave;
     private Peg startPeg;
 
@@ -39,7 +38,6 @@ public class Game {
         this.lastMove = null;
         this.gameId = -1;
         this.allowedSave = true;
-        this.allowedToUseDatabase = true;
         this.turnsDao = new TurnsDao();
         this.movesDao = new MovesDao();
         this.startPeg = null;
@@ -61,7 +59,7 @@ public class Game {
         Turn turn = new Turn(player);
         turn.setTurnNumber(turns.size() + 1);
         turns.add(turn);
-        if (allowedSave && allowedToUseDatabase){
+        if (allowedSave){
             try {
                 turn.setTurnId(turnsDao.saveTurn(gameId,turn));
             } catch (ZarocDaoException e) {
@@ -110,7 +108,7 @@ public class Game {
     }
 
     private void saveMoveToDatabase(Move newMove) {
-        if (allowedSave && (newMove != null) && allowedToUseDatabase) {
+        if (allowedSave && newMove != null) {
             try {
                 movesDao.saveMove(getCurrentTurn().getTurnId(), newMove);
             } catch (ZarocDaoException e) {
@@ -269,7 +267,5 @@ public class Game {
         this.allowedSave = allowedSave;
     }
 
-    public void setAllowedToUseDatabase(boolean allowedToUseDatabase) {
-        this.allowedToUseDatabase = allowedToUseDatabase;
-    }
+
 }

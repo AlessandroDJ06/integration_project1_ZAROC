@@ -86,7 +86,6 @@ public class PlayersDao {
     public void updatePlayerPlaystyle(Player player) throws ZarocDaoException{
         String sql = "UPDATE PLAYERS SET playstyle = ? WHERE player_id = ?";
 
-
         try (Connection conn = DaoUtils.createConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1,player.getPlayerStyle().toString());

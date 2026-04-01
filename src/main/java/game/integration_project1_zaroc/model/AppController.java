@@ -102,7 +102,7 @@ public class AppController {
         );
 
         this.game.getBoard().setupStart();
-        this.game.setAllowedToUseDatabase(allowedToUseDatabase);
+        this.game.setAllowedSave(allowedToUseDatabase);
         if (allowedToUseDatabase){
             createGameId();
             saveGameParticipations(this.game);
