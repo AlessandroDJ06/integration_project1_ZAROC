@@ -13,7 +13,6 @@ import game.integration_project1_zaroc.model.players.Player;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,10 @@ public class Game {
     private int gameId;
     private TurnsDao turnsDao;
     private MovesDao movesDao;
+    private boolean allowedToUseDatabase;
     private boolean allowedSave;
+    private Peg startPeg;
+
 
 
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
@@ -37,8 +39,10 @@ public class Game {
         this.lastMove = null;
         this.gameId = -1;
         this.allowedSave = true;
+        this.allowedToUseDatabase = true;
         this.turnsDao = new TurnsDao();
         this.movesDao = new MovesDao();
+        this.startPeg = null;
     }
 
     public void switchCurrentPlayer() {
@@ -57,7 +61,7 @@ public class Game {
         Turn turn = new Turn(player);
         turn.setTurnNumber(turns.size() + 1);
         turns.add(turn);
-        if (allowedSave){
+        if (allowedSave && allowedToUseDatabase){
             try {
                 turn.setTurnId(turnsDao.saveTurn(gameId,turn));
             } catch (ZarocDaoException e) {
@@ -71,42 +75,47 @@ public class Game {
         return turns.get(turns.size()-1);
     }
 
-    public void executeMove(Peg startPeg, Peg destinationPeg) {
-        if (status == GameStatus.PLAYING) {
-            if (isUndoMove(startPeg, destinationPeg)) {
-                return;
+    public void selectStartPeg(Peg startPeg){
+        this.startPeg = startPeg;
+    }
+
+    public void executeMove(Peg destinationPeg) {
+        if (status != GameStatus.PLAYING || isUndoMove(this.startPeg, destinationPeg)) {
+            return;
+        }
+        Move newMove = processGameLogic(this.startPeg, destinationPeg);
+        saveMoveToDatabase(newMove);
+        checkWinCondition();
+        this.lastMove = newMove;
+    }
+
+    private Move processGameLogic(Peg startPeg, Peg destinationPeg) {
+        Turn currentTurn = getCurrentTurn();
+        MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
+
+        Move newMove = new Move(moveNumber, startPeg, destinationPeg);
+        currentTurn.addMove(newMove);
+
+        Pawn upperPawn = startPeg.getUpperPawn();
+        startPeg.removePawnFromPeg(upperPawn);
+        destinationPeg.addPawnToPeg(upperPawn);
+        upperPawn.setCurrentPeg(destinationPeg);
+
+        newMove.setEndTime(Timestamp.from(Instant.now()));
+
+        if (moveNumber == MoveNumber.SECOND_MOVE) {
+            switchCurrentPlayer();
+        }
+        return newMove;
+    }
+
+    private void saveMoveToDatabase(Move newMove) {
+        if (allowedSave && (newMove != null) && allowedToUseDatabase) {
+            try {
+                movesDao.createMove(getCurrentTurn().getTurnId(), newMove);
+            } catch (ZarocDaoException e) {
+                throw new RuntimeException(e);
             }
-
-            Turn currentTurn = getCurrentTurn();
-            MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
-
-            Move newMove = new Move(moveNumber, startPeg, destinationPeg);
-            currentTurn.addMove(newMove);
-
-            Pawn upperPawn = startPeg.getUpperPawn();
-            startPeg.removePawnFromPeg(upperPawn);
-            destinationPeg.addPawnToPeg(upperPawn);
-            upperPawn.setCurrentPeg(destinationPeg);
-
-            newMove.setEndTime(Timestamp.from(Instant.now()));
-
-
-            if (allowedSave && newMove != null){
-                try{
-                    movesDao.createMove(currentTurn.getTurnId(), newMove);
-                } catch (ZarocDaoException e) {
-                    System.out.println("skibidi");
-                    throw new RuntimeException(e);
-
-                }
-            }
-
-            if (moveNumber == MoveNumber.SECOND_MOVE){
-                switchCurrentPlayer();
-            }
-
-            checkWinCondition();
-            this.lastMove = newMove;
         }
     }
 
@@ -258,5 +267,9 @@ public class Game {
 
     public void setAllowedSave(boolean allowedSave) {
         this.allowedSave = allowedSave;
+    }
+
+    public void setAllowedToUseDatabase(boolean allowedToUseDatabase) {
+        this.allowedToUseDatabase = allowedToUseDatabase;
     }
 }

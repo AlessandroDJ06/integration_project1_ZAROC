@@ -32,7 +32,8 @@ public class MoveGenerator {
                     );
 
                     if (tStart1 != null && tDest1 != null) {
-                        tempGame.executeMove(tStart1, tDest1);
+                        tempGame.selectStartPeg(tStart1);
+                        tempGame.executeMove(tDest1);
                     } else {
                         continue;
                     }

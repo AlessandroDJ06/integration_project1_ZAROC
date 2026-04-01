@@ -19,25 +19,31 @@ import java.util.Objects;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
+        boolean canConnect = canConnectToDatabase();
         Themes theme = Themes.DEFAULT;
         ResourceManager resourceManager = new ResourceManager(theme);
         StartView view = new StartView(resourceManager);
-        new StartPresenter(new AppController(),view);
+        new StartPresenter(new AppController(canConnect),view);
 
         Scene scene = new Scene(view);
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
         stage.show();
-        try {
-            DaoUtils.createTable();
-        } catch (ZarocDaoException e) {
-            System.out.println("Database niet beschikbaar, app start zonder DB: " + e.getMessage());
-        }
 
     }
 
     public static void main(String[] args) {
         Application.launch(args);
+    }
+
+    private boolean canConnectToDatabase(){
+        try {
+            DaoUtils.createTable();
+            return true;
+        } catch (ZarocDaoException e) {
+            System.out.println("Database niet beschikbaar, app start zonder DB: " + e.getMessage());
+            return false;
+        }
     }
 }

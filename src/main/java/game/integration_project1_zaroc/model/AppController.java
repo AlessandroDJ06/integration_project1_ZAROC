@@ -14,13 +14,13 @@ import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelec
 
 
 public class AppController {
+    private boolean allowedToUseDatabase;
     private PawnColorPickerModel colorOne;
     private PawnColorPickerModel colorTwo;
     private DifficultyPickerModel difficultyPicker;
     private StartingPlayerSelector startingPlayerSelector;
     private GamesDao gamesDao;
     private GameParticipationDao gameParticipationDao;
-    private TurnsDao turnsDao;
     private PlayersDao playersDao;
 
     private PawnColor player1Color;
@@ -31,7 +31,8 @@ public class AppController {
 
     private Game game;
 
-    public AppController(){
+    public AppController(boolean canConnect){
+        this.allowedToUseDatabase = canConnect;
         this.difficultyPicker = new DifficultyPickerModel();
 
         player1 = null;
@@ -54,7 +55,6 @@ public class AppController {
 
         this.gamesDao = new GamesDao();
         this.gameParticipationDao = new GameParticipationDao();
-        this.turnsDao = new TurnsDao();
         this.playersDao = new PlayersDao();
     }
 
@@ -84,10 +84,13 @@ public class AppController {
         Difficulty gekozenDifficulty = Difficulty.values()[difficultyPicker.getCurrentIndex()];
 
         this.player2 = new AIPlayer(gekozenDifficulty, "jonas");
-        try {
-            player2.setPlayerId(playersDao.createAiPlayer((AIPlayer) player2));
-        } catch (ZarocDaoException e) {
-            System.out.println("kon niet worden opgeslagen");
+
+        if (allowedToUseDatabase){
+            try {
+                player2.setPlayerId(playersDao.createAiPlayer((AIPlayer) player2));
+            } catch (ZarocDaoException e) {
+                System.out.println("kon niet worden opgeslagen");
+            }
         }
 
         this.player1Color = PawnColor.values()[colorOne.getCurrentIndex()];
@@ -99,8 +102,12 @@ public class AppController {
         );
 
         this.game.getBoard().setupStart();
-        createGameId();
-        saveGameParticipations(this.game);
+        this.game.setAllowedToUseDatabase(allowedToUseDatabase);
+        if (allowedToUseDatabase){
+            createGameId();
+            saveGameParticipations(this.game);
+        }
+
 
         this.startingPlayerSelector.setPlayer1(player1);
         this.startingPlayerSelector.setPlayer2(player2);
@@ -159,4 +166,5 @@ public class AppController {
     public void setPlayer1(Player player1) {
         this.player1 = player1;
     }
+
 }
