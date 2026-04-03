@@ -105,74 +105,61 @@ public class MockDataLoader {
     // ══════════════════════════════════════════════════════════════════════
 
     private void insertParticipations(Connection conn) throws SQLException {
-        // { playerUsername, gameOffset(0-based), pawnColor, winnerUsername or null }
+        // { playerUsername, gameOffset(0-based), pawnColor, winner boolean null }
         Object[][] rows = {
-                {"Alice",   0, "RED",    "Alice"},   // Game 1: Alice beats Bob
-                {"Bob",     0, "BLUE",   "Alice"},
-                {"Alice",   1, "RED",    "Bob"},     // Game 2: Bob beats Alice
-                {"Bob",     1, "BLUE",   "Bob"},
-                {"Alice",   2, "RED",    "Alice"},   // Game 3: Alice beats Bob
-                {"Bob",     2, "BLUE",   "Alice"},
-                {"Alice",   3, "RED",    "Charlie"}, // Game 4: Charlie beats Alice
-                {"Charlie", 3, "GREEN",  "Charlie"},
-                {"Alice",   4, "RED",    "Alice"},   // Game 5: Alice beats Charlie
-                {"Charlie", 4, "GREEN",  "Alice"},
-                {"Bob",     5, "BLUE",   "Diana"},   // Game 6: Diana beats Bob
-                {"Diana",   5, "YELLOW", "Diana"},
-                {"Bob",     6, "BLUE",   "Bob"},     // Game 7: Bob beats Diana
-                {"Diana",   6, "YELLOW", "Bob"},
-                {"Charlie", 7, "GREEN",  "Eve"},     // Game 8: Eve beats Charlie
-                {"Eve",     7, "PURPLE", "Eve"},
-                {"Charlie", 8, "GREEN",  "Charlie"}, // Game 9: Charlie beats Eve
-                {"Eve",     8, "PURPLE", "Charlie"},
-                {"Diana",   9, "YELLOW", "Eve"},     // Game 10: Eve beats Diana
-                {"Eve",     9, "PURPLE", "Eve"},
-                {"Diana",  10, "YELLOW", "Diana"},   // Game 11: Diana beats Eve
-                {"Eve",    10, "PURPLE", "Diana"},
-                {"Alice",  11, "RED",    "Alice"},   // Game 12: Alice beats Diana
-                {"Diana",  11, "YELLOW", "Alice"},
-                {"Bob",    12, "BLUE",   "Eve"},     // Game 13: Eve beats Bob
-                {"Eve",    12, "PURPLE", "Eve"},
+                {"Alice",   0, "RED",    true},   // Game 1: Alice beats Bob
+                {"Bob",     0, "BLUE",   false},
+                {"Alice",   1, "RED",    false},     // Game 2: Bob beats Alice
+                {"Bob",     1, "BLUE",   true},
+                {"Alice",   2, "RED",    true},   // Game 3: Alice beats Bob
+                {"Bob",     2, "BLUE",   false},
+                {"Alice",   3, "RED",    false}, // Game 4: Charlie beats Alice
+                {"Charlie", 3, "GREEN",  true},
+                {"Alice",   4, "RED",    true},   // Game 5: Alice beats Charlie
+                {"Charlie", 4, "GREEN",  false},
+                {"Bob",     5, "BLUE",   false},   // Game 6: Diana beats Bob
+                {"Diana",   5, "YELLOW", true},
+                {"Bob",     6, "BLUE",   true},     // Game 7: Bob beats Diana
+                {"Diana",   6, "YELLOW", false},
+                {"Charlie", 7, "GREEN",  false},     // Game 8: Eve beats Charlie
+                {"Eve",     7, "PURPLE", true},
+                {"Charlie", 8, "GREEN",  true}, // Game 9: Charlie beats Eve
+                {"Eve",     8, "PURPLE", false},
+                {"Diana",   9, "YELLOW", false},     // Game 10: Eve beats Diana
+                {"Eve",     9, "PURPLE", true},
+                {"Diana",  10, "YELLOW", true},   // Game 11: Diana beats Eve
+                {"Eve",    10, "PURPLE", false},
+                {"Alice",  11, "RED",    true},   // Game 12: Alice beats Diana
+                {"Diana",  11, "YELLOW", false},
+                {"Bob",    12, "BLUE",   false},     // Game 13: Eve beats Bob
+                {"Eve",    12, "PURPLE", true},
                 {"Alice",  13, "RED",    null},      // Game 14: IN_PROGRESS
                 {"Charlie",13, "GREEN",  null},
                 {"Bob",    14, "BLUE",   null},      // Game 15: IN_PROGRESS
                 {"Eve",    14, "PURPLE", null},
         };
 
-        String sqlWithWinner = """
-            INSERT INTO GAME_PARTICIPATION (player_id, game_id, pawn_color, winner_id)
+        String sql = """
+            INSERT INTO GAME_PARTICIPATION (player_id, game_id, pawn_color, winner)
             VALUES (
                 (SELECT player_id FROM PLAYERS WHERE username = ?),
                 (SELECT game_id   FROM GAMES   ORDER BY game_id LIMIT 1 OFFSET ?),
-                ?,
-                (SELECT player_id FROM PLAYERS WHERE username = ?)
-            )""";
-        String sqlNullWinner = """
-            INSERT INTO GAME_PARTICIPATION (player_id, game_id, pawn_color, winner_id)
-            VALUES (
-                (SELECT player_id FROM PLAYERS WHERE username = ?),
-                (SELECT game_id   FROM GAMES   ORDER BY game_id LIMIT 1 OFFSET ?),
-                ?, NULL
+                ?,?
             )""";
 
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
         for (Object[] row : rows) {
-            String winner = (String) row[3];
-            if (winner != null) {
-                try (PreparedStatement ps = conn.prepareStatement(sqlWithWinner)) {
+
                     ps.setString(1, (String) row[0]);
                     ps.setInt(2,    (int)    row[1]);
                     ps.setString(3, (String) row[2]);
-                    ps.setString(4, winner);
+                    if(row[3] == null){
+                        ps.setNull(4, java.sql.Types.BOOLEAN);
+                    }else{ps.setBoolean(4, (boolean)row[3]);}
                     ps.executeUpdate();
                 }
-            } else {
-                try (PreparedStatement ps = conn.prepareStatement(sqlNullWinner)) {
-                    ps.setString(1, (String) row[0]);
-                    ps.setInt(2,    (int)    row[1]);
-                    ps.setString(3, (String) row[2]);
-                    ps.executeUpdate();
-                }
-            }
+
+
         }
     }
 
