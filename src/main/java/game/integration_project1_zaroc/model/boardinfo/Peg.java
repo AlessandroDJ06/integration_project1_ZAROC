@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Peg {
     private int xPosition;
-    private int yPosition;
+    private int yPosition;  
     private LayerLevel layerLevel;
     private MaxCapacity maxCapacity;
     private ArrayList<Pawn> pawns;

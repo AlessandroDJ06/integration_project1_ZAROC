@@ -9,12 +9,16 @@ import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
+import game.integration_project1_zaroc.model.players.AIPlayer;
+import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
     private GameStatus status;
@@ -43,6 +47,17 @@ public class Game {
         this.selectedPeg = null;
     }
 
+    public void startUndoTimer() throws InterruptedException {
+        //Duration undoTimer = Duration.ofSeconds(5);
+       try{
+           TimeUnit.SECONDS.sleep(5);
+           //Thread.sleep(undoTimer.toMillis());
+        }
+        catch (InterruptedException e){
+            System.out.println("Timer failed");
+        }
+
+    }
     public void switchCurrentPlayer() {
         if (getStatus() == GameStatus.PLAYING) {
             Turn lastTurn = turns.get(turns.size() - 1);
@@ -56,6 +71,7 @@ public class Game {
     }
 
     public void startNewTurn(Player player){
+       // startUndoTimer();
         Turn turn = new Turn(player);
         turn.setTurnNumber(turns.size() + 1);
         turns.add(turn);
@@ -128,18 +144,24 @@ public class Game {
 
 
     public void undoMove(Move move) {
-        Peg startPeg = move.getStartPeg();
-        Peg destPeg = move.getDestinationPeg();
 
-        Pawn upperPawn = startPeg.getUpperPawn();
+        if(getCurrentTurn().getCurrentPlayer() instanceof AIPlayer){
+            getCurrentTurn().deleteBothMoves();
+            turns.remove(getCurrentTurn());
+            System.out.println(getCurrentTurn());
+        }
+        if(getCurrentTurn().getCurrentPlayer() instanceof HumanPlayer) {
+            System.out.println(getCurrentTurn());
+            Peg startPeg = move.getStartPeg();
+            Peg destPeg = move.getDestinationPeg();
 
-        destPeg.removePawnFromPeg(upperPawn);
-        startPeg.addPawnToPeg(upperPawn);
+            Pawn upperPawn = destPeg.getUpperPawn();
 
-        Turn currentTurn = getCurrentTurn();
+            destPeg.removePawnFromPeg(upperPawn);
+            startPeg.addPawnToPeg(upperPawn);
+            getCurrentTurn().removeMove(move);
 
-        currentTurn.removeMove(move);
-
+        }
     }
 
     public List<Move> getLegalMoves(Peg startPeg) {
@@ -267,5 +289,7 @@ public class Game {
         this.allowedSave = allowedSave;
     }
 
-
+    public Move getLastMove() {
+        return lastMove;
+    }
 }

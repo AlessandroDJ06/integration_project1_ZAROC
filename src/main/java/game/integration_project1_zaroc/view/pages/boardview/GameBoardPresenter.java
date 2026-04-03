@@ -127,6 +127,10 @@ public class GameBoardPresenter {
 
             });
         }
+        view.getUndoButton().setOnAction(e ->{
+            model.getGame().undoMove(model.getGame().getLastMove());
+            updateView();
+        });
     }
 
     //----------------------------------------------------------------------------------------------

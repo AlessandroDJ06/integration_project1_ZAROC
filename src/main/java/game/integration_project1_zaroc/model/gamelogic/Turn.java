@@ -25,6 +25,11 @@ public class Turn {
         moves[move.getMoveNumber().getNumber() - 1]=null;
     }
 
+    public void deleteBothMoves(){
+        removeMove(getFirstMove());
+        removeMove(getSecondMove());
+    }
+
     public void setTurnNumber(int turnNumber) {
         this.turnNumber = turnNumber;
     }
