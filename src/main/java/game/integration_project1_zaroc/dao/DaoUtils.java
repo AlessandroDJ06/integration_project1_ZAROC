@@ -2,10 +2,7 @@ package game.integration_project1_zaroc.dao;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 public class DaoUtils {
@@ -83,12 +80,11 @@ public class DaoUtils {
                                                     player_id INT,
                                                     game_id INT,
                                                     pawn_color VARCHAR(255),
-                                                    winner_id INT,
+                                                    winner BOOLEAN,
                 
                                                     CONSTRAINT PK_GAME_PARTICIPATION PRIMARY KEY (player_id, game_id),
                                                     CONSTRAINT FK_PARTICIPATION_PLAYER FOREIGN KEY (player_id) REFERENCES PLAYERS(player_id),
-                                                    CONSTRAINT FK_PARTICIPATION_GAME FOREIGN KEY (game_id) REFERENCES GAMES(game_id),
-                                                    CONSTRAINT FK_PARTICIPATION_WINNER FOREIGN KEY (winner_id) REFERENCES PLAYERS(player_id)
+                                                    CONSTRAINT FK_PARTICIPATION_GAME FOREIGN KEY (game_id) REFERENCES GAMES(game_id)
                 );
                 
                 CREATE TABLE IF NOT EXISTS TURNS (
@@ -121,6 +117,23 @@ public class DaoUtils {
             ps.execute();
         } catch (SQLException e) {
             throw new ZarocDaoException("Er ging iets mis bij het maken van de tabellen in de db",e);
+        }
+    }
+    public static void dropAllTables() throws SQLException, ZarocDaoException {
+
+        String[] tables = {
+                "MOVES",
+                "TURNS",
+                "GAME_PARTICIPATION",
+                "GAMES",
+                "PLAYERS"
+        };
+
+        try (Connection conn = createConnection(); Statement stmt = conn.createStatement()) {
+            for (String table : tables) {
+                stmt.executeUpdate("DROP TABLE IF EXISTS " + table + " CASCADE");
+            }
+            System.out.println("Alle tabellen zijn succesvol verwijderd.");
         }
     }
 
