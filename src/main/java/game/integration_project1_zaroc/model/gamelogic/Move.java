@@ -4,6 +4,7 @@ import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -23,7 +24,6 @@ public class Move {
         this.startPeg = startPeg;
         this.destinationPeg = destinationPeg;
         this.endTime = null;
-
     }
 
     public static boolean isLegal(Peg startPeg, Peg destinationPeg) {
