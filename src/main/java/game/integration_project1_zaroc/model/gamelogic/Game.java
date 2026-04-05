@@ -202,11 +202,14 @@ public class Game {
             Peg finishPeg = board.getPegPosition(3, i);
 
             if (finishPeg != null && !finishPeg.getPawns().isEmpty()) {
-                PawnColor color = finishPeg.getPawns().getFirst().getPawnColor();
-                if (color == gameParticipations[0].getChosenPawnColor()) countColor1++;
-                else if (color == gameParticipations[1].getChosenPawnColor()) countColor2++;
+                for (Pawn pawn : finishPeg.getPawns()) {
+                    PawnColor color = pawn.getPawnColor();
+                    if (color == gameParticipations[0].getChosenPawnColor()) countColor1++;
+                    else if (color == gameParticipations[1].getChosenPawnColor()) countColor2++;
+                }
             }
         }
+
 
         if (countColor1 >= 3) {
             gameParticipations[0].setWinner(true);
@@ -219,25 +222,41 @@ public class Game {
 
 
     public Game gameCopy() {
-        Game copy = new Game(this.getParticipation1(), this.getParticipation2());
+        Game copy = new Game(this.getParticipation1().copy(), this.getParticipation2().copy());
         copy.setStatus(this.getStatus());
+
         copy.setBoard(this.board.boardCopy());
-        copy.lastMove = this.lastMove;  // ← dit was de bug
         copy.setAllowedSave(false);
+
+        if (this.lastMove != null) {
+            Peg newStart = copy.getBoard().getPegPosition(this.lastMove.getStartPeg().getYPosition(), this.lastMove.getStartPeg().getXPosition());
+            Peg newDest = copy.getBoard().getPegPosition(this.lastMove.getDestinationPeg().getYPosition(), this.lastMove.getDestinationPeg().getXPosition());
+            copy.lastMove = new Move(this.lastMove.getMoveNumber(),newStart, newDest); // Echt een nieuw object!
+        }
+
 
         ArrayList<Turn> turnsCopy = new ArrayList<>();
         for (Turn originalTurn : this.turns) {
             Turn newTurn = new Turn(originalTurn.getCurrentPlayer());
             newTurn.setTurnNumber(originalTurn.getTurnNumber());
+
             if (originalTurn.getFirstMove() != null) {
-                newTurn.addMove(originalTurn.getFirstMove());
+                Move oldMove = originalTurn.getFirstMove();
+                Peg newStart = copy.getBoard().getPegPosition(oldMove.getStartPeg().getYPosition(), oldMove.getStartPeg().getXPosition());
+                Peg newDest = copy.getBoard().getPegPosition(oldMove.getDestinationPeg().getYPosition(), oldMove.getDestinationPeg().getXPosition());
+                newTurn.addMove(new Move(MoveNumber.FIRST_MOVE,newStart, newDest));
             }
+
             if (originalTurn.getSecondMove() != null) {
-                newTurn.addMove(originalTurn.getSecondMove());
+                Move oldMove = originalTurn.getSecondMove();
+                Peg newStart = copy.getBoard().getPegPosition(oldMove.getStartPeg().getYPosition(), oldMove.getStartPeg().getXPosition());
+                Peg newDest = copy.getBoard().getPegPosition(oldMove.getDestinationPeg().getYPosition(), oldMove.getDestinationPeg().getXPosition());
+                newTurn.addMove(new Move(MoveNumber.SECOND_MOVE,newStart, newDest));
             }
             turnsCopy.add(newTurn);
         }
         copy.setTurns(turnsCopy);
+
         return copy;
     }
 

@@ -63,6 +63,7 @@ public class GameBoardPresenter {
         this.selectedPawn = null;
         updateView();
         addEventHandlers();
+        processTurn();
     }
 
 

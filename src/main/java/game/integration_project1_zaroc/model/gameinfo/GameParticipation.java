@@ -15,6 +15,13 @@ public class GameParticipation {
         this.winner = false;
     }
 
+    public GameParticipation copy() {
+        GameParticipation copy = new GameParticipation(this.getPlayer(),this.getChosenPawnColor());
+        copy.setWinner(this.getWinner());
+
+        return copy;
+    }
+
     public boolean getWinner() {
         return winner;
     }

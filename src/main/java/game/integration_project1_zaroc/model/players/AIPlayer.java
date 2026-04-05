@@ -14,7 +14,7 @@ public class AIPlayer extends Player {
         this.model = new AiModel(difficulty.ordinal());
     }
     public Turn decideTurn(Game game) {
-        return model.getBestTurn(game);
+        return model.getBestTurn(game , this);
     }
     public Difficulty getDifficulty() {
         return difficulty;
