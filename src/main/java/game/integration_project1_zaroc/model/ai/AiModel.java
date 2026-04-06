@@ -1,6 +1,5 @@
 package game.integration_project1_zaroc.model.ai;
 
-import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.gamelogic.*;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
@@ -14,18 +13,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * The core AI logic engine for the Zaroc game.
+ * The core AI logic engine for the Zaroc game, featuring <b>12 unique personalities</b>.
  * <p>
- * This model utilizes <b>"The Breaker"</b> logic, a multi-layered decision-making system
- * designed to prevent defensive stalemates. It combines:
- * <ul>
- * <li><b>Minimax:</b> For short-term tactical safety and blunder prevention.</li>
- * <li><b>Monte Carlo Tree Search (MCTS):</b> For long-term statistical strategy.</li>
- * <li><b>Heuristic Weighting:</b> To simulate aggression, sabotage, and progression.</li>
- * </ul>
+ * This model utilizes a hybrid approach: <b>Monte Carlo Tree Search (MCTS)</b> for strategic depth,
+ * <b>Minimax</b> for tactical safety, and dynamic heuristic weighting to simulate diverse playstyles.
  *
  * @author Alessandro De Jongh
- * @version 3.0
+ * @version 4.0
  * @see MoveGenerator
  * @see ZarocNode
  */
@@ -36,72 +30,128 @@ public class AiModel {
     private final int numThreads = Runtime.getRuntime().availableProcessors();
     private final int minimaxDepth;
 
-    // Fixed Heuristic Weightings
-    private static final int SCORE_WIN = 100000;
-    private static final int BASE_WEIGHT_ADVANCE_ROW_2 = 500;
-    private static final int BASE_WEIGHT_CONTROL_OPPONENT = 6000;
-    private static final int BASE_WEIGHT_BLOCK_THRESHOLD = 90000;
-    private static final int BASE_PENALTY_OPPONENT_NEAR_FINISH = -20000;
-    private static final int BASE_WEIGHT_SABOTAGE_DRAG = 4000;
-
-    /** PROGRESS BONUS: A reward weight given for forward movement to encourage active gameplay. */
-    private static final int WEIGHT_PROGRESS_STEP = 1500;
+    // Dynamic Heuristic Weightings (Adjusted per personality)
+    private int scoreWin = 100000;
+    private int weightAdvanceRow2 = 500;
+    private int weightControlOpponent = 6000;
+    private int weightBlockThreshold = 90000;
+    private int penaltyOpponentNearFinish = -20000;
+    private int weightSabotageDrag = 4000;
+    private int weightProgressStep = 1500;
 
     private PawnColor aiColor;
     private PawnColor opponentColor;
     private String aiUsername;
 
     /**
-     * Enumeration used to categorize the outcome of game state simulations.
+     * Enumeration for internal game state simulation results.
      */
     private enum InternalResult { PLAYING, AI_WINS, OPP_WINS }
 
     /**
-     * Constructs the AI model with settings derived from the chosen difficulty.
+     * Constructs the AI model with parameters based on the UI difficulty row and character name.
      *
-     * @param difficulty The difficulty level (0: Easy, 1: Medium, 2: Hard).
+     * @param difficulty The skill category (0: Easy, 1: Medium, 2: Hard, 3: Elite).
+     * @param name       The username of the AI player used to determine personality weights.
      */
-    public AiModel(int difficulty) {
+    public AiModel(int difficulty, String name) {
+        this.aiUsername = name.toUpperCase();
+
+        // Denkkracht instellen op basis van rij-index in de UI
         this.totalIterations = switch (difficulty) {
-            case 0 -> 25000;
-            case 1 -> 100000;
-            case 2 -> 400000;
-            default -> 10000;
+            case 0 -> 25000;   // Easy
+            case 1 -> 100000;  // Medium
+            case 2 -> 400000;  // Hard
+            case 3 -> 800000;  // Elite
+            default -> 100000;
         };
 
+        // Tactische vooruitblik diepte
         this.minimaxDepth = switch (difficulty) {
             case 0 -> 2;
             case 1 -> 3;
             case 2 -> 4;
+            case 3 -> 5;
             default -> 3;
         };
+
+        applyPersonalityWeights(aiUsername);
     }
 
     /**
-     * Entry point for the AI to calculate the best possible turn.
-     * Processes moves through four logical filters: Win detection, Emergency blocking,
-     * Tactical safety, and Statistical simulation.
+     * Maps the character name to specific heuristic weights to create a unique playstyle.
      *
-     * @param actualGame The current live {@link Game} instance.
+     * @param name The character name in uppercase.
+     */
+    private void applyPersonalityWeights(String name) {
+        switch (name) {
+            // EASY
+            case "ARTHUR" -> {
+                this.weightProgressStep = 800;
+                this.weightControlOpponent = 3000;
+            }
+            case "ALISTAIR" -> {
+                this.weightBlockThreshold = 120000;
+                this.weightProgressStep = 1000;
+            }
+            case "BEATRICE" -> {
+                this.penaltyOpponentNearFinish = -40000;
+                this.weightAdvanceRow2 = 200;
+            }
+            // MEDIUM
+            case "CLARA" -> { this.weightProgressStep = 1800; }
+            case "ELEANOR" -> { this.weightAdvanceRow2 = 1200; }
+            case "GIDEON" -> {
+                this.weightControlOpponent = 9000;
+                this.weightProgressStep = 2000;
+            }
+            // HARD
+            case "HELENA" -> { this.weightBlockThreshold = 200000; }
+            case "IRENE" -> { this.weightSabotageDrag = 6000; }
+            case "JAMES" -> {
+                this.weightBlockThreshold = 150000;
+                this.weightSabotageDrag = 8000;
+            }
+            // ELITE
+            case "LEOPOLD" -> {
+                this.weightProgressStep = 3000;
+                this.weightAdvanceRow2 = 2000;
+            }
+            case "SEBASTIAN" -> {
+                this.weightSabotageDrag = 15000;
+                this.weightControlOpponent = 12000;
+            }
+            case "STEFAN" -> {
+                this.weightBlockThreshold = 180000;
+                this.weightProgressStep = 2500;
+                this.weightSabotageDrag = 10000;
+            }
+        }
+    }
+
+    /**
+     * Determines the optimal turn by passing all legal moves through a layered logic system.
+     *
+     * @param actualGame The current live {@link Game} state.
      * @param aiPlayer   The {@link AIPlayer} requesting the turn.
-     * @return The most advantageous legal {@link Turn} identified.
+     * @return The identified best {@link Turn}.
      */
     public Turn getBestTurn(Game actualGame, AIPlayer aiPlayer) {
         setupAiIdentity(actualGame, aiPlayer);
         List<Turn> options = MoveGenerator.getAllLegalTurns(actualGame);
         if (options.isEmpty()) return null;
 
-        /** [1] OLYMPIC GOLD: Search for an immediate winning move. */
+        // [1] Win detection
         for (Turn t : options) {
             Game testGame = actualGame.gameCopy();
             applyTurn(testGame, t);
             if (checkWinInternal(testGame) == InternalResult.AI_WINS) {
-                System.out.println("AI LOG: [STRATEGY: OLYMPIC GOLD] - Immediate victory path found.");
+                System.out.println("AI LOG: [" + aiUsername + "] - Victory path identified. Executing.");
                 return t;
             }
         }
 
-        /** [2] SMART EMERGENCY OVERRIDE: Intervene if the opponent is one turn from winning. */
+        // [2] Defensive emergency
         if (countFinishedPawns(actualGame, opponentColor) >= 2) {
             List<Turn> survivalOptions = new ArrayList<>();
             for (Turn t : options) {
@@ -110,12 +160,12 @@ public class AiModel {
                 if (!canOpponentWinImmediately(testGame)) survivalOptions.add(t);
             }
             if (!survivalOptions.isEmpty() && survivalOptions.size() < options.size()) {
-                System.out.println("AI LOG: [TACTIC: EMERGENCY OVERRIDE] - Opponent win threat detected; forcing defensive response.");
+                System.out.println("AI LOG: [" + aiUsername + "] - Defensive override active.");
                 options = survivalOptions;
             }
         }
 
-        /** [3] TACTICAL FILTER: Use Minimax look-ahead to prune moves leading to forced losses. */
+        // [3] Minimax tactical filter
         List<Turn> safeTurns = new ArrayList<>();
         for (Turn t : options) {
             Game testGame = actualGame.gameCopy();
@@ -124,15 +174,15 @@ public class AiModel {
         }
 
         if (!safeTurns.isEmpty() && safeTurns.size() < options.size()) {
-            System.out.println("AI LOG: [TACTIC: TACTICAL FILTER] - Filtered " + (options.size() - safeTurns.size()) + " moves identified as future blunders.");
+            System.out.println("AI LOG: [" + aiUsername + "] - Pruned " + (options.size() - safeTurns.size()) + " blunders.");
             options = safeTurns;
         } else if (safeTurns.isEmpty()) {
-            System.out.println("AI LOG: [STRATEGY: SURVIVAL INSTINCT] - No tactically safe moves found; falling back to best heuristic sabotage.");
+            System.out.println("AI LOG: [" + aiUsername + "] - Stalemate/Survival mode initiated.");
             options.sort((a, b) -> Integer.compare(getTurnScore(b, true, actualGame), getTurnScore(a, true, actualGame)));
             return options.get(0);
         }
 
-        /** [4] SCORING DRIVE: Prioritize moves that result in a pawn finishing the game. */
+        // [4] Scoring drive check
         int currentScore = countFinishedPawns(actualGame, aiColor);
         List<Turn> scoringTurns = new ArrayList<>();
         for (Turn t : options) {
@@ -141,12 +191,11 @@ public class AiModel {
             if (countFinishedPawns(testGame, aiColor) > currentScore) scoringTurns.add(t);
         }
         if (!scoringTurns.isEmpty()) {
-            System.out.println("AI LOG: [STRATEGY: SCORING DRIVE] - Prioritizing pawn advancement into the finish line.");
             options = scoringTurns;
             if (options.size() == 1) return options.get(0);
         }
 
-        /** [5] HYBRID MCTS: Execute statistical simulations for long-term strategic depth. */
+        // [5] Strategic MCTS Simulation
         options.sort((a, b) -> Integer.compare(getTurnScore(b, true, actualGame), getTurnScore(a, true, actualGame)));
         int beamWidth = Math.min(options.size(), 40);
         options = new ArrayList<>(options.subList(0, beamWidth));
@@ -163,17 +212,17 @@ public class AiModel {
         } catch (Exception e) { e.printStackTrace(); } finally { executor.shutdown(); }
 
         Turn finalTurn = getBestCombinedTurn(rootNodes, options, actualGame);
-        System.out.println("AI LOG: [STRATEGY: HYBRID MCTS] - Final decision based on win probability across " + totalIterations + " simulations.");
+        System.out.println("AI LOG: [" + aiUsername + "] - Strategy finalized via MCTS.");
         return finalTurn;
     }
 
     /**
-     * Calculates a heuristic score for a single move based on board position and threats.
+     * Evaluates a single move based on progression, control, and personality-driven weights.
      *
      * @param m    The {@link Move} to evaluate.
-     * @param isAi True if scoring for the AI, false for the opponent.
-     * @param g    The current {@link Game} state.
-     * @return An integer representing the move's value.
+     * @param isAi Perspectives of scoring (True for AI).
+     * @param g    The game context for threat assessment.
+     * @return An integer representing the move's heuristic value.
      */
     private int evaluateSingleMove(Move m, boolean isAi, Game g) {
         if (m == null || m.getStartPeg() == null) return 0;
@@ -183,35 +232,31 @@ public class AiModel {
         double tb = calculateThreatBias(g);
 
         if (isAi) {
-            int s = (row == 3) ? SCORE_WIN * 10 : ((row == 2) ? BASE_WEIGHT_ADVANCE_ROW_2 : 0);
+            int s = (row == 3) ? scoreWin * 10 : ((row == 2) ? weightAdvanceRow2 : 0);
+            if (row > start.getYPosition()) s += weightProgressStep;
+            else if (row < start.getYPosition()) s -= weightProgressStep;
 
-            // Reward progression and punish regression
-            if (row > start.getYPosition()) s += WEIGHT_PROGRESS_STEP;
-            else if (row < start.getYPosition()) s -= WEIGHT_PROGRESS_STEP;
-
-            // Reward "Sabotage Drag" (carrying opponent pawns away from their goal)
             int hostages = 0;
             for (Pawn p : start.getPawns()) {
                 if (p.getPawnColor().equals(opponentColor)) hostages++;
             }
-            if (hostages > 0) s += (int) (BASE_WEIGHT_SABOTAGE_DRAG * hostages * (row + 1));
+            if (hostages > 0) s += (int) (weightSabotageDrag * hostages * (row + 1));
 
-            // Reward landing on an opponent to gain control
             if (!dest.getPawns().isEmpty() && dest.getUpperPawn().getPawnColor().equals(opponentColor)) {
                 double mFactor = (row == 2) ? (tb * 4) : tb;
-                s += (int) (BASE_WEIGHT_CONTROL_OPPONENT * mFactor);
-                if (row == 2) s += (int) (BASE_WEIGHT_BLOCK_THRESHOLD * tb);
+                s += (int) (weightControlOpponent * mFactor);
+                if (row == 2) s += (int) (weightBlockThreshold * tb);
             }
             return s;
         }
-        return (row == 3) ? (int) (-SCORE_WIN * 15 * tb) : ((row == 2) ? (int) (BASE_PENALTY_OPPONENT_NEAR_FINISH * tb) : 0);
+        return (row == 3) ? (int) (-scoreWin * 15 * tb) : ((row == 2) ? (int) (penaltyOpponentNearFinish * tb) : 0);
     }
 
     /**
-     * Evaluates a board state at the end of a simulation rollout.
+     * Values a board state for simulations using control metrics.
      *
-     * @param game The {@link Game} state to evaluate.
-     * @return A win probability percentage (0.0 to 1.0).
+     * @param game The game state to evaluate.
+     * @return A normalized win probability (0.0 to 1.0).
      */
     private double calculateProgressForAI(Game game) {
         double aiScore = 0, oppScore = 0;
@@ -231,9 +276,8 @@ public class AiModel {
                 Pawn owner = p.getUpperPawn();
                 if (owner.getPawnColor().equals(aiColor)) {
                     aiScore += val;
-                    // Reward "Tower Hostages" held in own stacks
                     for (Pawn hostage : p.getPawns()) {
-                        if (hostage.getPawnColor().equals(opponentColor)) aiScore += (val * 0.2);
+                        if (hostage.getPawnColor().equals(opponentColor)) aiScore += (val * 0.25);
                     }
                 } else {
                     double m = (p.getYPosition() == 2 && oppFin >= 2) ? (threatBias * 4) : 1.0;
@@ -241,30 +285,51 @@ public class AiModel {
                 }
             }
         }
-        return (oppFin >= 3) ? 0.0 : Math.max(0.01, Math.min(0.99, 0.5 + (aiScore - oppScore) / 15000000.0));
+        return (oppFin >= 3) ? 0.0 : Math.max(0.01, Math.min(0.99, 0.5 + (aiScore - oppScore) / 20000000.0));
     }
 
     /**
-     * Generates a unique string key for a turn, used for MCTS move mapping.
-     *
-     * @param t The {@link Turn} to identify.
-     * @return A unique identification string.
+     * Identifies AI team and opponent team colors.
      */
-    private String getTurnKey(Turn t) {
-        if (t == null || t.getFirstMove() == null || t.getFirstMove().getStartPeg() == null) return "invalid_" + System.nanoTime();
-        Move m1 = t.getFirstMove();
-        String k = m1.getStartPeg().getXPosition() + "," + m1.getStartPeg().getYPosition() + ">" +
-                m1.getDestinationPeg().getXPosition() + "," + m1.getDestinationPeg().getYPosition();
-        if (t.getSecondMove() != null && t.getSecondMove().getStartPeg() != null) {
-            Move m2 = t.getSecondMove();
-            k += "|" + m2.getStartPeg().getXPosition() + "," + m2.getStartPeg().getYPosition() + ">" +
-                    m2.getDestinationPeg().getXPosition() + "," + m2.getDestinationPeg().getYPosition();
-        }
-        return k;
+    private void setupAiIdentity(Game game, AIPlayer aiPlayer) {
+        this.aiUsername = aiPlayer.getUsername().trim().toUpperCase();
+        boolean p1IsAi = game.getParticipation1().getPlayer().getUsername().trim().equalsIgnoreCase(aiUsername);
+        aiColor = p1IsAi ? game.getParticipation1().getChosenPawnColor() : game.getParticipation2().getChosenPawnColor();
+        opponentColor = p1IsAi ? game.getParticipation2().getChosenPawnColor() : game.getParticipation1().getChosenPawnColor();
     }
 
     /**
-     * Counts how many pawns of a given color are in the finish zone.
+     * Executes a full turn on a game instance.
+     */
+    private void applyTurn(Game game, Turn turn) {
+        if (turn.getFirstMove() != null) executeSingleMoveOnBoard(game, turn.getFirstMove());
+        if (turn.getSecondMove() != null) executeSingleMoveOnBoard(game, turn.getSecondMove());
+    }
+
+    /**
+     * Maps and executes a specific move on a copied board.
+     */
+    private void executeSingleMoveOnBoard(Game game, Move m) {
+        Peg start = game.getBoard().getPegPosition(m.getStartPeg().getYPosition(), m.getStartPeg().getXPosition());
+        Peg dest = game.getBoard().getPegPosition(m.getDestinationPeg().getYPosition(), m.getDestinationPeg().getXPosition());
+        if (start != null && dest != null && !start.getPawns().isEmpty()) {
+            game.selectStartPeg(start);
+            game.executeMove(dest);
+        }
+    }
+
+    /**
+     * Internal heuristic scoring for turn comparison.
+     */
+    private int getTurnScore(Turn t, boolean isAi, Game g) {
+        if (t == null || t.getFirstMove() == null) return -99999;
+        int s = evaluateSingleMove(t.getFirstMove(), isAi, g);
+        if (t.getSecondMove() != null) s += evaluateSingleMove(t.getSecondMove(), isAi, g);
+        return s;
+    }
+
+    /**
+     * Counts finished pawns for win detection and bias calculation.
      */
     private int countFinishedPawns(Game game, PawnColor color) {
         int count = 0;
@@ -278,7 +343,7 @@ public class AiModel {
     }
 
     /**
-     * Calculates the "Fear Factor" of an opponent reaching the finish zone.
+     * Calculates fear bias based on opponent progress.
      */
     private double calculateThreatBias(Game game) {
         int oppFin = countFinishedPawns(game, opponentColor);
@@ -293,19 +358,7 @@ public class AiModel {
     }
 
     /**
-     * Scores a turn immediately using heuristics.
-     */
-    private int getTurnScore(Turn t, boolean isAi, Game g) {
-        if (t == null || t.getFirstMove() == null) return -99999;
-        int s = evaluateSingleMove(t.getFirstMove(), isAi, g);
-        if (t.getSecondMove() != null) s += evaluateSingleMove(t.getSecondMove(), isAi, g);
-        return s;
-    }
-
-    /**
-     * Executes an MCTS simulation (Rollout) on a game state.
-     *
-     * @return Win result for the AI (0.0 to 1.0).
+     * MCTS Random rollout logic.
      */
     private double simulate(ZarocNode node, Random rnd) {
         Game simGame = node.getState().gameCopy();
@@ -324,7 +377,7 @@ public class AiModel {
     }
 
     /**
-     * Determines current victory status.
+     * Checks if current state is a terminal victory.
      */
     private InternalResult checkWinInternal(Game game) {
         int ai = countFinishedPawns(game, aiColor);
@@ -333,7 +386,7 @@ public class AiModel {
     }
 
     /**
-     * Checks if the active player can finish on their next turn.
+     * Direct win detection for defense.
      */
     private boolean canOpponentWinImmediately(Game game) {
         for (Turn t : MoveGenerator.getAllLegalTurns(game)) {
@@ -345,7 +398,7 @@ public class AiModel {
     }
 
     /**
-     * Recursive Minimax search depth-first.
+     * Minimax depth-first search for forced losses.
      */
     private boolean isForcedLoss(Game state, int depth, boolean isAiTurn) {
         InternalResult res = checkWinInternal(state);
@@ -363,7 +416,7 @@ public class AiModel {
     }
 
     /**
-     * Orchestrates a single thread of MCTS simulations.
+     * Threaded execution of MCTS tasks.
      */
     private ZarocNode runMctsThread(Game baseGame, int iterations) {
         ZarocNode root = new ZarocNode(baseGame.gameCopy(), null, null);
@@ -377,7 +430,7 @@ public class AiModel {
     }
 
     /**
-     * Aggregates simulation data to pick the turn with the highest statistical win rate.
+     * Merges simulation results from multiple search roots.
      */
     private Turn getBestCombinedTurn(List<ZarocNode> roots, List<Turn> filteredOptions, Game actualGame) {
         Map<String, MoveStats> data = new HashMap<>();
@@ -398,37 +451,7 @@ public class AiModel {
     }
 
     /**
-     * Identifies colors and usernames for AI decision context.
-     */
-    private void setupAiIdentity(Game game, AIPlayer aiPlayer) {
-        this.aiUsername = aiPlayer.getUsername().trim();
-        boolean p1IsAi = game.getParticipation1().getPlayer().getUsername().trim().equalsIgnoreCase(aiUsername);
-        aiColor = p1IsAi ? game.getParticipation1().getChosenPawnColor() : game.getParticipation2().getChosenPawnColor();
-        opponentColor = p1IsAi ? game.getParticipation2().getChosenPawnColor() : game.getParticipation1().getChosenPawnColor();
-    }
-
-    /**
-     * Applies a turn's moves to a game state.
-     */
-    private void applyTurn(Game game, Turn turn) {
-        if (turn.getFirstMove() != null) executeSingleMoveOnBoard(game, turn.getFirstMove());
-        if (turn.getSecondMove() != null) executeSingleMoveOnBoard(game, turn.getSecondMove());
-    }
-
-    /**
-     * Physically maps move pegs to a copied board state and executes.
-     */
-    private void executeSingleMoveOnBoard(Game game, Move m) {
-        Peg start = game.getBoard().getPegPosition(m.getStartPeg().getYPosition(), m.getStartPeg().getXPosition());
-        Peg dest = game.getBoard().getPegPosition(m.getDestinationPeg().getYPosition(), m.getDestinationPeg().getXPosition());
-        if (start != null && dest != null && !start.getPawns().isEmpty()) {
-            game.selectStartPeg(start);
-            game.executeMove(dest);
-        }
-    }
-
-    /**
-     * Simulation move selection (greedy heuristic with small random chance).
+     * Greedy turn selection used for simulation rollouts.
      */
     private Turn getHeuristicBestTurn(List<Turn> opts, Game g) {
         boolean isAi = g.getCurrentTurn().getCurrentPlayer().getUsername().trim().equalsIgnoreCase(aiUsername);
@@ -436,7 +459,7 @@ public class AiModel {
     }
 
     /**
-     * Updates path statistics for MCTS.
+     * Updates path statistics for simulated outcomes.
      */
     private void backpropagate(ZarocNode node, double score) {
         ZarocNode curr = node;
@@ -451,7 +474,7 @@ public class AiModel {
     }
 
     /**
-     * Traverses tree using UCB1 selection.
+     * UCB selection for tree traversal.
      */
     private ZarocNode select(ZarocNode node) {
         while (!node.getChildren().isEmpty()) {
@@ -461,7 +484,7 @@ public class AiModel {
     }
 
     /**
-     * Expands the tree by picking an unexplored legal move.
+     * Expands a node by exploring a new legal move.
      */
     private ZarocNode expand(ZarocNode node, Random rnd) {
         if (checkWinInternal(node.getState()) != InternalResult.PLAYING) return node;
@@ -480,7 +503,21 @@ public class AiModel {
     }
 
     /**
-     * Internal container for MCTS move data.
+     * Hashing function for turn identification in the simulation tree.
+     */
+    private String getTurnKey(Turn t) {
+        if (t == null || t.getFirstMove() == null || t.getFirstMove().getStartPeg() == null) return "invalid_" + System.nanoTime();
+        Move m1 = t.getFirstMove();
+        String k = m1.getStartPeg().getXPosition() + "," + m1.getStartPeg().getYPosition() + ">" + m1.getDestinationPeg().getXPosition() + "," + m1.getDestinationPeg().getYPosition();
+        if (t.getSecondMove() != null && t.getSecondMove().getStartPeg() != null) {
+            Move m2 = t.getSecondMove();
+            k += "|" + m2.getStartPeg().getXPosition() + "," + m2.getStartPeg().getYPosition() + ">" + m2.getDestinationPeg().getXPosition() + "," + m2.getDestinationPeg().getYPosition();
+        }
+        return k;
+    }
+
+    /**
+     * Internal container for MCTS simulation data.
      */
     private static class MoveStats { Turn turn; int visits; double totalScore; }
 }

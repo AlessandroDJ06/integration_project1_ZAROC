@@ -1,7 +1,6 @@
 package game.integration_project1_zaroc.view.pages.gamesetupview;
 
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.model.selectionslider.DifficultyPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
@@ -34,12 +33,10 @@ public class GameSetupPresenter {
     private AppController model;
     private GameSetupView view;
     private List<Button> buttons;
-    private String[] difficulty;
     private String[] players;
 
     private PawnColorPickerModel colorOne;
     private PawnColorPickerModel colorTwo;
-    private DifficultyPickerModel difficultyPicker;
     private StartingPlayerSelector startingPlayerSelector;
 
     public GameSetupPresenter(GameSetupView view , AppController appController){
@@ -54,17 +51,12 @@ public class GameSetupPresenter {
                 view.getColorPickerTwo().getLeftButton(),
                 view.getColorPickerTwo().getRightButton(),
                 view.getLeaderBoardButton(),
-                view.getDifficultyPicker().getLeftButton(),
-                view.getDifficultyPicker().getRightButton(),
                 view.getReturnButton()
         );
 
         this.colorOne = appController.getColorOne();
         this.colorTwo = appController.getColorTwo();
-        this.difficultyPicker = appController.getDifficultyPicker();
         this.startingPlayerSelector = appController.getStartingPlayerSelector();
-
-        this.difficulty = new String[] {"easy","medium","hard"};
         this.players = new String[] {"player1","player2"};
 
         addEventHandlers();
@@ -104,16 +96,6 @@ public class GameSetupPresenter {
             colorTwo.increaseCurrentIndex();
             colorOne.setCurrentIndexOtherPicker(colorTwo.getCurrentIndex());
             model.setPlayer2Color();
-            updateView();
-        });
-
-        view.getDifficultyPicker().getRightButton().setOnAction(event -> {
-            difficultyPicker.increaseCurrentIndex();
-            updateView();
-        });
-
-        view.getDifficultyPicker().getLeftButton().setOnAction(event -> {
-            difficultyPicker.decreaseCurrentIndex();
             updateView();
         });
 
@@ -190,8 +172,6 @@ public class GameSetupPresenter {
         view.getColorPickerTwo().getPawnColor().setImage(
                 view.getResourceManager().getPawnColor(PawnColorPaths.values()[colorTwo.getCurrentIndex()])
         );
-
-        view.getDifficultyPicker().getLabel().setText(difficulty[difficultyPicker.getCurrentIndex()]);
 
         view.getStartingPlayerPicker().getLabel().setText(players[startingPlayerSelector.getCurrentIndex()]);
     }

@@ -24,10 +24,10 @@ public class Main extends Application {
         boolean canConnect = canConnectToDatabase();
         Themes theme = Themes.DEFAULT;
         ResourceManager resourceManager = new ResourceManager(theme);
-        //StartView view = new StartView(resourceManager);
-        SelectGamemodeView view = new SelectGamemodeView(resourceManager);
-        //new StartPresenter(new AppController(canConnect),view);
-        new SelectGamemodePresenter(new AppController(canConnect),view);
+        StartView view = new StartView(resourceManager);
+        //SelectGamemodeView view = new SelectGamemodeView(resourceManager);
+        new StartPresenter(new AppController(canConnect),view);
+        //new SelectGamemodePresenter(new AppController(canConnect),view);
 
         Scene scene = new Scene(view);
         stage.setScene(scene);

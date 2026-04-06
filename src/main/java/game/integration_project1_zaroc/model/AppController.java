@@ -5,10 +5,8 @@ import game.integration_project1_zaroc.model.gamelogic.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.AIPlayer;
-import game.integration_project1_zaroc.model.players.Difficulty;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
-import game.integration_project1_zaroc.model.selectionslider.DifficultyPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
 
@@ -17,7 +15,6 @@ public class AppController {
     private boolean allowedToUseDatabase;
     private PawnColorPickerModel colorOne;
     private PawnColorPickerModel colorTwo;
-    private DifficultyPickerModel difficultyPicker;
     private StartingPlayerSelector startingPlayerSelector;
     private GamesDao gamesDao;
     private GameParticipationDao gameParticipationDao;
@@ -33,7 +30,6 @@ public class AppController {
 
     public AppController(boolean canConnect){
         this.allowedToUseDatabase = canConnect;
-        this.difficultyPicker = new DifficultyPickerModel();
 
         player1 = null;
 
@@ -81,10 +77,6 @@ public class AppController {
     }
 
     public void createGame() {
-        Difficulty gekozenDifficulty = Difficulty.values()[difficultyPicker.getCurrentIndex()];
-
-        this.player2 = new AIPlayer(gekozenDifficulty, "jonas");
-
         if (allowedToUseDatabase){
             try {
                 player2.setPlayerId(playersDao.createAiPlayer((AIPlayer) player2));
@@ -155,10 +147,6 @@ public class AppController {
         return startingPlayerSelector;
     }
 
-    public DifficultyPickerModel getDifficultyPicker() {
-        return difficultyPicker;
-    }
-
     public PawnColorPickerModel getColorTwo() {
         return colorTwo;
     }
@@ -167,4 +155,11 @@ public class AppController {
         this.player1 = player1;
     }
 
+    public void setPlayer2(Player player2) {
+        this.player2 = player2;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
 }

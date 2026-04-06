@@ -46,8 +46,6 @@ public class SelectGamemodeView extends BorderPane {
     private void layoutNodes(){
         BorderPane centralContainer = new BorderPane();
         Image boardBackgroundImage = resourceManager.getImage(Components.LARGECONTAINER);
-
-
         BackgroundSize backgroundSize = new BackgroundSize(600, 440, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(
                 boardBackgroundImage,

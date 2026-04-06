@@ -14,6 +14,7 @@ import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -163,6 +164,9 @@ public class GameBoardPresenter {
             view.getPlayersPlayingComponent().getFirstPlayer().setScaleX(1);
             view.getPlayersPlayingComponent().getFirstPlayer().setScaleY(1);
         }
+
+        view.getPlayersPlayingComponent().setPlayerTwoPfp(ProfilePictures.valueOf(model.getPlayer2().getProfilePicture()));
+
         renderBoard();
     }
 

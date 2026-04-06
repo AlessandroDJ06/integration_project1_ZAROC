@@ -28,7 +28,6 @@ public class GameSetupView extends BorderPane {
     private Button createGameButton;
     private ImageSliderComponent colorPickerOne;
     private ImageSliderComponent colorPickerTwo;
-    private TextSliderComponent difficultyPicker;
     private TextSliderComponent startingPlayerPicker;
 
     public GameSetupView(ResourceManager resourceManager){
@@ -46,7 +45,6 @@ public class GameSetupView extends BorderPane {
         this.leaderBoardButton = new LongButtonComponent(this.resourceManager,"Leaderboard");
         this.colorPickerOne = new ImageSliderComponent(resourceManager);
         this.colorPickerTwo = new ImageSliderComponent(resourceManager);
-        this.difficultyPicker = new TextSliderComponent(resourceManager);
         this.startingPlayerPicker = new TextSliderComponent(resourceManager);
     }
 
@@ -99,7 +97,6 @@ public class GameSetupView extends BorderPane {
         //settings selectors
         VBox innerRows = new VBox(
                 createSettingRow("Starting player: ", startingPlayerPicker),
-                createSettingRow("Set difficulty : ", difficultyPicker),
                 createSettingRow("Player1 color  : ", colorPickerOne),
                 createSettingRow("Player2 color  : ", colorPickerTwo)
         );
@@ -183,9 +180,6 @@ public class GameSetupView extends BorderPane {
         return this.createGameButton;
     }
 
-    TextSliderComponent getDifficultyPicker() {
-        return difficultyPicker;
-    }
 
     TextSliderComponent getStartingPlayerPicker() {
         return startingPlayerPicker;
