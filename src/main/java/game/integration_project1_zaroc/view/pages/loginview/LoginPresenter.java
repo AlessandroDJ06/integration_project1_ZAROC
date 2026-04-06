@@ -50,7 +50,7 @@ public class LoginPresenter {
         alert.showAndWait().ifPresent(type -> {
             if (type == guestBtn) {
                 model.setPlayer1(new HumanPlayer(attemptedName, "gast@local.com"));
-                model.getGame().setAllowedSave(false);
+                model.setAllowedToUseDatabase(false);
                 closeWindow();
             }
         });

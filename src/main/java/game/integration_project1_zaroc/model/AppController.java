@@ -174,4 +174,8 @@ public class AppController {
     public ProfilePicturePickerModel getProfilePicturePickerModel() {
         return profilePicturePickerModel;
     }
+
+    public void setAllowedToUseDatabase(boolean allowedToUseDatabase) {
+        this.allowedToUseDatabase = allowedToUseDatabase;
+    }
 }
