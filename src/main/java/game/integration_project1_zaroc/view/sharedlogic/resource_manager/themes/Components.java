@@ -14,7 +14,10 @@ public enum Components {
     PEGVIEW("pegview.png"),
     POLECAPAFOUR("pole_capa_4.png"),
     POLECAPATHREE("pole_capa_3.png"),
-    POLECAPATWO("pole_capa_2.png");
+    POLECAPATWO("pole_capa_2.png"),
+    PLAYERVPLAYER("playervplayer.png"),
+    PLAYERVAI("playervai.png"),
+    LARGECONTAINER("large-container.png");
 
     private final String fileName;
 

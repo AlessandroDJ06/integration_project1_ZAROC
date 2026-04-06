@@ -9,6 +9,8 @@ import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPre
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
 import game.integration_project1_zaroc.view.pages.loginview.LoginView;
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -103,8 +105,8 @@ public class StartPresenter {
 
     }
     private void navigateToGameSetup() {
-        GameSetupView setupView = new GameSetupView(view.getResourceManager());
-        new GameSetupPresenter(setupView, model);
-        view.getScene().setRoot(setupView);
+        SelectGamemodeView selectGamemodeView = new SelectGamemodeView(view.getResourceManager());
+        new SelectGamemodePresenter(model,selectGamemodeView);
+        view.getScene().setRoot(selectGamemodeView);
     }
 }
