@@ -1,5 +1,6 @@
 package game.integration_project1_zaroc.view.pages.loginview;
 
+import game.integration_project1_zaroc.view.components.buttons.LongButtonComponent;
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
@@ -17,6 +18,7 @@ public class LoginView extends BorderPane {
     private ResourceManager resourceManager;
     private Button returnButton;
     private Button loginButton;
+    private Button playAsGuest;
 
     private TextField nameField;
     private PasswordField passwordField;
@@ -36,6 +38,8 @@ public class LoginView extends BorderPane {
 
         this.passwordField = new PasswordField();
         this.passwordField.setPromptText("Typ je password...");
+
+        this.playAsGuest = new TextButton(resourceManager,"GAST LOGIN");
     }
 
     private void layoutNodes(){
@@ -89,18 +93,25 @@ public class LoginView extends BorderPane {
         passwordLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         passwordLabel.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
+        Label spacer = new Label("--of--");
+        spacer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+        spacer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+
+
+
 
         VBox passBox = new VBox(5);
         passBox.setAlignment(Pos.CENTER_LEFT);
         passBox.getChildren().addAll(passwordLabel, passwordField);
-        centerContainer.getChildren().addAll(nameBox, passBox);
+        centerContainer.getChildren().addAll(nameBox, passBox,loginButton,spacer,playAsGuest);
 
         setCenter(centerContainer);
         loginButton.setPadding(new Insets(0, 0, 0, 0));
-        VBox bottomSection = new VBox(loginButton);
-        bottomSection.setAlignment(Pos.CENTER);
-        bottomSection.setPadding(new Insets(0, 0, 30, 0));
-        setBottom(bottomSection);
+        //VBox bottomSection = new VBox(playAsGuest);
+
+        //bottomSection.setAlignment(Pos.CENTER);
+        //bottomSection.setPadding(new Insets(0, 0, 30, 0));
+        //setBottom(bottomSection);
     }
 
     String getUsername() {
