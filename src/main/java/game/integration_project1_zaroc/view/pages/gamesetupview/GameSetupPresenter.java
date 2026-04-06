@@ -166,10 +166,10 @@ public class GameSetupPresenter {
     }
 
     private void updateView(){
-        view.getColorPickerOne().getPawnColor().setImage(
+        view.getColorPickerOne().getImageView().setImage(
                 view.getResourceManager().getPawnColor(PawnColorPaths.values()[colorOne.getCurrentIndex()])
         );
-        view.getColorPickerTwo().getPawnColor().setImage(
+        view.getColorPickerTwo().getImageView().setImage(
                 view.getResourceManager().getPawnColor(PawnColorPaths.values()[colorTwo.getCurrentIndex()])
         );
 

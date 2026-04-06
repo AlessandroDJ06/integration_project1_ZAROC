@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class PlayersDao {
 
     public int createHumanPlayer(HumanPlayer player, String password) throws ZarocDaoException {
-        String sql = "INSERT INTO PLAYERS (username, email, password, play_style) VALUES (?, ?, ?, NULL)";
+        String sql = "INSERT INTO PLAYERS (username, email, password, play_style,profile_picture) VALUES (?, ?, ?, NULL,?)";
 
         try (Connection conn = DaoUtils.createConnection();
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -21,6 +21,7 @@ public class PlayersDao {
             ps.setString(1, player.getUsername());
             ps.setString(2, player.getEmail());
             ps.setString(3, BCrypt.hashpw(password, BCrypt.gensalt()));
+            ps.setString(4, player.getProfilePicture());
 
             ps.executeUpdate();
 

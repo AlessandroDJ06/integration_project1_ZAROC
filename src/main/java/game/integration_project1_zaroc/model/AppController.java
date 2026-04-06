@@ -8,6 +8,7 @@ import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
+import game.integration_project1_zaroc.model.selectionslider.ProfilePicturePickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
 
 
@@ -16,6 +17,7 @@ public class AppController {
     private PawnColorPickerModel colorOne;
     private PawnColorPickerModel colorTwo;
     private StartingPlayerSelector startingPlayerSelector;
+    private ProfilePicturePickerModel profilePicturePickerModel;
     private GamesDao gamesDao;
     private GameParticipationDao gameParticipationDao;
     private PlayersDao playersDao;
@@ -44,6 +46,7 @@ public class AppController {
 
 
         this.startingPlayerSelector = new StartingPlayerSelector();
+        this.profilePicturePickerModel = new ProfilePicturePickerModel();
         this.startingPlayerSelector.setPlayer1(player1);
         this.startingPlayerSelector.setPlayer2(player2);
 
@@ -54,8 +57,9 @@ public class AppController {
         this.playersDao = new PlayersDao();
     }
 
-    public void createAccount(String username, String email, String password) throws ZarocDaoException {
+    public void createAccount(String username, String email, String password,String profilePicture) throws ZarocDaoException {
         HumanPlayer player = new HumanPlayer(username, email);
+        player.setProfilePicture(profilePicture);
         int id = playersDao.createHumanPlayer(player, password);
         player.setPlayerId(id);
         setPlayer1(player);
@@ -161,5 +165,13 @@ public class AppController {
 
     public Player getPlayer2() {
         return player2;
+    }
+
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public ProfilePicturePickerModel getProfilePicturePickerModel() {
+        return profilePicturePickerModel;
     }
 }

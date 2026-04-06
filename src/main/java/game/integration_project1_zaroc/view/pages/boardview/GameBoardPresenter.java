@@ -166,6 +166,7 @@ public class GameBoardPresenter {
         }
 
         view.getPlayersPlayingComponent().setPlayerTwoPfp(ProfilePictures.valueOf(model.getPlayer2().getProfilePicture()));
+        view.getPlayersPlayingComponent().setPlayerOnePfp(ProfilePictures.valueOf(model.getPlayer1().getProfilePicture()));
 
         renderBoard();
     }
