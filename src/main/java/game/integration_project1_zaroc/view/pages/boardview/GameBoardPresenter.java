@@ -50,6 +50,9 @@ public class GameBoardPresenter {
     private Timeline player1Animation;
     private Timeline player2Animation;
     private Timeline highlightAnimation;
+    private Timeline undoTimer;
+    private int remainingUndoSeconds;
+
 
     private ImageView selectedPawn;
 
@@ -129,8 +132,12 @@ public class GameBoardPresenter {
 
             });
         }
-        view.getUndoButton().setOnAction(e ->{
-            model.getGame().undoMove(model.getGame().getLastMove());
+        view.getUndoButton().setOnAction(e -> {
+                undoTimer.stop();
+            view.getUndoTimer().setVisible(false);
+            view.getUndoButton().setDisable(true);
+
+            model.getGame().undoMove();
             updateView();
         });
     }
@@ -234,10 +241,12 @@ public class GameBoardPresenter {
         Player currentPlayer = model.getGame().getCurrentTurn().getCurrentPlayer();
 
         if (currentPlayer instanceof AIPlayer) {
+            view.getUndoButton().setDisable(true);
             view.getBoard().getBoard().setDisable(true);
             executeAiLogic((game.integration_project1_zaroc.model.players.AIPlayer) currentPlayer);
         } else {
             view.getBoard().getBoard().setDisable(false);
+            view.getUndoButton().setDisable(true);
         }
     }
 
@@ -258,10 +267,12 @@ public class GameBoardPresenter {
                         javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(800));
                         pause.setOnFinished(event -> {
                             executeSingleMove(bestTurn.getSecondMove());
+                            model.getGame().switchCurrentPlayer();
                             processTurn();
                         });
                         pause.play();
                     } else {
+                        model.getGame().switchCurrentPlayer();
                         processTurn();
                     }
                 }
@@ -290,6 +301,12 @@ public class GameBoardPresenter {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HANDLE HUMAN MOVE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //----------------------------------------------------------------------------------------------
     private void handlePegClick(int col, int row) {
+
+        // stoppen na 2 zetten
+        if (model.getGame().getCurrentTurn().getSecondMove() != null) {
+            return;
+        }
+
         if (selectedPawn == null) {
             ImageView bovensteImg = getTopPawn(col, row);
 
@@ -322,6 +339,9 @@ public class GameBoardPresenter {
                 model.getGame().selectStartPeg(startPeg);
                 model.getGame().executeMove(destinationPeg);
                 System.out.println("Zet uitgevoerd naar: " + col + "," + row);
+
+                updateView();
+                startUndoTimer();
             } else {
                 selectedPawn.setOpacity(1.0);
                 System.out.println("Ongeldige zet naar: " + col + "," + row);
@@ -329,7 +349,6 @@ public class GameBoardPresenter {
 
             selectedPawn = null;
             clearHighlights();
-            processTurn();
         }
     }
 
@@ -348,6 +367,35 @@ public class GameBoardPresenter {
         Integer rowPos = GridPane.getRowIndex(node);
         return columnPos != null && rowPos != null && columnPos == col && rowPos == row;
 
+    }
+    private void startUndoTimer() {
+        if (undoTimer != null) {
+            undoTimer.stop();
+        }
+        remainingUndoSeconds=5;
+
+        view.getUndoTimer().setVisible(true);
+        view.getUndoTimer().setText("00:0" + remainingUndoSeconds);
+        view.getUndoButton().setDisable(false);
+
+        undoTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+
+            remainingUndoSeconds--;
+            view.getUndoTimer().setText("00:0" + remainingUndoSeconds);
+
+            if (remainingUndoSeconds <= 0) {
+                undoTimer.stop();
+                view.getUndoTimer().setVisible(false);
+                view.getUndoButton().setDisable(true);
+
+                if (model.getGame().getCurrentTurn().getSecondMove() != null) {
+                    model.getGame().switchCurrentPlayer();
+                    processTurn();
+                }
+            }
+        }));
+        undoTimer.setCycleCount(5);
+        undoTimer.play();
     }
 
     //----------------------------------------------------------------------------------------------

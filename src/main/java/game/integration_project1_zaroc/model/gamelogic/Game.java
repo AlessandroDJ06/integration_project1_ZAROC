@@ -117,9 +117,9 @@ public class Game {
 
         newMove.setEndTime(Timestamp.from(Instant.now()));
 
-        if (moveNumber == MoveNumber.SECOND_MOVE) {
-            switchCurrentPlayer();
-        }
+       // if (moveNumber == MoveNumber.SECOND_MOVE) {
+        //   switchCurrentPlayer();
+        //}
         return newMove;
     }
 
@@ -143,24 +143,50 @@ public class Game {
     }
 
 
-    public void undoMove(Move move) {
+    public void undoMove() {
 
-        if(getCurrentTurn().getCurrentPlayer() instanceof AIPlayer){
-            getCurrentTurn().deleteBothMoves();
-            turns.remove(getCurrentTurn());
-            System.out.println(getCurrentTurn());
+        Turn currentTurn = getCurrentTurn();
+
+        if (currentTurn.getFirstMove() == null && turns.size() > 1) {
+            turns.remove(turns.size() - 1);
+            currentTurn = getCurrentTurn();
         }
-        if(getCurrentTurn().getCurrentPlayer() instanceof HumanPlayer) {
-            System.out.println(getCurrentTurn());
-            Peg startPeg = move.getStartPeg();
-            Peg destPeg = move.getDestinationPeg();
 
-            Pawn upperPawn = destPeg.getUpperPawn();
+        Move moveToUndo = null;
+        if (currentTurn.getSecondMove() != null) {
+            moveToUndo = currentTurn.getSecondMove();
+            currentTurn.removeMove(moveToUndo);
+        } else if (currentTurn.getFirstMove() != null) {
+            moveToUndo = currentTurn.getFirstMove();
+            currentTurn.removeMove(moveToUndo);
+        }
+        Peg startPeg = moveToUndo.getStartPeg();
+        Peg destPeg = moveToUndo.getDestinationPeg();
 
-            destPeg.removePawnFromPeg(upperPawn);
-            startPeg.addPawnToPeg(upperPawn);
-            getCurrentTurn().removeMove(move);
+        Pawn upperPawn = destPeg.getUpperPawn();
+        destPeg.removePawnFromPeg(upperPawn);
+        startPeg.addPawnToPeg(upperPawn);
+        upperPawn.setCurrentPeg(startPeg);
 
+        updateLastMoveAfterUndo();
+
+        if (status == GameStatus.ENDED) {
+            status = GameStatus.PLAYING;
+            getParticipation1().setWinner(false);
+            getParticipation2().setWinner(false);
+        }
+    }
+    private void updateLastMoveAfterUndo() {
+        if (turns.isEmpty()) {
+            this.lastMove = null;
+        } else if (getCurrentTurn().getSecondMove() != null) {
+            this.lastMove = getCurrentTurn().getSecondMove();
+        } else if (getCurrentTurn().getFirstMove() != null) {
+            this.lastMove = getCurrentTurn().getFirstMove();
+        } else if (turns.size() > 1) {
+            this.lastMove = turns.get(turns.size() - 2).getSecondMove();
+        } else {
+            this.lastMove = null;
         }
     }
 

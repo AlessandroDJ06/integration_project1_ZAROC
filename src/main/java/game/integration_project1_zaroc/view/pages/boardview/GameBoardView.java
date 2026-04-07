@@ -4,12 +4,15 @@ import game.integration_project1_zaroc.view.components.buttons.GeneralActionsCom
 import game.integration_project1_zaroc.view.components.PegSideViewComponent;
 import game.integration_project1_zaroc.view.components.PlayersPlayingComponent;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class GameBoardView extends BorderPane {
     private ResourceManager resourceManager;
     private PlayersPlayingComponent playersPlayingComponent;
     private PegSideViewComponent pegView;
+    private Label undoTimer;
 
 
 
@@ -39,6 +43,7 @@ public class GameBoardView extends BorderPane {
         this.infoButton = new GeneralActionsComponent(this.resourceManager,Components.RULES);
         this.playersPlayingComponent = new PlayersPlayingComponent(resourceManager);
         this.pegView = new PegSideViewComponent(this.resourceManager);
+        this.undoTimer = new Label("");
     }
 
     public void layoutNodes() {
@@ -64,12 +69,20 @@ public class GameBoardView extends BorderPane {
         BorderPane.setAlignment(infoAndSettingsVbox,Pos.TOP_RIGHT);
         infoAndSettingsVbox.setPadding(new Insets(30,30,0,0));
         infoAndSettingsVbox.setSpacing(15);
-        VBox undoButtonVbox = new VBox(this.undoButton);
-        setLeft(undoButtonVbox);
-        BorderPane.setAlignment(undoButtonVbox,Pos.TOP_LEFT);
-        undoButtonVbox.setPadding(new Insets(30,0,0,30));
+        HBox undoHbox = new HBox(this.undoButton,undoTimer);
+
+        undoHbox.setAlignment(Pos.CENTER_LEFT);
+        undoHbox.setSpacing(30);
+
+        VBox undoVbox = new VBox(undoHbox);
+        undoVbox.setPadding(new Insets(30, 0, 0, 30));
+        setLeft(undoVbox);
 
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
+
+        this.undoTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        this.undoTimer.setStyle("-fx-font-family: '" + resourceManager.getFont(Fonts.PRESSSTART2PSMALL).getFamily()
+                + "'; " + "-fx-font-size: 24px;");
     }
 
 
@@ -111,5 +124,8 @@ public class GameBoardView extends BorderPane {
 
     List<VBox> getPegContainers() {
         return pegView.getPegContainers();
+    }
+    Label getUndoTimer() {
+        return undoTimer;
     }
 }
