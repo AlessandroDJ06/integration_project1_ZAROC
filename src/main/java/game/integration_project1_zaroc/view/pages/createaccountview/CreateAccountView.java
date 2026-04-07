@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.pages.createaccountview;
 
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
+import game.integration_project1_zaroc.view.components.slidercomponents.ImageSliderComponent;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.utils.LayoutHelpers;
@@ -15,6 +16,7 @@ public class CreateAccountView extends BorderPane {
     private Button returnButton;
     private Button createButton;
 
+    private ImageSliderComponent profilePicturePicker;
     private TextField nameField;
     private TextField emailField;
     private PasswordField passwordField;
@@ -28,6 +30,8 @@ public class CreateAccountView extends BorderPane {
     private void initialiseNodes() {
         this.returnButton = new TextButton(resourceManager, "←");
         this.createButton = new TextButton(resourceManager, "MAAK AAN");
+
+        this.profilePicturePicker = new ImageSliderComponent(this.resourceManager);
 
         this.nameField = new TextField();
         this.nameField.setPromptText("Typ je username...");
@@ -80,10 +84,14 @@ public class CreateAccountView extends BorderPane {
         passwordField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
 
         centerContainer.getChildren().addAll(
+                profilePicturePicker,
                 labeledField("Username:", nameField),
                 labeledField("Email:", emailField),
                 labeledField("Password:", passwordField)
         );
+
+        profilePicturePicker.getImageView().setFitHeight(90);
+        profilePicturePicker.getImageView().setFitWidth(90);
 
         setCenter(centerContainer);
 
@@ -109,4 +117,6 @@ public class CreateAccountView extends BorderPane {
     String getPassword() { return passwordField.getText(); }
     Button getCreateButton() { return createButton; }
     Button getReturnButton() { return returnButton; }
+    ImageSliderComponent getProfilePicturePicker() { return profilePicturePicker; }
+    ResourceManager getResourceManager() { return resourceManager; }
 }

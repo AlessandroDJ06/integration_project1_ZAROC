@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 
 public class ImageSliderComponent extends SliderComponent {
-    private ImageView pawnColor;
+    private ImageView imageView;
 
     public ImageSliderComponent(ResourceManager resourceManager) {
         super(resourceManager);
@@ -12,13 +12,13 @@ public class ImageSliderComponent extends SliderComponent {
 
     @Override
     protected Node getContent() {
-        if (pawnColor == null) {
-            pawnColor = new ImageView();
+        if (imageView == null) {
+            imageView = new ImageView();
         }
-        return pawnColor;
+        return imageView;
     }
 
-    public ImageView getPawnColor() {
-        return pawnColor;
+    public ImageView getImageView() {
+        return imageView;
     }
 }

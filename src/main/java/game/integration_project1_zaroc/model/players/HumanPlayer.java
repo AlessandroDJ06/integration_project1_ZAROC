@@ -17,6 +17,7 @@ public class HumanPlayer extends Player {
                 rs.getString("email")
         );
         hp.setPlayerId(rs.getInt("player_id"));
+        hp.setProfilePicture(rs.getString("profile_picture"));
 
         String style = rs.getString("play_style");
         if (style != null) {
