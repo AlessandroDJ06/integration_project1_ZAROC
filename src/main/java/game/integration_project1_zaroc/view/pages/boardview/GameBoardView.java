@@ -50,39 +50,47 @@ public class GameBoardView extends BorderPane {
         playersPlayingComponent.setPlayerOnePfp(ProfilePictures.JAMES);
         playersPlayingComponent.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
 
-        Region spacer = new Region();
-        HBox boardWithPegView = new HBox(board,spacer,pegView);
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        boardWithPegView.setAlignment(Pos.CENTER);
-        VBox boardView = new VBox();
+        BorderPane topHeader = new BorderPane();
+        topHeader.setPadding(new Insets(30, 30, 0, 30));
 
-        boardView.getChildren().addAll(playersPlayingComponent,boardWithPegView);
-        boardView.setSpacing(50);
-        boardView.setPadding(new Insets(40));
-        setCenter(boardView);
-        boardView.setMaxWidth(1200);
-        boardView.setAlignment(Pos.TOP_CENTER);
-        BorderPane.setAlignment(boardView,Pos.CENTER);
-
-        VBox infoAndSettingsVbox = new VBox(this.settingsButton,this.infoButton);
-        setRight(infoAndSettingsVbox);
-        BorderPane.setAlignment(infoAndSettingsVbox,Pos.TOP_RIGHT);
-        infoAndSettingsVbox.setPadding(new Insets(30,30,0,0));
-        infoAndSettingsVbox.setSpacing(15);
-        HBox undoHbox = new HBox(this.undoButton,undoTimer);
-
+        HBox undoHbox = new HBox(this.undoButton, this.undoTimer);
         undoHbox.setAlignment(Pos.CENTER_LEFT);
         undoHbox.setSpacing(30);
+        undoHbox.setMaxHeight(Region.USE_PREF_SIZE);
 
-        VBox undoVbox = new VBox(undoHbox);
-        undoVbox.setPadding(new Insets(30, 0, 0, 30));
-        setLeft(undoVbox);
+        topHeader.setLeft(undoHbox);
+        BorderPane.setAlignment(undoHbox, Pos.TOP_LEFT);
+
+        topHeader.setCenter(playersPlayingComponent);
+        BorderPane.setAlignment(playersPlayingComponent, Pos.TOP_CENTER);
+
+        VBox infoAndSettingsVbox = new VBox(this.settingsButton, this.infoButton);
+        infoAndSettingsVbox.setSpacing(15);
+        infoAndSettingsVbox.setMaxHeight(Region.USE_PREF_SIZE);
+
+        topHeader.setRight(infoAndSettingsVbox);
+        BorderPane.setAlignment(infoAndSettingsVbox, Pos.TOP_RIGHT);
+
+        setTop(topHeader);
+
+        Region spacer = new Region();
+        spacer.setMinWidth(200);
+
+        HBox boardWithPegView = new HBox(board, spacer, pegView);
+        boardWithPegView.setAlignment(Pos.CENTER);
+
+        VBox boardVbox = new VBox(boardWithPegView);
+        boardVbox.setAlignment(Pos.CENTER);
+        boardVbox.setPadding(new Insets(40));
+
+        setCenter(boardVbox);
 
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
 
         this.undoTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         this.undoTimer.setStyle("-fx-font-family: '" + resourceManager.getFont(Fonts.PRESSSTART2PSMALL).getFamily()
                 + "'; " + "-fx-font-size: 24px;");
+
     }
 
 
