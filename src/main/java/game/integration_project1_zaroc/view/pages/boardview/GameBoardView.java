@@ -90,7 +90,7 @@ public class GameBoardView extends BorderPane {
         this.undoTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         this.undoTimer.setStyle("-fx-font-family: '" + resourceManager.getFont(Fonts.PRESSSTART2PSMALL).getFamily()
                 + "'; " + "-fx-font-size: 24px;");
-
+        //
     }
 
 
