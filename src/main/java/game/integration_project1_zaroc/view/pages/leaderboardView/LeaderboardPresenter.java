@@ -48,33 +48,6 @@ public class LeaderboardPresenter {
     }
 
 
-//    private void applySortAndDisplay(String sortOption) {
-//        if (cachedEntries.isEmpty()) return;
-//
-//        Comparator<LeaderboardEntry> comparator = switch (sortOption) {
-//            case "Wins"            -> Comparator.comparingInt(LeaderboardEntry::getWins).reversed();
-//            case "Losses"          -> Comparator.comparingInt(LeaderboardEntry::getLosses).reversed();
-//            case "Games Played"    -> Comparator.comparingInt(LeaderboardEntry::getGamesPlayed).reversed();
-//            case "Total Play Time" -> Comparator.comparingLong(LeaderboardEntry::getTotalPlayTimeSeconds).reversed();
-//            case "Avg Moves / Game"-> Comparator.comparingDouble(LeaderboardEntry::getAvgMovesPerGame).reversed();
-//            case "Avg Sec / Move"  -> Comparator.comparingDouble(LeaderboardEntry::getAvgSecPerMove).reversed();
-//            case "Total Score"     -> Comparator.comparingInt(LeaderboardEntry::getTotalScore).reversed();
-//            default                -> // "Win Rate" — default
-//                    Comparator.comparingDouble(LeaderboardEntry::getWinPercentage)
-//                            .thenComparingInt(LeaderboardEntry::getWins).reversed();
-//        };
-//
-//        // Sort a copy so the original order is preserved for future sorts
-//        List<LeaderboardEntry> sorted = new ArrayList<>(cachedEntries);
-//        sorted.sort(comparator);
-//
-//        // Reassign rank numbers to reflect the new order
-//        for (int i = 0; i < sorted.size(); i++) {
-//            sorted.get(i).setRank(i + 1);
-//        }
-//
-//        view.setItems(formatEntries(sorted));
-//    }
 private void applySortAndDisplay(String sortOption) {
     if (cachedEntries.isEmpty()) return;
     Comparator<LeaderboardEntry> comparator = switch (sortOption) {
@@ -97,13 +70,11 @@ private void applySortAndDisplay(String sortOption) {
         sorted.get(i).setRank(i + 1);
     }
 
-    // Just pass the raw objects! The TableView columns will extract the data.
     view.setItems(sorted);
 }
 
     public void loadLeaderboard(){
         view.setStatusText("Loading leaderboard…");
-       // load mock data if db empty
         try{
             new MockDataLoader().loadIfEmpty();
         }catch(SQLException|ZarocDaoException e){
@@ -114,7 +85,6 @@ private void applySortAndDisplay(String sortOption) {
             try {
                 List<LeaderboardEntry> entries = dao.fetchLeaderboard();
                 cachedEntries=entries;
-//                List<String> rows = formatEntries(entries);
 
                 Platform.runLater(() -> {
                     view.setItems(entries);
@@ -135,33 +105,5 @@ private void applySortAndDisplay(String sortOption) {
         dbThread.start();
     }
 
-
-    private List<String> formatEntries(List<LeaderboardEntry> entries) {
-
-        List<String> rows = new ArrayList<>();
-
-
-            for (LeaderboardEntry e : entries) {
-                // We use exact spacing numbers here so the columns line up perfectly.
-                // %-4s means "String padded to 4 characters aligned left"
-                // %6d means "Digit padded to 6 characters aligned right"
-                String row = String.format(
-                        "%-4s | %-15s | %6d | %4d | %4d | %5.1f%% | %8s | %9.1f | %10.1f | %6d",
-                        "#" + e.getRank(),
-                        e.getUsername(),
-                        e.getGamesPlayed(),
-                        e.getWins(),
-                        e.getLosses(),
-                        e.getWinPercentage(),
-                        e.getFormattedPlayTime(),
-                        e.getAvgMovesPerGame(),
-                        e.getAvgSecPerMove(),
-                        e.getTotalScore()
-                );
-                rows.add(row);
-            }
-
-            return rows;
-        }
     }
 
