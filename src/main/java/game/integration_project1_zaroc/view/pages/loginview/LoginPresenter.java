@@ -3,10 +3,15 @@ package game.integration_project1_zaroc.view.pages.loginview;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage; // Vergeet deze import niet
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LoginPresenter {
     private AppController model;
@@ -19,6 +24,14 @@ public class LoginPresenter {
     }
 
     private void addEventHandlers(){
+        List<Button> buttons = Arrays.asList(
+                view.getPlayAsGuest(),
+                view.getLoginButton(),
+                view.getReturnButton());
+        for (Button button : buttons){
+            GeneralEventhandlers.addHoverEffect(button);
+        }
+
         view.getReturnButton().setOnAction(event -> {
             closeWindow();
         });
@@ -31,26 +44,58 @@ public class LoginPresenter {
                 model.login(username, password);
                 closeWindow();
             } catch (ZarocDaoException e) {
-                handleLoginFailure(username, e.getMessage());
+                if (model.isAllowedToUseDatabase()){
+                    showGuestLoginDialog(true,"gebruiker niet gevonden of verkeerd wachtwoord");
+                } else {
+                    showGuestLoginDialog(true,"database connectie gefaald");
+                }
+                model.setAllowedToUseDatabase(false);
+
             }
+        });
+
+        view.getPlayAsGuest().setOnAction(event -> {
+            showGuestLoginDialog(false, null);
         });
 
     }
 
-    private void handleLoginFailure(String attemptedName, String errorMsg) {
+    private void showGuestLoginDialog(boolean isError, String errorMsg) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Login Probleem");
-        alert.setHeaderText("Kon niet inloggen: " + errorMsg);
-        alert.setContentText("Wilt u verdergaan als gastspeler? (Data wordt niet opgeslagen)");
+
+        if (isError) {
+            alert.setTitle("Login Probleem");
+            alert.setHeaderText("Fout: " + errorMsg);
+        } else {
+            alert.setTitle("Gast Login");
+            alert.setHeaderText("Spelen als gast");
+        }
+
+        TextField nameInput = new TextField();
+        nameInput.setPromptText("Naam (min. 1 teken)");
+
+        VBox content = new VBox(10);
+        String labelText = isError ? "Toch doorgaan als gast?" : "Kies een naam:";
+        content.getChildren().addAll(new Label(labelText), nameInput);
+        alert.getDialogPane().setContent(content);
 
         ButtonType guestBtn = new ButtonType("Speel als Gast");
         ButtonType cancelBtn = new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(guestBtn, cancelBtn);
 
+        Node guestButtonNode = alert.getDialogPane().lookupButton(guestBtn);
+        guestButtonNode.setDisable(true);
+        nameInput.textProperty().addListener((obs, old, newVal) ->
+                guestButtonNode.setDisable(newVal.trim().isEmpty())
+        );
+
         alert.showAndWait().ifPresent(type -> {
             if (type == guestBtn) {
-                model.setPlayer1(new HumanPlayer(attemptedName, "gast@local.com"));
+                String name = nameInput.getText().trim();
+                model.setPlayer1(new HumanPlayer(name, "gast@local.com"));
                 model.setAllowedToUseDatabase(false);
+
+                System.out.println("Gast-modus actief voor: " + name);
                 closeWindow();
             }
         });

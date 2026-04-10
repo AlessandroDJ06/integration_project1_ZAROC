@@ -22,7 +22,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         boolean canConnect = canConnectToDatabase();
-        Themes theme = Themes.DEFAULT;
+        Themes theme = Themes.DONKEY_KONG;
         ResourceManager resourceManager = new ResourceManager(theme);
         StartView view = new StartView(resourceManager);
         //SelectGamemodeView view = new SelectGamemodeView(resourceManager);

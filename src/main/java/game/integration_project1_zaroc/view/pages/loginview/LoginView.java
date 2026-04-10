@@ -4,6 +4,7 @@ import game.integration_project1_zaroc.view.components.buttons.LongButtonCompone
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import game.integration_project1_zaroc.view.sharedlogic.utils.LayoutHelpers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -37,7 +38,7 @@ public class LoginView extends BorderPane {
         this.nameField.setPromptText("Typ je username...");
 
         this.passwordField = new PasswordField();
-        this.passwordField.setPromptText("Typ je password...");
+        this.passwordField.setPromptText("Typ je wachtwoord...");
 
         this.playAsGuest = new TextButton(resourceManager,"GAST LOGIN");
     }
@@ -72,12 +73,23 @@ public class LoginView extends BorderPane {
         centerContainer.setAlignment(Pos.CENTER);
 
         centerContainer.setSpacing(40);
-        centerContainer.setMaxWidth(250);
+        centerContainer.setMaxWidth(260);
 
-        nameField.setPrefHeight(35);
+        Background background = new Background(new BackgroundImage(
+                resourceManager.getImage(Components.INPUTFIELD),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(260, 40, false, false, false, false)
+        ));
+
+        nameField.setBackground(background);
+        passwordField.setBackground(background);
+
+        nameField.setPrefHeight(40);
         nameField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
 
-        passwordField.setPrefHeight(35);
+        passwordField.setPrefHeight(40);
         passwordField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
 
         Label usernameLabel = new Label("Username:");
@@ -89,7 +101,7 @@ public class LoginView extends BorderPane {
         nameBox.getChildren().addAll(usernameLabel, nameField);
 
 
-        Label passwordLabel = new Label("Password:");
+        Label passwordLabel = new Label("Wachtwoord:");
         passwordLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         passwordLabel.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
@@ -107,11 +119,6 @@ public class LoginView extends BorderPane {
 
         setCenter(centerContainer);
         loginButton.setPadding(new Insets(0, 0, 0, 0));
-        //VBox bottomSection = new VBox(playAsGuest);
-
-        //bottomSection.setAlignment(Pos.CENTER);
-        //bottomSection.setPadding(new Insets(0, 0, 30, 0));
-        //setBottom(bottomSection);
     }
 
     String getUsername() {
@@ -128,5 +135,9 @@ public class LoginView extends BorderPane {
 
     Button getReturnButton() {
         return returnButton;
+    }
+
+    Button getPlayAsGuest() {
+        return playAsGuest;
     }
 }
