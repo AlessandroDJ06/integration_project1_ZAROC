@@ -48,10 +48,36 @@ public class LeaderboardPresenter {
     }
 
 
-    private void applySortAndDisplay(String sortOption) {
-        if (cachedEntries.isEmpty()) return;
-
-        Comparator<LeaderboardEntry> comparator = switch (sortOption) {
+//    private void applySortAndDisplay(String sortOption) {
+//        if (cachedEntries.isEmpty()) return;
+//
+//        Comparator<LeaderboardEntry> comparator = switch (sortOption) {
+//            case "Wins"            -> Comparator.comparingInt(LeaderboardEntry::getWins).reversed();
+//            case "Losses"          -> Comparator.comparingInt(LeaderboardEntry::getLosses).reversed();
+//            case "Games Played"    -> Comparator.comparingInt(LeaderboardEntry::getGamesPlayed).reversed();
+//            case "Total Play Time" -> Comparator.comparingLong(LeaderboardEntry::getTotalPlayTimeSeconds).reversed();
+//            case "Avg Moves / Game"-> Comparator.comparingDouble(LeaderboardEntry::getAvgMovesPerGame).reversed();
+//            case "Avg Sec / Move"  -> Comparator.comparingDouble(LeaderboardEntry::getAvgSecPerMove).reversed();
+//            case "Total Score"     -> Comparator.comparingInt(LeaderboardEntry::getTotalScore).reversed();
+//            default                -> // "Win Rate" — default
+//                    Comparator.comparingDouble(LeaderboardEntry::getWinPercentage)
+//                            .thenComparingInt(LeaderboardEntry::getWins).reversed();
+//        };
+//
+//        // Sort a copy so the original order is preserved for future sorts
+//        List<LeaderboardEntry> sorted = new ArrayList<>(cachedEntries);
+//        sorted.sort(comparator);
+//
+//        // Reassign rank numbers to reflect the new order
+//        for (int i = 0; i < sorted.size(); i++) {
+//            sorted.get(i).setRank(i + 1);
+//        }
+//
+//        view.setItems(formatEntries(sorted));
+//    }
+private void applySortAndDisplay(String sortOption) {
+    if (cachedEntries.isEmpty()) return;
+    Comparator<LeaderboardEntry> comparator = switch (sortOption) {
             case "Wins"            -> Comparator.comparingInt(LeaderboardEntry::getWins).reversed();
             case "Losses"          -> Comparator.comparingInt(LeaderboardEntry::getLosses).reversed();
             case "Games Played"    -> Comparator.comparingInt(LeaderboardEntry::getGamesPlayed).reversed();
@@ -64,17 +90,16 @@ public class LeaderboardPresenter {
                             .thenComparingInt(LeaderboardEntry::getWins).reversed();
         };
 
-        // Sort a copy so the original order is preserved for future sorts
-        List<LeaderboardEntry> sorted = new ArrayList<>(cachedEntries);
-        sorted.sort(comparator);
+    List<LeaderboardEntry> sorted = new ArrayList<>(cachedEntries);
+    sorted.sort(comparator);
 
-        // Reassign rank numbers to reflect the new order
-        for (int i = 0; i < sorted.size(); i++) {
-            sorted.get(i).setRank(i + 1);
-        }
-
-        view.setItems(formatEntries(sorted));
+    for (int i = 0; i < sorted.size(); i++) {
+        sorted.get(i).setRank(i + 1);
     }
+
+    // Just pass the raw objects! The TableView columns will extract the data.
+    view.setItems(sorted);
+}
 
     public void loadLeaderboard(){
         view.setStatusText("Loading leaderboard…");
@@ -89,13 +114,13 @@ public class LeaderboardPresenter {
             try {
                 List<LeaderboardEntry> entries = dao.fetchLeaderboard();
                 cachedEntries=entries;
-                List<String> rows = formatEntries(entries);
+//                List<String> rows = formatEntries(entries);
 
                 Platform.runLater(() -> {
-                    view.setItems(rows);
-                    view.setStatusText(rows.isEmpty()
+                    view.setItems(entries);
+                    view.setStatusText(entries.isEmpty()
                             ? "No finished games found."
-                            : rows.size() + " player(s) on the board.");
+                            : entries.size() + " player(s) on the board.");
                 });
 
             } catch (SQLException | ZarocDaoException e) {
@@ -115,26 +140,28 @@ public class LeaderboardPresenter {
 
         List<String> rows = new ArrayList<>();
 
-        for (LeaderboardEntry e : entries) {
 
+            for (LeaderboardEntry e : entries) {
+                // We use exact spacing numbers here so the columns line up perfectly.
+                // %-4s means "String padded to 4 characters aligned left"
+                // %6d means "Digit padded to 6 characters aligned right"
+                String row = String.format(
+                        "%-4s | %-15s | %6d | %4d | %4d | %5.1f%% | %8s | %9.1f | %10.1f | %6d",
+                        "#" + e.getRank(),
+                        e.getUsername(),
+                        e.getGamesPlayed(),
+                        e.getWins(),
+                        e.getLosses(),
+                        e.getWinPercentage(),
+                        e.getFormattedPlayTime(),
+                        e.getAvgMovesPerGame(),
+                        e.getAvgSecPerMove(),
+                        e.getTotalScore()
+                );
+                rows.add(row);
+            }
 
-            String row = String.format(
-                    "#%s %-18s | Played: %2d | W: %4d | L: %4d | Win%%: %5.1f%% | " +
-                            "Time: %s | Avg Moves: %5.1f | Avg s/Move: %5.1f | Score: %3d",
-                    e.getRank(),
-                    e.getUsername(),
-                    e.getGamesPlayed(),
-                    e.getWins(),
-                    e.getLosses(),
-                    e.getWinPercentage(),
-                    e.getFormattedPlayTime(),
-                    e.getAvgMovesPerGame(),
-                    e.getAvgSecPerMove(),
-                    e.getTotalScore()
-            );
-            rows.add(row);
+            return rows;
         }
-
-        return rows;
     }
-}
+
