@@ -30,18 +30,18 @@ public class CreateAccountView extends BorderPane {
 
     private void initialiseNodes() {
         this.returnButton = new TextButton(resourceManager, "←");
-        this.createButton = new TextButton(resourceManager, "MAAK AAN");
+        this.createButton = new TextButton(resourceManager, "CREATE ACCOUNT");
 
         this.profilePicturePicker = new ImageSliderComponent(this.resourceManager);
 
         this.nameField = new TextField();
-        this.nameField.setPromptText("Typ je username...");
+        this.nameField.setPromptText("Type username...");
 
         this.emailField = new TextField();
-        this.emailField.setPromptText("Typ je email...");
+        this.emailField.setPromptText("Type email...");
 
         this.passwordField = new PasswordField();
-        this.passwordField.setPromptText("Typ je password...");
+        this.passwordField.setPromptText("Type password...");
     }
 
     private void layoutNodes() {
@@ -56,7 +56,7 @@ public class CreateAccountView extends BorderPane {
         titelSection.setAlignment(Pos.CENTER);
         titelSection.setPadding(new Insets(15));
 
-        Label title = new Label("ACCOUNT");
+        Label title = new Label("CREATE ACCOUNT");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 

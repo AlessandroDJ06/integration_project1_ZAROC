@@ -60,7 +60,7 @@ public class SelectGamemodeView extends BorderPane {
         BorderPane.setAlignment(centralContainer, Pos.CENTER);
 
 
-        Label title = new Label("SELECTEER GAMEMODE");
+        Label title = new Label("SELECT GAMEMODE");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
@@ -90,7 +90,7 @@ public class SelectGamemodeView extends BorderPane {
 
         HBox gameModeSelectors = new HBox(playerVsPlayerSection, playerVsAiSection);
 
-        Label seperator = new Label("-- of --");
+        Label seperator = new Label("-- or --");
         seperator.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         seperator.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 

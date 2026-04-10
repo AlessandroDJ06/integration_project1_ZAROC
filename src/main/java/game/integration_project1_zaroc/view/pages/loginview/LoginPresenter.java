@@ -45,9 +45,9 @@ public class LoginPresenter {
                 closeWindow();
             } catch (ZarocDaoException e) {
                 if (model.isAllowedToUseDatabase()){
-                    showGuestLoginDialog(true,"gebruiker niet gevonden of verkeerd wachtwoord");
+                    showGuestLoginDialog(true,"User not found or password wrong");
                 } else {
-                    showGuestLoginDialog(true,"database connectie gefaald");
+                    showGuestLoginDialog(true,"database connection failed");
                 }
                 model.setAllowedToUseDatabase(false);
 
@@ -64,23 +64,23 @@ public class LoginPresenter {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
         if (isError) {
-            alert.setTitle("Login Probleem");
-            alert.setHeaderText("Fout: " + errorMsg);
+            alert.setTitle("Login Problem");
+            alert.setHeaderText("ERROR: " + errorMsg);
         } else {
-            alert.setTitle("Gast Login");
-            alert.setHeaderText("Spelen als gast");
+            alert.setTitle("Guest Login");
+            alert.setHeaderText("Play as guest");
         }
 
         TextField nameInput = new TextField();
-        nameInput.setPromptText("Naam (min. 1 teken)");
+        nameInput.setPromptText("Name (min. 1 char)");
 
         VBox content = new VBox(10);
-        String labelText = isError ? "Toch doorgaan als gast?" : "Kies een naam:";
+        String labelText = isError ? "continue as guest?" : "choose name:";
         content.getChildren().addAll(new Label(labelText), nameInput);
         alert.getDialogPane().setContent(content);
 
-        ButtonType guestBtn = new ButtonType("Speel als Gast");
-        ButtonType cancelBtn = new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType guestBtn = new ButtonType("Play as guest");
+        ButtonType cancelBtn = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(guestBtn, cancelBtn);
 
         Node guestButtonNode = alert.getDialogPane().lookupButton(guestBtn);
@@ -94,8 +94,6 @@ public class LoginPresenter {
                 String name = nameInput.getText().trim();
                 model.setPlayer1(new HumanPlayer(name, "gast@local.com"));
                 model.setAllowedToUseDatabase(false);
-
-                System.out.println("Gast-modus actief voor: " + name);
                 closeWindow();
             }
         });

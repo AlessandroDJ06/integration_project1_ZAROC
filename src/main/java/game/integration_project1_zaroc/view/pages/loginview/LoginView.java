@@ -35,12 +35,12 @@ public class LoginView extends BorderPane {
         this.loginButton = new TextButton(resourceManager,"LOGIN");
 
         this.nameField = new TextField();
-        this.nameField.setPromptText("Typ je username...");
+        this.nameField.setPromptText("Type username...");
 
         this.passwordField = new PasswordField();
-        this.passwordField.setPromptText("Typ je wachtwoord...");
+        this.passwordField.setPromptText("Type password...");
 
-        this.playAsGuest = new TextButton(resourceManager,"GAST LOGIN");
+        this.playAsGuest = new TextButton(resourceManager,"GUEST LOGIN");
     }
 
     private void layoutNodes(){
@@ -101,11 +101,11 @@ public class LoginView extends BorderPane {
         nameBox.getChildren().addAll(usernameLabel, nameField);
 
 
-        Label passwordLabel = new Label("Wachtwoord:");
+        Label passwordLabel = new Label("Password:");
         passwordLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         passwordLabel.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
-        Label spacer = new Label("--of--");
+        Label spacer = new Label("--or--");
         spacer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         spacer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 

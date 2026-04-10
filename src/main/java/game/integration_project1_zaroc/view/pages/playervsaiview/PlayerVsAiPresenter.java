@@ -24,27 +24,27 @@ public class PlayerVsAiPresenter {
 
     private void initialiseGrid() {
         addDifficultyRow(0, "EASY",
-                new AiInfo(Difficulty.EASY,"ARTHUR", ProfilePictures.ARTHUR, "Maakt vaak willekeurige zetten."),
-                new AiInfo(Difficulty.EASY,"ALISTAIR", ProfilePictures.ALISTAIR, "Speelt erg voorzichtig."),
-                new AiInfo(Difficulty.EASY,"BEATRICE", ProfilePictures.BEATRICE, "Houdt niet van risico's.")
+                new AiInfo(Difficulty.EASY, "ARTHUR", ProfilePictures.ARTHUR, "Often makes random moves."),
+                new AiInfo(Difficulty.EASY, "ALISTAIR", ProfilePictures.ALISTAIR, "Plays very cautiously."),
+                new AiInfo(Difficulty.EASY, "BEATRICE", ProfilePictures.BEATRICE, "Avoids taking risks.")
         );
 
         addDifficultyRow(1, "MEDIUM",
-                new AiInfo(Difficulty.MEDIUM,"CLARA", ProfilePictures.CLARA, "Begint patronen te herkennen."),
-                new AiInfo(Difficulty.MEDIUM,"ELEANOR", ProfilePictures.ELEANOR, "Focus op centrum controle."),
-                new AiInfo(Difficulty.MEDIUM,"GIDEON", ProfilePictures.GIDEON, "Lichtelijk agressief.")
+                new AiInfo(Difficulty.MEDIUM, "CLARA", ProfilePictures.CLARA, "Starting to recognize patterns."),
+                new AiInfo(Difficulty.MEDIUM, "ELEANOR", ProfilePictures.ELEANOR, "Focuses on center control."),
+                new AiInfo(Difficulty.MEDIUM, "GIDEON", ProfilePictures.GIDEON, "Slightly aggressive.")
         );
 
         addDifficultyRow(2, "HARD",
-                new AiInfo(Difficulty.HARD,"HELENA", ProfilePictures.HELENA, "Blokkeert direct je tactieken."),
-                new AiInfo(Difficulty.HARD,"IRENE", ProfilePictures.IRENE, "Denkt 3 stappen vooruit."),
-                new AiInfo(Difficulty.HARD,"JAMES", ProfilePictures.JAMES, "Genadeloze verdediging.")
+                new AiInfo(Difficulty.HARD, "HELENA", ProfilePictures.HELENA, "Instantly blocks your tactics."),
+                new AiInfo(Difficulty.HARD, "IRENE", ProfilePictures.IRENE, "Thinks 3 steps ahead."),
+                new AiInfo(Difficulty.HARD, "JAMES", ProfilePictures.JAMES, "Merciless defense.")
         );
 
         addDifficultyRow(3, "ELITE",
-                new AiInfo(Difficulty.ELITE,"LEOPOLD", ProfilePictures.LEOPOLD, "Foutloze berekeningen."),
-                new AiInfo(Difficulty.ELITE,"SEBASTIAN", ProfilePictures.SEBASTIAN, "Leest je speelstijl real-time."),
-                new AiInfo(Difficulty.ELITE,"STEFAN", ProfilePictures.STEFAN, "De onverslaanbare grootmeester.")
+                new AiInfo(Difficulty.ELITE, "LEOPOLD", ProfilePictures.LEOPOLD, "Flawless calculations."),
+                new AiInfo(Difficulty.ELITE, "SEBASTIAN", ProfilePictures.SEBASTIAN, "Reads your playstyle in real-time."),
+                new AiInfo(Difficulty.ELITE, "STEFAN", ProfilePictures.STEFAN, "The unbeatable grandmaster.")
         );
     }
 
@@ -62,11 +62,10 @@ public class PlayerVsAiPresenter {
 
             btn.setOnMouseExited(e -> {
                 view.setButtonStyle(btn, false);
-                view.setSelectionText("KIES EEN TEGENSTANDER", "Bekijk hun unieke speelstijl...");
+                view.setSelectionText("CHOOSE OPPONENT", "Check out their unique playstyle...");
             });
 
             btn.setOnAction(e -> {
-                System.out.println("Start game tegen: " + ai.name);
                 model.setPlayer2(new AIPlayer(ai.difficulty,ai.name));
                 model.getPlayer2().setProfilePicture(ai.name);
                 closeWindow();

@@ -49,8 +49,8 @@ public class CreateAccountPresenter {
                 closeWindow();
             } catch (ZarocDaoException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Fout");
-                alert.setHeaderText("Account aanmaken mislukt");
+                alert.setTitle("ERROR");
+                alert.setHeaderText("Account creation failed");
                 alert.setContentText(ex.getMessage());
                 alert.showAndWait();
             }
