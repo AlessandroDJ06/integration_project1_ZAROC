@@ -45,7 +45,7 @@ public class LeaderboardView extends BorderPane {
     }
 
     private void layoutNodes() {
-        this.setPrefWidth(1200);
+        this.setPrefWidth(1052);
 
         String themeColor = resourceManager.getTheme().getColor();
         String textColor = resourceManager.getTheme().getTextColor();
@@ -172,9 +172,9 @@ public class LeaderboardView extends BorderPane {
                     setStyle("-fx-background-color: transparent;");
                 } else {
                     if (getIndex() % 2 == 0) {
-                        setStyle("-fx-background-color: derive(" + themeColor + ", -15%); -fx-text-background-color: " + textColor + ";");
+                        setStyle("-fx-background-color: derive(" + themeColor + ", -5%); -fx-text-background-color: " + textColor + ";");
                     } else {
-                        setStyle("-fx-background-color: derive(" + themeColor + ", 15%); -fx-text-background-color: " + textColor + ";");
+                        setStyle("-fx-background-color: derive(" + themeColor + ", 10%); -fx-text-background-color: " + textColor + ";");
                     }
                 }
             }
