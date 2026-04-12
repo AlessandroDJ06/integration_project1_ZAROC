@@ -3,8 +3,13 @@ package game.integration_project1_zaroc.view.pages.createaccountview;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CreateAccountPresenter {
     private AppController model;
@@ -18,6 +23,19 @@ public class CreateAccountPresenter {
     }
 
     private void addEventHandlers() {
+        List<Button> buttons = Arrays.asList(
+                view.getCreateButton(),
+                view.getReturnButton(),
+                view.getProfilePicturePicker().getLeftButton(),
+                view.getProfilePicturePicker().getRightButton()
+        );
+
+        for (Button button : buttons){
+            GeneralEventhandlers.addHoverEffect(button);
+        }
+
+
+
         view.getReturnButton().setOnAction(e -> closeWindow());
 
         view.getCreateButton().setOnAction(e -> {
@@ -31,8 +49,8 @@ public class CreateAccountPresenter {
                 closeWindow();
             } catch (ZarocDaoException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Fout");
-                alert.setHeaderText("Account aanmaken mislukt");
+                alert.setTitle("ERROR");
+                alert.setHeaderText("Account creation failed");
                 alert.setContentText(ex.getMessage());
                 alert.showAndWait();
             }

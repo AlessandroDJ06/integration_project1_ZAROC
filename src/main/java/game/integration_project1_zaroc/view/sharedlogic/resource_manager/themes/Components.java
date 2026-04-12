@@ -17,7 +17,8 @@ public enum Components {
     POLECAPATWO("pole_capa_2.png"),
     PLAYERVPLAYER("playervplayer.png"),
     PLAYERVAI("playervai.png"),
-    LARGECONTAINER("large-container.png");
+    LARGECONTAINER("large-container.png"),
+    INPUTFIELD("inputfield.png");
 
     private final String fileName;
 

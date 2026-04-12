@@ -178,4 +178,8 @@ public class AppController {
     public void setAllowedToUseDatabase(boolean allowedToUseDatabase) {
         this.allowedToUseDatabase = allowedToUseDatabase;
     }
+
+    public boolean isAllowedToUseDatabase() {
+        return allowedToUseDatabase;
+    }
 }

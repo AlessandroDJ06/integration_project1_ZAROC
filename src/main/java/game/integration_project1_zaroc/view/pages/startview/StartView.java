@@ -13,6 +13,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public class StartView extends BorderPane {
     private ResourceManager resourceManager;
@@ -52,6 +53,7 @@ public class StartView extends BorderPane {
 
         Label title = new Label("ZAROC");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLEBIG));
+        title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         VBox centralSection = new VBox(title,loginButton,createAccountButton,leaderboardButton);
         centralSection.setMaxSize(600,600);
 

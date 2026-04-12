@@ -4,6 +4,7 @@ import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.components.slidercomponents.ImageSliderComponent;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import game.integration_project1_zaroc.view.sharedlogic.utils.LayoutHelpers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,18 +30,18 @@ public class CreateAccountView extends BorderPane {
 
     private void initialiseNodes() {
         this.returnButton = new TextButton(resourceManager, "←");
-        this.createButton = new TextButton(resourceManager, "MAAK AAN");
+        this.createButton = new TextButton(resourceManager, "CREATE ACCOUNT");
 
         this.profilePicturePicker = new ImageSliderComponent(this.resourceManager);
 
         this.nameField = new TextField();
-        this.nameField.setPromptText("Typ je username...");
+        this.nameField.setPromptText("Type username...");
 
         this.emailField = new TextField();
-        this.emailField.setPromptText("Typ je email...");
+        this.emailField.setPromptText("Type email...");
 
         this.passwordField = new PasswordField();
-        this.passwordField.setPromptText("Typ je password...");
+        this.passwordField.setPromptText("Type password...");
     }
 
     private void layoutNodes() {
@@ -55,7 +56,7 @@ public class CreateAccountView extends BorderPane {
         titelSection.setAlignment(Pos.CENTER);
         titelSection.setPadding(new Insets(15));
 
-        Label title = new Label("ACCOUNT");
+        Label title = new Label("CREATE ACCOUNT");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
@@ -72,15 +73,27 @@ public class CreateAccountView extends BorderPane {
         // === Center ===
         VBox centerContainer = new VBox(30);
         centerContainer.setAlignment(Pos.CENTER);
-        centerContainer.setMaxWidth(250);
+        centerContainer.setMaxWidth(260);
 
-        nameField.setPrefHeight(35);
+        Background background = new Background(new BackgroundImage(
+                resourceManager.getImage(Components.INPUTFIELD),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(260, 40, false, false, false, false)
+        ));
+
+        nameField.setBackground(background);
+        emailField.setBackground(background);
+        passwordField.setBackground(background);
+
+        nameField.setPrefHeight(40);
         nameField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
 
-        emailField.setPrefHeight(35);
+        emailField.setPrefHeight(40);
         emailField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
 
-        passwordField.setPrefHeight(35);
+        passwordField.setPrefHeight(40);
         passwordField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
 
         centerContainer.getChildren().addAll(
