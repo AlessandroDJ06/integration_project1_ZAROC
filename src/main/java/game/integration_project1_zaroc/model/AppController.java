@@ -1,15 +1,22 @@
 package game.integration_project1_zaroc.model;
 
 import game.integration_project1_zaroc.dao.*;
+import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gamelogic.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
+import game.integration_project1_zaroc.model.gamelogic.Move;
+import game.integration_project1_zaroc.model.gamelogic.MoveNumber;
+import game.integration_project1_zaroc.model.gamelogic.Turn;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.ProfilePicturePickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AppController {
@@ -21,6 +28,7 @@ public class AppController {
     private GamesDao gamesDao;
     private GameParticipationDao gameParticipationDao;
     private PlayersDao playersDao;
+    private UnfinishedGamesDao unfinishedGamesDao;
 
     private PawnColor player1Color;
     private PawnColor player2Color;
@@ -55,6 +63,7 @@ public class AppController {
         this.gamesDao = new GamesDao();
         this.gameParticipationDao = new GameParticipationDao();
         this.playersDao = new PlayersDao();
+        this.unfinishedGamesDao = new UnfinishedGamesDao();
     }
 
     public void createAccount(String username, String email, String password,String profilePicture) throws ZarocDaoException {
@@ -110,6 +119,7 @@ public class AppController {
 
         this.game.startNewTurn(startingPlayerSelector.getPlayers()[startingPlayerSelector.getCurrentIndex()]);
     }
+
     private void createGameId(){
         try {
             this.game.setGameId(gamesDao.createGame());
@@ -137,7 +147,67 @@ public class AppController {
         setPlayer1(player);
     }
 
+    public void resumeGame(int gameId){
 
+        try{
+            List<MovesUnfinishedGame> movesUnfinishedGame = unfinishedGamesDao.fetchMovesUnfinishedGame(gameId);
+            ArrayList<Turn> turns = new ArrayList<>();
+
+            this.game = new Game(
+                    new GameParticipation(player1,this.player1Color),
+                    new GameParticipation(player2,this.player2Color)
+            );
+            this.game.getBoard().setupStart();
+
+            this.game.setGameId(gameId);
+
+            for (MovesUnfinishedGame turnUnfinishedGame : movesUnfinishedGame){
+                Player currentPlayer = (turnUnfinishedGame.getUsername().equals(player1.getUsername()) ? player1:player2);
+                if (turns.isEmpty()){
+                    Turn turn = new Turn(currentPlayer);
+                    turn.setTurnNumber(0);
+                    turn.setTurnId(turnUnfinishedGame.getTurnId());
+                    turns.add(turn);
+                } else if (turns.getLast().getTurnId() != turnUnfinishedGame.getTurnId()) {
+                    Turn turn = new Turn(currentPlayer);
+                    turn.setTurnId(turnUnfinishedGame.getTurnId());
+                    turn.setTurnNumber(turns.size());
+                    turns.add(turn);
+                }
+
+                if (turns.getLast().getTurnId() == turnUnfinishedGame.getTurnId()){
+                    MoveNumber moveNumber = turnUnfinishedGame.getMoveNumber();
+                    Peg startingPeg = this.game.getBoard().getPegPosition(turnUnfinishedGame.getStartY(), turnUnfinishedGame.getStartX());
+                    Peg endPeg = this.game.getBoard().getPegPosition(turnUnfinishedGame.getEndY(), turnUnfinishedGame.getEndX());
+                    Move move = new Move(moveNumber,startingPeg,endPeg);
+                    move.setStartTime(turnUnfinishedGame.getStartTime());
+                    move.setEndTime(turnUnfinishedGame.getEndTime());
+
+                    game.executeMoveUnfinishedGame(move);
+
+                    if (move.getMoveNumber() == MoveNumber.FIRST_MOVE){
+                        turns.getLast().setMoveOne(move);
+                    } else {
+                        turns.getLast().setMoveTwo(move);
+                    }
+                }
+            }
+
+            this.game.setTurns(turns);
+
+            if (!turns.isEmpty()) {
+                Turn lastTurn = turns.getLast();
+
+                if (lastTurn.getSecondMove() != null) {
+                    this.game.switchCurrentPlayer();
+                }
+            }
+
+        } catch (ZarocDaoException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     public Game getGame() {
         return game;
@@ -181,5 +251,13 @@ public class AppController {
 
     public boolean isAllowedToUseDatabase() {
         return allowedToUseDatabase;
+    }
+
+    public void setColorPlayerOne(PawnColor colorOne) {
+        this.player1Color = colorOne;
+    }
+
+    public void setColorPlayerTwo(PawnColor colorTwo) {
+        this.player2Color = colorTwo;
     }
 }

@@ -133,6 +133,21 @@ public class Game {
         }
     }
 
+    public void executeMoveUnfinishedGame(Move move) {
+
+        Peg start = move.getStartPeg();
+        Peg dest = move.getDestinationPeg();
+
+        Pawn upperPawn = start.getUpperPawn();
+        if (upperPawn != null) {
+            start.removePawnFromPeg(upperPawn);
+            dest.addPawnToPeg(upperPawn);
+            upperPawn.setCurrentPeg(dest);
+        }
+
+        checkWinCondition();
+    }
+
     private boolean isUndoMove(Peg start, Peg dest) {
         if (lastMove == null) return false;
 

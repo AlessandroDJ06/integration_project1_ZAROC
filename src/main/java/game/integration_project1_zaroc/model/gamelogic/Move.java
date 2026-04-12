@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Move {
     private MoveNumber moveNumber;
     //private Duration duration;
-    private final Timestamp startTime;
+    private Timestamp startTime;
     private Timestamp endTime;
     private Peg startPeg;
     private Peg destinationPeg;
@@ -80,6 +80,8 @@ public class Move {
         return endTime;
     }
 
+
+
     public Peg getStartPeg() {
         return startPeg;
     }
@@ -100,6 +102,10 @@ public class Move {
         this.endTime = endTime;
     }
 
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,5 +122,7 @@ public class Move {
         return java.util.Objects.hash(startPeg.getXPosition(), startPeg.getYPosition(),
                 destinationPeg.getXPosition(), destinationPeg.getYPosition());
     }
+
+
 
 }
