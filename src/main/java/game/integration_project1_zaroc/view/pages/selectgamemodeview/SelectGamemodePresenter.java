@@ -9,6 +9,8 @@ import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
+import game.integration_project1_zaroc.view.pages.unfinishedgamesview.UnfinishedGamesPresenter;
+import game.integration_project1_zaroc.view.pages.unfinishedgamesview.UnfinishedGamesView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -96,6 +98,24 @@ public class SelectGamemodePresenter {
             if (model.getPlayer2() != null){
                 navigateToGameSetup();
             }
+        });
+
+        view.getUnfinishedGamesButton().setOnAction(event -> {
+            UnfinishedGamesView unfinishedView = new UnfinishedGamesView(view.getResourceManager());
+            new UnfinishedGamesPresenter(unfinishedView, model);
+            Scene unfinishedScene = new Scene(unfinishedView, 900, 750);
+            unfinishedScene.setFill(Color.TRANSPARENT);
+            Stage unfinishedStage = new Stage();
+            unfinishedStage.setScene(unfinishedScene);
+            unfinishedStage.setTitle("Hervat een spel");
+            unfinishedStage.initStyle(StageStyle.TRANSPARENT);
+            unfinishedStage.initModality(Modality.APPLICATION_MODAL);
+            unfinishedStage.getIcons().add(new Image(Objects.requireNonNull(
+                    getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png")
+            )));
+            unfinishedStage.setResizable(false);
+            unfinishedStage.showAndWait();
+
         });
 
     }

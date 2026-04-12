@@ -20,7 +20,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         boolean canConnect = canConnectToDatabase();
-        Themes theme = Themes.DARK_GOLD;
+        Themes theme = Themes.DEFAULT;
         ResourceManager resourceManager = new ResourceManager(theme);
         StartView view = new StartView(resourceManager);
         new StartPresenter(new AppController(canConnect),view);
