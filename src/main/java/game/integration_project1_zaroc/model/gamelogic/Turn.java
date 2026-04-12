@@ -86,6 +86,14 @@ public class Turn {
     public void setTurnId(int turnId) {
         this.turnId = turnId;
     }
+
+    public void setMoveOne(Move move){
+        this.moves[0] = move;
+    }
+
+    public void setMoveTwo(Move move){
+        this.moves[1] = move;
+    }
 }
 
 

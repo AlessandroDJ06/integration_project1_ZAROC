@@ -1,6 +1,8 @@
 package game.integration_project1_zaroc.view.pages.selectgamemodeview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
+import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
 import game.integration_project1_zaroc.view.pages.playervsaiview.PlayerVsAiPresenter;
@@ -115,6 +117,9 @@ public class SelectGamemodePresenter {
             )));
             unfinishedStage.setResizable(false);
             unfinishedStage.showAndWait();
+            if (model.getGame() != null ){
+                navigateToGame();
+            }
 
         });
 
@@ -124,5 +129,11 @@ public class SelectGamemodePresenter {
         GameSetupView gameSetupView = new GameSetupView(view.getResourceManager());
         new GameSetupPresenter(gameSetupView,model);
         view.getScene().setRoot(gameSetupView);
+    }
+
+    private void navigateToGame(){
+        GameBoardView gameBoardView = new GameBoardView(view.getResourceManager());
+        new GameBoardPresenter(gameBoardView,model);
+        view.getScene().setRoot(gameBoardView);
     }
 }
