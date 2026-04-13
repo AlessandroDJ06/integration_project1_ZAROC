@@ -66,14 +66,34 @@ public class AppController {
         this.unfinishedGamesDao = new UnfinishedGamesDao();
     }
 
-    public void createAccount(String username, String email, String password,String profilePicture) throws ZarocDaoException {
+
+    public void createAccount(String username, String email, String password, String profilePicture, boolean isPlayerOne) throws ZarocDaoException {
         HumanPlayer player = new HumanPlayer(username, email);
         player.setProfilePicture(profilePicture);
         int id = playersDao.createHumanPlayer(player, password);
         player.setPlayerId(id);
-        setPlayer1(player);
+
+        // Check voor welke speler dit is
+        if (isPlayerOne) {
+            setPlayer1(player);
+        } else {
+            setPlayer2(player);
+        }
     }
 
+    public void login(String username, String password, boolean isPlayerOne) throws ZarocDaoException {
+        HumanPlayer player = playersDao.getPlayerByUsername(username, password);
+
+        if (player == null) {
+            throw new ZarocDaoException("Gebruiker '" + username + "' niet gevonden");
+        }
+
+        if (isPlayerOne) {
+            setPlayer1(player);
+        } else {
+            setPlayer2(player);
+        }
+    }
 
     public boolean isLoggedIn() {
         return player1 != null;
@@ -135,16 +155,6 @@ public class AppController {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public void login(String username, String password) throws ZarocDaoException {
-        HumanPlayer player = playersDao.getPlayerByUsername(username, password);
-
-        if (player == null) {
-            throw new ZarocDaoException("Gebruiker '" + username + "' niet gevonden");
-        }
-
-        setPlayer1(player);
     }
 
     public void resumeGame(int gameId){

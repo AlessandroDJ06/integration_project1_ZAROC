@@ -7,6 +7,8 @@ import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresent
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
 import game.integration_project1_zaroc.view.pages.playervsaiview.PlayerVsAiPresenter;
 import game.integration_project1_zaroc.view.pages.playervsaiview.PlayerVsAiView;
+import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPlayerPresenter;
+import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPlayerView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
@@ -97,6 +99,28 @@ public class SelectGamemodePresenter {
             playerVsAiStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             playerVsAiStage.setResizable(false);
             playerVsAiStage.showAndWait();
+            if (model.getPlayer2() != null){
+                navigateToGameSetup();
+            }
+        });
+
+        view.getPlayerVsPlayerButton().setOnAction(event -> {
+            PlayerVsPlayerView playerVsPlayerView = new PlayerVsPlayerView(view.getResourceManager());
+            new PlayerVsPlayerPresenter(playerVsPlayerView, model);
+
+            Scene playerVsPlayerScene = new Scene(playerVsPlayerView, 900, 750);
+            playerVsPlayerScene.setFill(Color.TRANSPARENT);
+
+            Stage playerVsPlayerStage = new Stage();
+            playerVsPlayerStage.setScene(playerVsPlayerScene);
+            playerVsPlayerStage.setTitle("Speler vs Speler"); // Titel iets aangepast voor de context
+            playerVsPlayerStage.initStyle(StageStyle.TRANSPARENT);
+            playerVsPlayerStage.initModality(Modality.APPLICATION_MODAL);
+            playerVsPlayerStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            playerVsPlayerStage.setResizable(false);
+
+            playerVsPlayerStage.showAndWait();
+
             if (model.getPlayer2() != null){
                 navigateToGameSetup();
             }

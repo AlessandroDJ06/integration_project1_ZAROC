@@ -16,10 +16,12 @@ import java.util.List;
 public class LoginPresenter {
     private AppController model;
     private LoginView view;
+    private boolean isPlayerOne;
 
-    public LoginPresenter(AppController model, LoginView view){
+    public LoginPresenter(AppController model, LoginView view,boolean isPlayerOne){
         this.model = model;
         this.view = view;
+        this.isPlayerOne = isPlayerOne;
         addEventHandlers();
     }
 
@@ -41,7 +43,7 @@ public class LoginPresenter {
             String password = view.getPassword();
 
             try {
-                model.login(username, password);
+                model.login(username, password,isPlayerOne);
                 closeWindow();
             } catch (ZarocDaoException e) {
                 if (model.isAllowedToUseDatabase()){
@@ -92,7 +94,14 @@ public class LoginPresenter {
         alert.showAndWait().ifPresent(type -> {
             if (type == guestBtn) {
                 String name = nameInput.getText().trim();
-                model.setPlayer1(new HumanPlayer(name, "gast@local.com"));
+                HumanPlayer guestPlayer = new HumanPlayer(name, "gast@local.com");
+
+                if (isPlayerOne) {
+                    model.setPlayer1(guestPlayer);
+                } else {
+                    model.setPlayer2(guestPlayer);
+                }
+
                 model.setAllowedToUseDatabase(false);
                 closeWindow();
             }
