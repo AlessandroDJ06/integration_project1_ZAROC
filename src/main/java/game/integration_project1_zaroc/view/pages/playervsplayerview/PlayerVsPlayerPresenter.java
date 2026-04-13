@@ -6,13 +6,17 @@ import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccoun
 import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
 import game.integration_project1_zaroc.view.pages.loginview.LoginView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class PlayerVsPlayerPresenter {
@@ -27,12 +31,20 @@ public class PlayerVsPlayerPresenter {
     }
 
     private void addEventHandlers(){
+        for (Button button : Arrays.asList(view.getReturnButton(), view.getCreateAccountPlayerTwo(), view.getLoginPlayerTwo(), view.getStartGame())){
+            GeneralEventhandlers.addHoverEffect(button);
+        }
         view.getReturnButton().setOnAction(e -> {
             model.setPlayer2(null);
             closeWindow();
         });
 
         view.getStartGame().setOnAction(event -> {
+            closeWindow();
+        });
+
+        view.getMultiplayerButton().setOnAction(event -> {
+            model.setOnlineMultiplayer(true);
             closeWindow();
         });
 

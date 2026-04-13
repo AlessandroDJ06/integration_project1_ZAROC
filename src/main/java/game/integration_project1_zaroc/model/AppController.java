@@ -8,6 +8,7 @@ import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.gamelogic.Move;
 import game.integration_project1_zaroc.model.gamelogic.MoveNumber;
 import game.integration_project1_zaroc.model.gamelogic.Turn;
+import game.integration_project1_zaroc.model.mutliplayer.MultiplayerService;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
@@ -29,6 +30,7 @@ public class AppController {
     private GameParticipationDao gameParticipationDao;
     private PlayersDao playersDao;
     private UnfinishedGamesDao unfinishedGamesDao;
+    private MultiplayerDao multiplayerDao;
 
     private PawnColor player1Color;
     private PawnColor player2Color;
@@ -37,6 +39,10 @@ public class AppController {
     private Player player2;
 
     private Game game;
+
+    private MultiplayerService multiplayerService;
+    private boolean isOnlineMultiplayer;
+    private boolean isHost;
 
     public AppController(boolean canConnect){
         this.allowedToUseDatabase = canConnect;
@@ -52,7 +58,6 @@ public class AppController {
         setPlayer1Color();
         setPlayer2Color();
 
-
         this.startingPlayerSelector = new StartingPlayerSelector();
         this.profilePicturePickerModel = new ProfilePicturePickerModel();
         this.startingPlayerSelector.setPlayer1(player1);
@@ -64,6 +69,10 @@ public class AppController {
         this.gameParticipationDao = new GameParticipationDao();
         this.playersDao = new PlayersDao();
         this.unfinishedGamesDao = new UnfinishedGamesDao();
+
+        this.multiplayerService = new MultiplayerService(this);
+        this.isOnlineMultiplayer = false;
+        this.isHost = false;
     }
 
 
@@ -73,7 +82,6 @@ public class AppController {
         int id = playersDao.createHumanPlayer(player, password);
         player.setPlayerId(id);
 
-        // Check voor welke speler dit is
         if (isPlayerOne) {
             setPlayer1(player);
         } else {
@@ -133,7 +141,6 @@ public class AppController {
             saveGameParticipations(this.game);
         }
 
-
         this.startingPlayerSelector.setPlayer1(player1);
         this.startingPlayerSelector.setPlayer2(player2);
 
@@ -154,11 +161,9 @@ public class AppController {
         } catch (ZarocDaoException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void resumeGame(int gameId){
-
         try{
             List<MovesUnfinishedGame> movesUnfinishedGame = unfinishedGamesDao.fetchMovesUnfinishedGame(gameId);
             ArrayList<Turn> turns = new ArrayList<>();
@@ -168,7 +173,6 @@ public class AppController {
                     new GameParticipation(player2,this.player2Color)
             );
             this.game.getBoard().setupStart();
-
             this.game.setGameId(gameId);
 
             for (MovesUnfinishedGame turnUnfinishedGame : movesUnfinishedGame){
@@ -207,7 +211,6 @@ public class AppController {
 
             if (!turns.isEmpty()) {
                 Turn lastTurn = turns.getLast();
-
                 if (lastTurn.getSecondMove() != null) {
                     this.game.switchCurrentPlayer();
                 }
@@ -216,7 +219,39 @@ public class AppController {
         } catch (ZarocDaoException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void initOnlineGame(int onlineGameId, Player opponent, PawnColor myColor, PawnColor opponentColor, boolean amIHost) {
+        this.isOnlineMultiplayer = true;
+
+        this.player2 = opponent;
+        this.player1Color = myColor;
+        this.player2Color = opponentColor;
+
+        this.game = new Game(
+                new GameParticipation(this.player1, this.player1Color),
+                new GameParticipation(this.player2, this.player2Color)
+        );
+
+        this.game.setGameId(onlineGameId);
+        this.game.getBoard().setupStart();
+        // Beide spelers slaan hun eigen zetten op in de DB.
+        // De polling filtert via username zodat je nooit je eigen zetten terugkrijgt.
+        this.game.setAllowedSave(true);
+
+        Player startingPlayer = amIHost ? this.player1 : this.player2;
+        this.game.startNewTurn(startingPlayer);
+    }
+
+    // -------------------------------------------------------
+    // NIEUWE METHODE: geeft het game-ID van het huidige spel
+    // GameBoardPresenter gebruikt dit om de polling te starten
+    // -------------------------------------------------------
+    public int getOnlineGameId() {
+        if (game == null) {
+            throw new IllegalStateException("Geen actief spel gevonden.");
+        }
+        return game.getGameId();
     }
 
     public Game getGame() {
@@ -269,5 +304,25 @@ public class AppController {
 
     public void setColorPlayerTwo(PawnColor colorTwo) {
         this.player2Color = colorTwo;
+    }
+
+    public MultiplayerService getMultiplayerService() {
+        return this.multiplayerService;
+    }
+
+    public boolean isOnlineMultiplayer() {
+        return isOnlineMultiplayer;
+    }
+
+    public void setOnlineMultiplayer(boolean onlineMultiplayer) {
+        this.isOnlineMultiplayer = onlineMultiplayer;
+    }
+
+    public boolean isHost() {
+        return isHost;
+    }
+
+    public void setHost(boolean host) {
+        this.isHost = host;
     }
 }

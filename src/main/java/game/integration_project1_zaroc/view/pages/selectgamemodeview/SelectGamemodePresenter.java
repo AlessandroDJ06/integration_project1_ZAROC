@@ -5,6 +5,8 @@ import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
+import game.integration_project1_zaroc.view.pages.multiplayerlobbyview.MultiPlayerLobbyPresenter;
+import game.integration_project1_zaroc.view.pages.multiplayerlobbyview.MultiPlayerLobbyView;
 import game.integration_project1_zaroc.view.pages.playervsaiview.PlayerVsAiPresenter;
 import game.integration_project1_zaroc.view.pages.playervsaiview.PlayerVsAiView;
 import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPlayerPresenter;
@@ -123,6 +125,8 @@ public class SelectGamemodePresenter {
 
             if (model.getPlayer2() != null){
                 navigateToGameSetup();
+            } else if (model.isOnlineMultiplayer()) {
+                navigateTOMultiPlayer();
             }
         });
 
@@ -159,5 +163,11 @@ public class SelectGamemodePresenter {
         GameBoardView gameBoardView = new GameBoardView(view.getResourceManager());
         new GameBoardPresenter(gameBoardView,model);
         view.getScene().setRoot(gameBoardView);
+    }
+
+    private void navigateTOMultiPlayer(){
+        MultiPlayerLobbyView multiPlayerLobbyView = new MultiPlayerLobbyView(view.getResourceManager());
+        new MultiPlayerLobbyPresenter(multiPlayerLobbyView,model);
+        view.getScene().setRoot(multiPlayerLobbyView);
     }
 }

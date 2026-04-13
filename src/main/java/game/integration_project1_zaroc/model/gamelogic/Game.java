@@ -134,15 +134,20 @@ public class Game {
     }
 
     public void executeMoveUnfinishedGame(Move move) {
+        Peg start = board.getPegPosition(move.getStartPeg().getYPosition(), move.getStartPeg().getXPosition());
+        Peg dest = board.getPegPosition(move.getDestinationPeg().getYPosition(), move.getDestinationPeg().getXPosition());
 
-        Peg start = move.getStartPeg();
-        Peg dest = move.getDestinationPeg();
+        if (start != null && dest != null) {
+            getCurrentTurn().addMove(move);
 
-        Pawn upperPawn = start.getUpperPawn();
-        if (upperPawn != null) {
-            start.removePawnFromPeg(upperPawn);
-            dest.addPawnToPeg(upperPawn);
-            upperPawn.setCurrentPeg(dest);
+            Pawn upperPawn = start.getUpperPawn();
+            if (upperPawn != null) {
+                start.removePawnFromPeg(upperPawn);
+                dest.addPawnToPeg(upperPawn);
+                upperPawn.setCurrentPeg(dest);
+            }
+
+            this.lastMove = move;
         }
 
         checkWinCondition();
