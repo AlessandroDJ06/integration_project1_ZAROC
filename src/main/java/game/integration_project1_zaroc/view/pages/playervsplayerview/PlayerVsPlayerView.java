@@ -26,7 +26,6 @@ public class PlayerVsPlayerView extends BorderPane {
     private Button loginPlayerTwo;
     private Button createAccountPlayerTwo;
     private Button startGame;
-    private Button multiplayerButton;
 
     private VBox loginButtons;
     private VBox playerTwoInfo;
@@ -51,7 +50,6 @@ public class PlayerVsPlayerView extends BorderPane {
         this.createAccountPlayerTwo = new LongButtonComponent(resourceManager,"CREATE ACCOUNT");
         this.loginPlayerTwo = new LongButtonComponent(resourceManager, "LOGIN");
         this.startGame = new LongButtonComponent(resourceManager,"START");
-        this.multiplayerButton = new LongButtonComponent(resourceManager,"MULTIPLAYER");
 
         this.loginButtons = new VBox();
         this.playerTwoInfo = new VBox();
@@ -136,7 +134,7 @@ public class PlayerVsPlayerView extends BorderPane {
         playerTwoTitleLogin.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         playerTwoTitleLogin.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
-        loginButtons.getChildren().addAll(loginPlayerTwo, createAccountPlayerTwo,multiplayerButton);
+        loginButtons.getChildren().addAll(playerTwoTitleInfo,loginPlayerTwo, createAccountPlayerTwo);
 
         Label verticalSpacer = new Label("VS");
         verticalSpacer.setAlignment(Pos.CENTER);
@@ -214,7 +212,4 @@ public class PlayerVsPlayerView extends BorderPane {
         return resourceManager;
     }
 
-    Button getMultiplayerButton(){
-        return multiplayerButton;
-    }
 }

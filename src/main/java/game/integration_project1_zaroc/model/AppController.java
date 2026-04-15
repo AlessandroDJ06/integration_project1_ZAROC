@@ -234,19 +234,13 @@ public class AppController {
         );
 
         this.game.setGameId(onlineGameId);
-        this.game.getBoard().setupStart();
-        // Beide spelers slaan hun eigen zetten op in de DB.
-        // De polling filtert via username zodat je nooit je eigen zetten terugkrijgt.
+        this.game.getBoard().setupStart(isHost);
         this.game.setAllowedSave(true);
 
         Player startingPlayer = amIHost ? this.player1 : this.player2;
         this.game.startNewTurn(startingPlayer);
     }
 
-    // -------------------------------------------------------
-    // NIEUWE METHODE: geeft het game-ID van het huidige spel
-    // GameBoardPresenter gebruikt dit om de polling te starten
-    // -------------------------------------------------------
     public int getOnlineGameId() {
         if (game == null) {
             throw new IllegalStateException("Geen actief spel gevonden.");
@@ -304,6 +298,14 @@ public class AppController {
 
     public void setColorPlayerTwo(PawnColor colorTwo) {
         this.player2Color = colorTwo;
+    }
+
+    public PawnColor getPlayer2Color() {
+        return player2Color;
+    }
+
+    public PawnColor getPlayer1Color() {
+        return player1Color;
     }
 
     public MultiplayerService getMultiplayerService() {

@@ -84,8 +84,10 @@ public class GameBoardPresenter implements Observer {
     @Override
     public void update(Object args) {
         System.out.println("Remote zet ontvangen, UI updaten!");
-        updateView();
-        processTurn();
+        Platform.runLater(() -> {
+            updateView();
+            processTurn();
+        });
     }
 
     private void addEventHandlers() {
@@ -407,6 +409,18 @@ public class GameBoardPresenter implements Observer {
     }
 
     private void startUndoTimer() {
+        if (model.isOnlineMultiplayer()) {
+            view.getUndoTimer().setVisible(false);
+            view.getUndoButton().setDisable(true);
+
+            if (model.getGame().getCurrentTurn().getSecondMove() != null) {
+                model.getGame().switchCurrentPlayer();
+                processTurn();
+            }
+            return;
+        }
+
+
         if (undoTimer != null) {
             undoTimer.stop();
         }

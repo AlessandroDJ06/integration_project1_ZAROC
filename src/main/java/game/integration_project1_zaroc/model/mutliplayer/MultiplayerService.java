@@ -2,22 +2,24 @@ package game.integration_project1_zaroc.model.mutliplayer;
 
 import game.integration_project1_zaroc.dao.MultiplayerDao;
 import game.integration_project1_zaroc.dao.MultiplayerMove;
+import game.integration_project1_zaroc.dao.RoomDao;
+import game.integration_project1_zaroc.dao.RoomDTO;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gamelogic.Move;
 import game.integration_project1_zaroc.model.gamelogic.MoveNumber;
 import game.integration_project1_zaroc.utils.Observable;
-
-import javafx.application.Platform;
-
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class MultiplayerService extends Observable {
     private final AppController model;
     private final MultiplayerDao multiplayerDao;
+    private final RoomDao roomDao;
 
     private ScheduledExecutorService scheduler;
     private volatile int lastKnownMoveCount = 0;
@@ -25,6 +27,33 @@ public class MultiplayerService extends Observable {
     public MultiplayerService(AppController model) {
         this.model = model;
         this.multiplayerDao = new MultiplayerDao();
+        this.roomDao = new RoomDao();
+    }
+
+
+    public String generateRoomCode() {
+        return Integer.toHexString(new Random().nextInt(0xFFFFF)).toUpperCase();
+    }
+
+    public void startLobbyPolling(String roomCode, Consumer<RoomDTO> onRoomUpdated) {
+        stopPolling();
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                RoomDTO fetchedData = roomDao.getRoomByCode(roomCode);
+
+                if (fetchedData != null && onRoomUpdated != null) {
+                    onRoomUpdated.accept(fetchedData);
+                }
+            } catch (Exception e) {
+                System.err.println("Fout in lobby poller: " + e.getMessage());
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    public RoomDao getRoomDao() {
+        return roomDao;
     }
 
     public void startTurnPolling(int gameId, int currentLocalMoves, String myUsername) {
@@ -40,27 +69,26 @@ public class MultiplayerService extends Observable {
                 if (!newMoves.isEmpty()) {
                     lastKnownMoveCount += newMoves.size();
 
-                    Platform.runLater(() -> {
-                        for (MultiplayerMove data : newMoves) {
-                            try {
-                                Move move = convertToMove(data);
-                                model.getGame().executeMoveUnfinishedGame(move);
-                                if (data.getMoveNumber() == 2) {
-                                    model.getGame().switchCurrentPlayer();
-                                }
-
-                                notifyObservers(move);
-                            } catch (Exception e) {
-                                System.err.println("Fout bij verwerken van remote zet: " + e.getMessage());
+                    for (MultiplayerMove data : newMoves) {
+                        try {
+                            Move move = convertToMove(data);
+                            model.getGame().executeMoveUnfinishedGame(move);
+                            if (data.getMoveNumber() == 2) {
+                                model.getGame().switchCurrentPlayer();
                             }
+                            notifyObservers(move);
+
+                        } catch (Exception e) {
+                            System.err.println("Fout bij verwerken van remote zet: " + e.getMessage());
                         }
-                    });
+                    }
                 }
             } catch (Exception e) {
                 System.err.println("Fout tijdens turn polling: " + e.getMessage());
             }
         }, 0, 2, TimeUnit.SECONDS);
     }
+
 
     public void stopPolling() {
         if (scheduler != null && !scheduler.isShutdown()) {

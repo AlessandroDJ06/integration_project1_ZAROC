@@ -120,13 +120,14 @@ public class DaoUtils {
                                                           game_id INT,
                                                           status VARCHAR(50) DEFAULT 'WAITING',
                                                           host_color VARCHAR(20) DEFAULT 'BLACK',
+                                                          guest_color VARCHAR(20) DEFAULT 'WHITE',
                 
                                                           CONSTRAINT PK_ROOM_ID PRIMARY KEY (room_id),
                                                           CONSTRAINT UQ_ROOM_CODE UNIQUE (room_code),
                                                           CONSTRAINT FK_ROOM_HOST FOREIGN KEY (host_id) REFERENCES PLAYERS(player_id),
                                                           CONSTRAINT FK_ROOM_GUEST FOREIGN KEY (guest_id) REFERENCES PLAYERS(player_id),
                                                           CONSTRAINT FK_ROOM_GAME FOREIGN KEY (game_id) REFERENCES GAMES(game_id),
-                                                          CONSTRAINT CHK_ROOM_STATUS CHECK (status IN ('WAITING', 'PLAYING','ENDED'))
+                                                          CONSTRAINT CHK_ROOM_STATUS CHECK (status IN ('WAITING', 'PLAYING', 'FINISHED'))
                 );
                 
                 """;

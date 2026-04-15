@@ -43,11 +43,6 @@ public class PlayerVsPlayerPresenter {
             closeWindow();
         });
 
-        view.getMultiplayerButton().setOnAction(event -> {
-            model.setOnlineMultiplayer(true);
-            closeWindow();
-        });
-
         view.getLoginPlayerTwo().setOnAction(event -> {
             LoginView loginView = new LoginView(this.view.getResourceManager());
             new LoginPresenter(this.model, loginView,false);

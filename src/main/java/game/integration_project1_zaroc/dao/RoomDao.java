@@ -23,6 +23,36 @@ public class RoomDao {
         }
     }
 
+    public void setGuestColor(String roomCode,int guestId,PawnColor pawnColor)throws ZarocDaoException{
+        String sql = "UPDATE GAME_ROOMS SET guest_color = ? WHERE room_code = ? AND guest_id = ? ";
+
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, pawnColor.name());
+            ps.setString(2,roomCode);
+            ps.setInt(3,guestId);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ZarocDaoException("kleur kon niet gezet worden",e);
+        }
+    }
+
+    public void setHostColor(String roomCode, int hostId, PawnColor pawnColor)throws ZarocDaoException{
+        String sql = "UPDATE GAME_ROOMS SET host_color = ? WHERE room_code = ? AND host_id = ? ";
+
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, pawnColor.name());
+            ps.setString(2,roomCode);
+            ps.setInt(3, hostId);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ZarocDaoException("kleur kon niet gezet worden",e);
+        }
+    }
+
     public void joinRoom(String roomCode, int guestId) throws ZarocDaoException {
         String sql = "UPDATE GAME_ROOMS SET guest_id = ? WHERE room_code = ? AND status = 'WAITING'";
         try (Connection conn = DaoUtils.createConnection();
@@ -45,14 +75,16 @@ public class RoomDao {
             ps.setString(1, roomCode);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    PawnColor color = PawnColor.valueOf(rs.getString("host_color"));
+                    PawnColor hostColor = PawnColor.valueOf(rs.getString("host_color"));
+                    PawnColor guestColor = PawnColor.valueOf(rs.getString("guest_color"));
                     return new RoomDTO(
                             rs.getInt("room_id"),
                             rs.getString("room_code"),
                             rs.getInt("host_id"),
                             rs.getInt("guest_id"),
                             rs.getInt("game_id"),
-                            color,
+                            hostColor,
+                            guestColor,
                             rs.getString("status")
                     );
                 }
@@ -93,6 +125,21 @@ public class RoomDao {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ZarocDaoException("Kon het online spel niet starten in de database.", e);
+        }
+    }
+
+    public void updateGameStatus(String status , String roomCode) throws ZarocDaoException{
+        String sql = "UPDATE GAME_ROOMS SET status = ? WHERE room_code = ?";
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1,status);
+            ps.setString(2,roomCode);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Dit print de rode lap tekst in je console!
+            System.err.println("De échte SQL fout is: " + e.getMessage());
+            throw new ZarocDaoException("kon status niet updaten",e);
         }
     }
 }

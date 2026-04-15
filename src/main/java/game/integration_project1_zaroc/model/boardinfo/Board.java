@@ -55,6 +55,40 @@ public class Board {
         }
     }
 
+    public void setupStart(boolean isHost){
+        int[] kolommen = {1, 3, 5, 7};
+        int row = 0;
+
+        for (int i = 0; i < kolommen.length; i++) {
+            int col = kolommen[i];
+
+            for (int laag = 0; laag < 4; laag++) {
+                PawnColor kleur;
+                if ((i + laag) % 2 == 0) {
+                    if (isHost){
+                        kleur = this.pawnColorPlayer1;
+                    } else {
+                        kleur = this.pawnColorPlayer2;
+                    }
+
+                } else {
+                    if (isHost){
+                        kleur = this.pawnColorPlayer2;
+                    } else {
+                        kleur = this.pawnColorPlayer1;
+                    }
+                }
+                this.pegPositions[row][col].addPawnToPeg(
+                        new Pawn(
+                                this.pegPositions[0][1],
+                                kleur
+                        ));
+            }
+        }
+    }
+
+
+
     public Peg getPegPosition(int row, int column) {
         return pegPositions[row][column];
     }

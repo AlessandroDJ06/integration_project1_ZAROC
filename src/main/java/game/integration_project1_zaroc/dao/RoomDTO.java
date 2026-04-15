@@ -8,15 +8,17 @@ public class RoomDTO {
     private int guestId;
     private int gameId;
     private PawnColor hostColor;
+    private PawnColor guestColor;
     private String status;
 
-    public RoomDTO(int roomId, String roomCode, int hostId, int guestId, int gameId, PawnColor hostColor, String status) {
+    public RoomDTO(int roomId, String roomCode, int hostId, int guestId, int gameId, PawnColor hostColor,PawnColor guestColor, String status) {
         this.roomId = roomId;
         this.roomCode = roomCode;
         this.hostId = hostId;
         this.guestId = guestId;
         this.gameId = gameId;
         this.hostColor = hostColor;
+        this.guestColor = guestColor;
         this.status = status;
     }
 
@@ -26,5 +28,6 @@ public class RoomDTO {
     public int getGuestId() { return guestId; }
     public int getGameId() { return gameId; }
     public PawnColor getHostColor() { return hostColor; }
+    public PawnColor getGuestColor() {return guestColor;}
     public String getStatus() { return status; }
 }
