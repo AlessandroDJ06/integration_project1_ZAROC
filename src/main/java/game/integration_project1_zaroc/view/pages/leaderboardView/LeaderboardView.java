@@ -195,7 +195,7 @@ public class LeaderboardView extends BorderPane {
         this.setCenter(contentBox);
         this.setBottom(statusBox);
 
-        Image backgroundImage = resourceManager.getImage(Components.LARGECONTAINER);
+        Image backgroundImage = resourceManager.getImage(Components.EXTRALARGECONTAINER);
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
         BackgroundImage bgImage = new BackgroundImage(
                 backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
