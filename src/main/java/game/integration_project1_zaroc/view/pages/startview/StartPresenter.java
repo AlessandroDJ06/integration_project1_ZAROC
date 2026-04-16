@@ -3,8 +3,6 @@ package game.integration_project1_zaroc.view.pages.startview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountPresenter;
 import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountView;
-import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
-import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPresenter;
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
@@ -51,7 +49,7 @@ public class StartPresenter {
 
         view.getLoginButton().setOnAction(event -> {
             LoginView loginView = new LoginView(this.view.getResourceManager());
-            new LoginPresenter(this.model, loginView);
+            new LoginPresenter(this.model, loginView,true);
             Scene loginScene = new Scene(loginView);
             loginScene.setFill(Color.TRANSPARENT);
             this.loginStage = new Stage();
@@ -63,13 +61,13 @@ public class StartPresenter {
             loginStage.setResizable(false);
             loginStage.showAndWait();
             if (model.isLoggedIn()) {
-                navigateToGameSetup();
+                navigateToSelectGameMode();
             }
         });
 
         view.getCreateAccountButton().setOnAction(event -> {
             CreateAccountView createAccountView = new CreateAccountView(this.view.getResourceManager());
-            new CreateAccountPresenter(this.model, createAccountView);
+            new CreateAccountPresenter(this.model, createAccountView,true);
             Scene createAccountScene = new Scene(createAccountView);
             createAccountScene.setFill(Color.TRANSPARENT);
             this.createAccountStage = new Stage();
@@ -81,7 +79,7 @@ public class StartPresenter {
             createAccountStage.setResizable(false);
             createAccountStage.showAndWait();
             if (model.isLoggedIn()) {
-                navigateToGameSetup();
+                navigateToSelectGameMode();
             }
         });
 
@@ -103,7 +101,7 @@ public class StartPresenter {
 
 
     }
-    private void navigateToGameSetup() {
+    private void navigateToSelectGameMode() {
         SelectGamemodeView selectGamemodeView = new SelectGamemodeView(view.getResourceManager());
         new SelectGamemodePresenter(model,selectGamemodeView);
         view.getScene().setRoot(selectGamemodeView);

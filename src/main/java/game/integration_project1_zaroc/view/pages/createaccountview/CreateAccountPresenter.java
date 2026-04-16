@@ -14,10 +14,12 @@ import java.util.List;
 public class CreateAccountPresenter {
     private AppController model;
     private CreateAccountView view;
+    private boolean isPlayerOne;
 
-    public CreateAccountPresenter(AppController model, CreateAccountView view) {
+    public CreateAccountPresenter(AppController model, CreateAccountView view,boolean isPlayerOne) {
         this.model = model;
         this.view = view;
+        this.isPlayerOne = isPlayerOne;
         addEventHandlers();
         updateView();
     }
@@ -45,7 +47,7 @@ public class CreateAccountPresenter {
             String profilePicture = ProfilePictures.values()[model.getProfilePicturePickerModel().getCurrentIndex()].getName();
 
             try {
-                model.createAccount(username, email, password,profilePicture);
+                model.createAccount(username, email, password,profilePicture,isPlayerOne);
                 closeWindow();
             } catch (ZarocDaoException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

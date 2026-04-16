@@ -110,7 +110,27 @@ public class DaoUtils {
                                        CONSTRAINT PK_MOVE_ID PRIMARY KEY (move_id),
                                        CONSTRAINT FK_MOVE_TURN FOREIGN KEY (turn_id) REFERENCES TURNS(turn_id),
                                        CONSTRAINT CHK_MOVE_NUMBER CHECK (move_number IN (1, 2))
-                );""";
+                );
+                
+                CREATE TABLE IF NOT EXISTS GAME_ROOMS (
+                                                          room_id INT GENERATED ALWAYS AS IDENTITY,
+                                                          room_code VARCHAR(10) NOT NULL,
+                                                          host_id INT NOT NULL,
+                                                          guest_id INT,
+                                                          game_id INT,
+                                                          status VARCHAR(50) DEFAULT 'WAITING',
+                                                          host_color VARCHAR(20) DEFAULT 'BLACK',
+                                                          guest_color VARCHAR(20) DEFAULT 'WHITE',
+                
+                                                          CONSTRAINT PK_ROOM_ID PRIMARY KEY (room_id),
+                                                          CONSTRAINT UQ_ROOM_CODE UNIQUE (room_code),
+                                                          CONSTRAINT FK_ROOM_HOST FOREIGN KEY (host_id) REFERENCES PLAYERS(player_id),
+                                                          CONSTRAINT FK_ROOM_GUEST FOREIGN KEY (guest_id) REFERENCES PLAYERS(player_id),
+                                                          CONSTRAINT FK_ROOM_GAME FOREIGN KEY (game_id) REFERENCES GAMES(game_id),
+                                                          CONSTRAINT CHK_ROOM_STATUS CHECK (status IN ('WAITING', 'PLAYING', 'FINISHED'))
+                );
+                
+                """;
 
         try (Connection connection = DaoUtils.createConnection();
                 PreparedStatement ps = DaoUtils.createPreparedStatement(connection, sql)) {
@@ -126,7 +146,8 @@ public class DaoUtils {
                 "TURNS",
                 "GAME_PARTICIPATION",
                 "GAMES",
-                "PLAYERS"
+                "PLAYERS",
+                "GAME_ROOMS"
         };
 
         try (Connection conn = createConnection(); Statement stmt = conn.createStatement()) {

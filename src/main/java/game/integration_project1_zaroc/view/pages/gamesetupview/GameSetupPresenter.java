@@ -9,6 +9,8 @@ import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPre
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
@@ -161,6 +163,13 @@ public class GameSetupPresenter {
             settingsStage.setResizable(false);
             settingsStage.showAndWait();
 
+        });
+
+        view.getReturnButton().setOnAction(event -> {
+            model.setPlayer2(null);
+            SelectGamemodeView gamemodeView = new SelectGamemodeView(view.getResourceManager());
+            new SelectGamemodePresenter(model,gamemodeView);
+            view.getScene().setRoot(gamemodeView);
         });
 
     }
