@@ -31,7 +31,6 @@ public class MultiPlayerGuestView extends BorderPane {
 
     private ImageView hostPfpView;
     private Label hostName;
-    private Label hostColorLabel;
     private ImageView hostColor;
 
     public MultiPlayerGuestView(ResourceManager resourceManager) {
@@ -44,18 +43,19 @@ public class MultiPlayerGuestView extends BorderPane {
         this.returnButton = new TextButton(resourceManager, "←");
 
         this.roomCodeInput = new TextField();
-        this.roomCodeInput.setPromptText("VOER CODE IN");
-        this.roomCodeInput.setMaxWidth(250);
+        this.roomCodeInput.setPromptText("ENTER CODE");
+        this.roomCodeInput.setMaxWidth(260);
+        this.roomCodeInput.setPrefWidth(260);
+        this.roomCodeInput.setPrefHeight(40);
         this.joinButton = new LongButtonComponent(resourceManager, "JOIN LOBBY");
-        this.statusLabel = new Label("VUL EEN CODE IN");
+        this.statusLabel = new Label("enter game code");
 
         this.guestPfpView = createProfilePictureView();
         this.guestName = new Label("Jij (Gast)");
         this.guestColorPicker = new ImageSliderComponent(resourceManager);
 
         this.hostPfpView = createProfilePictureView();
-        this.hostName = new Label("Wachten op join...");
-        this.hostColorLabel = new Label("KLEUR: ?");
+        this.hostName = new Label("Waiting");
         this.hostColor = new ImageView();
     }
 
@@ -69,6 +69,17 @@ public class MultiPlayerGuestView extends BorderPane {
         centralContainer.setMaxSize(800, 640);
         centralContainer.setPrefSize(800, 640);
 
+        Background background = new Background(new BackgroundImage(
+                resourceManager.getImage(Components.INPUTFIELD),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(260, 40, false, false, false, false)
+        ));
+
+        roomCodeInput.setBackground(background);
+        roomCodeInput.setStyle("-fx-text-fill:" + resourceManager.getTheme().getTextColor() +";");
+
         Label title = new Label("JOIN GAME");
         title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
@@ -77,16 +88,29 @@ public class MultiPlayerGuestView extends BorderPane {
         HBox.setHgrow(titelSection.getChildren().get(1), Priority.ALWAYS);
         HBox.setHgrow(titelSection.getChildren().get(3), Priority.ALWAYS);
         titelSection.setAlignment(Pos.CENTER);
-        titelSection.setPadding(new Insets(80, 40, 0, 40));
+        titelSection.setPadding(new Insets(80, 40, 50, 40));
         centralContainer.setTop(titelSection);
+        hostColor.setFitWidth(60);
+        hostColor.setFitHeight(60);
 
         VBox hostInfo = new VBox(20, createHeader("HOST"), hostPfpView, hostName,hostColor);
+        hostInfo.setMaxWidth(150);
+        hostInfo.setPrefWidth(150);
         hostInfo.setAlignment(Pos.TOP_CENTER);
 
-        VBox centerControls = new VBox(20, roomCodeInput, joinButton, statusLabel);
-        centerControls.setAlignment(Pos.CENTER);
+        VBox centerControls = new VBox(20, statusLabel,roomCodeInput );
+        centerControls.setMaxWidth(260);
+        centerControls.setPrefWidth(260);
+        centerControls.setPadding(new Insets(50,0,0,0));
+        centerControls.setAlignment(Pos.TOP_CENTER);
 
-        VBox guestInfo = new VBox(20, createHeader("YOUR SETUP"), guestPfpView, guestName, guestColorPicker);
+        centralContainer.setBottom(joinButton);
+        BorderPane.setAlignment(joinButton,Pos.CENTER);
+        joinButton.setPadding(new Insets(0,0,40,0));
+
+        VBox guestInfo = new VBox(20, createHeader("YOU"), guestPfpView, guestName, guestColorPicker);
+        guestInfo.setMaxWidth(150);
+        guestInfo.setPrefWidth(150);
         guestInfo.setAlignment(Pos.TOP_CENTER);
 
         HBox content = new HBox(50, hostInfo, centerControls, guestInfo);
@@ -98,14 +122,13 @@ public class MultiPlayerGuestView extends BorderPane {
 
         styleLabel(hostName);
         styleLabel(guestName);
-        styleLabel(hostColorLabel);
         styleLabel(statusLabel);
     }
 
     private ImageView createProfilePictureView() {
         ImageView imageView = new ImageView();
-        imageView.setFitWidth(80);
-        imageView.setFitHeight(80);
+        imageView.setFitWidth(120);
+        imageView.setFitHeight(120);
         imageView.setPreserveRatio(true);
         imageView.setImage(resourceManager.getProfilePicture(ProfilePictures.EMPTY));
         return imageView;
@@ -125,7 +148,7 @@ public class MultiPlayerGuestView extends BorderPane {
     }
 
     private void styleLabel(Label l) {
-        l.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+        l.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSLIDER));
         l.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
     }
 
@@ -140,7 +163,6 @@ public class MultiPlayerGuestView extends BorderPane {
 
     ImageView getHostPfpView() { return hostPfpView; }
     Label getHostName() { return hostName; }
-    Label getHostColorLabel() { return hostColorLabel; }
 
     ResourceManager getResourceManager() {
         return resourceManager;
@@ -150,3 +172,5 @@ public class MultiPlayerGuestView extends BorderPane {
         return hostColor;
     }
 }
+
+

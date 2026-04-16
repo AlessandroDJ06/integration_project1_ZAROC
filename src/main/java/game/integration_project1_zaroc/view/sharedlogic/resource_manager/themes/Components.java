@@ -19,7 +19,8 @@ public enum Components {
     PLAYERVAI("playervai.png"),
     LARGECONTAINER("large-container.png"),
     INPUTFIELD("inputfield.png"),
-    MULTIPLAYER("multiplayer.png");
+    MULTIPLAYER("multiplayer.png"),
+    EXTRALARGECONTAINER("extralarge-container.png");
 
     private final String fileName;
 

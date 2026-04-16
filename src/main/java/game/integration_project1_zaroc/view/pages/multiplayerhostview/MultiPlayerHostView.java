@@ -29,7 +29,8 @@ public class MultiPlayerHostView extends BorderPane {
 
     private ImageView guestPfpView;
     private Label guestName;
-    private Label guestColorLabel;
+
+    private ImageView guestColor;
 
     public MultiPlayerHostView(ResourceManager resourceManager){
         this.resourceManager = resourceManager;
@@ -50,7 +51,7 @@ public class MultiPlayerHostView extends BorderPane {
 
         this.guestPfpView = createProfilePictureView();
         this.guestName = new Label("Wachten...");
-        this.guestColorLabel = new Label("KLEUR: ?");
+        this.guestColor = new ImageView();
     }
 
     private void layoutNodes(){
@@ -76,12 +77,17 @@ public class MultiPlayerHostView extends BorderPane {
 
         VBox hostInfo = new VBox(20, createHeader("HOST"), hostPfpView, hostName, hostColorPicker);
         hostInfo.setAlignment(Pos.TOP_CENTER);
+        hostInfo.setMaxWidth(150);
+        hostInfo.setPrefWidth(150);
 
         VBox centerControls = new VBox(20, roomCodeDisplayLabel, statusLabel);
         centerControls.setAlignment(Pos.CENTER);
-
-        VBox guestInfo = new VBox(20, createHeader("GUEST"), guestPfpView, guestName, guestColorLabel);
+        guestColor.setFitHeight(60);
+        guestColor.setFitWidth(60);
+        VBox guestInfo = new VBox(20, createHeader("GUEST"), guestPfpView, guestName, guestColor);
         guestInfo.setAlignment(Pos.TOP_CENTER);
+        guestInfo.setMaxWidth(150);
+        guestInfo.setPrefWidth(150);
 
         HBox content = new HBox(50, hostInfo, centerControls, guestInfo);
         content.setAlignment(Pos.CENTER);
@@ -94,18 +100,16 @@ public class MultiPlayerHostView extends BorderPane {
         this.setCenter(centralContainer);
         this.setStyle("-fx-background-color: " + resourceManager.getTheme().getColor() + ";");
 
-        // Styling toepassen op labels
         styleLabel(hostName);
         styleLabel(guestName);
-        styleLabel(guestColorLabel);
         styleLabel(roomCodeDisplayLabel);
         styleLabel(statusLabel);
     }
 
     private ImageView createProfilePictureView() {
         ImageView imageView = new ImageView();
-        imageView.setFitWidth(80);
-        imageView.setFitHeight(80);
+        imageView.setFitWidth(120);
+        imageView.setFitHeight(120);
         imageView.setPreserveRatio(true);
         imageView.setImage(resourceManager.getProfilePicture(ProfilePictures.EMPTY));
         return imageView;
@@ -129,20 +133,23 @@ public class MultiPlayerHostView extends BorderPane {
         l.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
     }
 
-    public Button getReturnButton() { return returnButton; }
-    public Button getStartGameButton() { return startGameButton; }
-    public Label getRoomCodeDisplayLabel() { return roomCodeDisplayLabel; }
-    public Label getStatusLabel() { return statusLabel; }
+    Button getReturnButton() { return returnButton; }
+    Button getStartGameButton() { return startGameButton; }
+    Label getRoomCodeDisplayLabel() { return roomCodeDisplayLabel; }
+    Label getStatusLabel() { return statusLabel; }
 
-    public ImageView getHostPfpView() { return hostPfpView; }
-    public Label getHostName() { return hostName; }
-    public ImageSliderComponent getHostColorPicker() { return hostColorPicker; }
+    ImageView getHostPfpView() { return hostPfpView; }
+    Label getHostName() { return hostName; }
+    ImageSliderComponent getHostColorPicker() { return hostColorPicker; }
 
-    public ImageView getGuestPfpView() { return guestPfpView; }
-    public Label getGuestName() { return guestName; }
-    public Label getGuestColorLabel() { return guestColorLabel; }
+    ImageView getGuestPfpView() { return guestPfpView; }
+    Label getGuestName() { return guestName; }
 
-    public ResourceManager getResourceManager() {
+    ImageView getGuestColor() {
+        return guestColor;
+    }
+
+    ResourceManager getResourceManager() {
         return resourceManager;
     }
 }

@@ -147,7 +147,7 @@ public class MultiPlayerHostPresenter {
             }
 
             if (currentRoomData.getGuestColor() != null) {
-                view.getGuestColorLabel().setText("COLOR: " + currentRoomData.getGuestColor().name());
+                view.getGuestColor().setImage(view.getResourceManager().getPawnColor(PawnColorPaths.valueOf(currentRoomData.getGuestColor().name())));
             }
 
         } else {
@@ -156,7 +156,6 @@ public class MultiPlayerHostPresenter {
                 view.getStatusLabel().setText("Waiting on opponent...");
                 view.getGuestName().setText("Waiting...");
                 view.getGuestPfpView().setImage(null);
-                view.getGuestColorLabel().setText("COLOR: ?");
             }
         }
     }

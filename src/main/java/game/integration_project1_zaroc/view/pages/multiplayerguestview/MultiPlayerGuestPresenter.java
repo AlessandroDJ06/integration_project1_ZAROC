@@ -6,14 +6,15 @@ import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.Player;
-import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
-import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
-import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
+
+import java.util.Arrays;
 
 public class MultiPlayerGuestPresenter {
 
@@ -33,6 +34,10 @@ public class MultiPlayerGuestPresenter {
     }
 
     private void addEventHandlers() {
+        for (Button button : Arrays.asList(view.getJoinButton(),view.getGuestColorPicker().getRightButton(),view.getGuestColorPicker().getLeftButton(),view.getReturnButton())){
+            GeneralEventhandlers.addHoverEffect(button);
+        }
+
         view.getGuestColorPicker().getRightButton().setOnAction(event -> {
             model.getColorOne().increaseCurrentIndex();
             if (currentRoomData != null && currentRoomData.getHostId() != 0) {
@@ -59,7 +64,7 @@ public class MultiPlayerGuestPresenter {
             String code = view.getRoomCodeInput().getText().trim().toUpperCase();
 
             if (code.isEmpty()) {
-                showAlert("Vul een geldige code in.");
+                showAlert("enter legal code");
                 return;
             }
 
@@ -70,7 +75,7 @@ public class MultiPlayerGuestPresenter {
 
                 view.getJoinButton().setDisable(true);
                 view.getRoomCodeInput().setDisable(true);
-                view.getStatusLabel().setText("Joined! Waiting on host...");
+                view.getStatusLabel().setText("Joined!");
 
                 model.getMultiplayerService().startLobbyPolling(currentRoomCode, fetchedData -> {
                     Platform.runLater(() -> processRoomData(fetchedData));
@@ -78,7 +83,7 @@ public class MultiPlayerGuestPresenter {
 
             } catch (Exception ex) {
                 showAlert("Join mislukt: " + ex.getMessage());
-                view.getStatusLabel().setText("JOIN MISLUKT");
+                view.getStatusLabel().setText("JOIN FAILED");
             }
         });
 
@@ -109,7 +114,7 @@ public class MultiPlayerGuestPresenter {
     private void processRoomData(RoomDTO fetchedData) {
         this.currentRoomData = fetchedData;
 
-        if (view.getHostName().getText().contains("Wachten")) {
+        if (view.getHostName().getText().contains("Waiting")) {
             try {
                 Player host = playersDao.getPlayerById(currentRoomData.getHostId());
                 if (host != null) {
@@ -122,7 +127,6 @@ public class MultiPlayerGuestPresenter {
         }
 
         if (currentRoomData.getHostColor() != null) {
-            view.getHostColorLabel().setText("COLOR: " + currentRoomData.getHostColor().name());
             view.getHostColor().setImage(view.getResourceManager().getPawnColor(PawnColorPaths.valueOf(currentRoomData.getHostColor().name())));
         }
 
