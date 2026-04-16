@@ -12,6 +12,8 @@ import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
+import game.integration_project1_zaroc.view.pages.winscreenview.WinScreenPresenter;
+import game.integration_project1_zaroc.view.pages.winscreenview.WinScreenView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
@@ -243,6 +245,20 @@ public class GameBoardPresenter implements Observer {
             }
         }
     }
+    private void showWinner(){
+        WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
+        new WinScreenPresenter(winScreenView,model);
+
+        Scene winScene = new Scene(winScreenView);
+        winScene.setFill(Color.TRANSPARENT);
+        Stage winStage = new Stage();
+        winStage.initOwner(view.getScene().getWindow());
+        winStage.setTitle("test");
+        winStage.initStyle(StageStyle.TRANSPARENT);
+        winStage.initModality(Modality.APPLICATION_MODAL);
+        winStage.setScene(winScene);
+        winStage.showAndWait();
+    }
 
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CURRENT PLAYER HANDLE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -309,7 +325,13 @@ public class GameBoardPresenter implements Observer {
                         pause.setOnFinished(event -> {
                             executeSingleMove(bestTurn.getSecondMove());
                             model.getGame().switchCurrentPlayer();
+
+                            if(model.getGame().getStatus() == GameStatus.ENDED){
+                                showWinner();
+                                return;
+                            }
                             processTurn();
+
                         });
                         pause.play();
                     } else {
@@ -381,6 +403,11 @@ public class GameBoardPresenter implements Observer {
                 System.out.println("Zet uitgevoerd naar: " + col + "," + row);
 
                 updateView();
+
+                if (model.getGame().getStatus() == GameStatus.ENDED) {
+                    showWinner();
+                    return;
+                }
                 startUndoTimer();
             } else {
                 selectedPawn.setOpacity(1.0);
@@ -439,6 +466,11 @@ public class GameBoardPresenter implements Observer {
                 undoTimer.stop();
                 view.getUndoTimer().setVisible(false);
                 view.getUndoButton().setDisable(true);
+
+                //debugging
+                System.out.println("Timer afgelopen, currentPlayer: " +
+                        model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
+                System.out.println("secondMove: " + model.getGame().getCurrentTurn().getSecondMove());
 
                 if (model.getGame().getCurrentTurn().getSecondMove() != null) {
                     model.getGame().switchCurrentPlayer();

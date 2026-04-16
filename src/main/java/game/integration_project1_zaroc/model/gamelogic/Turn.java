@@ -12,7 +12,7 @@ public class Turn {
     public Turn(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
         moves = new Move[2];
-        turnNumber = 0;
+        turnNumber++;
     }
 
 
