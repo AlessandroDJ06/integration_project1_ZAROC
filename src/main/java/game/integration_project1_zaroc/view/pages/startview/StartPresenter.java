@@ -102,7 +102,6 @@ public class StartPresenter {
         });
 
 
-
     }
     private void navigateToGameSetup() {
         SelectGamemodeView selectGamemodeView = new SelectGamemodeView(view.getResourceManager());

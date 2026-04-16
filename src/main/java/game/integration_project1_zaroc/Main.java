@@ -4,8 +4,11 @@ import game.integration_project1_zaroc.dao.DaoUtils;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
 import game.integration_project1_zaroc.view.pages.startview.StartPresenter;
 import game.integration_project1_zaroc.view.pages.startview.StartView;
+import game.integration_project1_zaroc.view.pages.winscreenview.WinScreenView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 

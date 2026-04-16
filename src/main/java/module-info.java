@@ -6,6 +6,5 @@ module game.integration_project1_zaroc {
     requires java.sql;
     requires jbcrypt;
 
-
     exports game.integration_project1_zaroc;
 }

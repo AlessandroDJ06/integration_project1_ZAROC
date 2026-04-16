@@ -6,7 +6,8 @@ public enum Fonts {
     PRESSSTART2PSLIDER("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",12),
     PRESSSTART2PLARGE("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",15),
     PRESSSTART2BUTTONSTYLE("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",40),
-    PRESSSTART2PSMALL("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",10);
+    PRESSSTART2PSMALL("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",10),
+    PRESSSTART2PMEDIUM("/game/integration_project1_zaroc/ui/fonts/PressStart2P-Regular.ttf",12);
 
     private String path;
     private double weight;

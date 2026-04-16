@@ -9,16 +9,12 @@ import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
-import game.integration_project1_zaroc.model.players.AIPlayer;
-import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Game {
     private GameStatus status;
@@ -47,17 +43,6 @@ public class Game {
         this.selectedPeg = null;
     }
 
-    public void startUndoTimer() throws InterruptedException {
-        //Duration undoTimer = Duration.ofSeconds(5);
-       try{
-           TimeUnit.SECONDS.sleep(5);
-           //Thread.sleep(undoTimer.toMillis());
-        }
-        catch (InterruptedException e){
-            System.out.println("Timer failed");
-        }
-
-    }
     public void switchCurrentPlayer() {
         if (getStatus() == GameStatus.PLAYING) {
             Turn lastTurn = turns.get(turns.size() - 1);
@@ -300,6 +285,90 @@ public class Game {
 
         return copy;
     }
+
+        public List<Turn> getTurnsOfPlayer(Player player) {
+            return turns.stream().filter(t -> t.getCurrentPlayer().equals(player)).toList();
+        }
+
+        public int countMovesInTurns(List<Turn> turns) {
+            int count = 0;
+            for (Turn turn : turns) {
+                if (turn.getFirstMove() != null) count++;
+                if (turn.getSecondMove() != null) count++;
+            }
+            return count;
+        }
+
+        public double calculateDurationInMillis(List<Turn> turns) {
+            double totalDuration = 0;
+            for (Turn turn : turns) {
+                totalDuration += getMoveDuration(turn.getFirstMove());
+                totalDuration += getMoveDuration(turn.getSecondMove());
+            }
+            return totalDuration;
+        }
+
+        public double getMoveDuration(Move move) {
+            if (move != null && move.getStartTime() != null && move.getEndTime() != null) {
+                return move.getEndTime().getTime() - move.getStartTime().getTime();
+            }
+            return 0;
+        }
+
+        public boolean isMoveAggressive(Move move) {
+            return move != null && (move.getDestinationPeg().getYPosition() - move.getStartPeg().getYPosition() == 1);
+        }
+
+
+        public int countTotalMoves() {
+            return countMovesInTurns(this.turns);
+        }
+
+        public int countPlayerMoves(Player player) {
+            return countMovesInTurns(getTurnsOfPlayer(player));
+        }
+
+        public int countPlayerTurns(Player player) {
+            return getTurnsOfPlayer(player).size();
+        }
+
+        public double calculateGameDuration() {
+            return calculateDurationInMillis(this.turns) / 1000;
+        }
+
+        public double calculateTotalAvgMoveDuration() {
+            int totalMoves = countTotalMoves();
+            return calculateDurationInMillis(this.turns) / totalMoves / 1000;
+        }
+
+        public double calculateTotalAvgTurnDuration() {
+            return turns.isEmpty() ? 0 : calculateDurationInMillis(this.turns) / turns.size() / 1000;
+        }
+
+        public double calculatePlayerAvgMoveDuration(Player player) {
+            List<Turn> playerTurns = getTurnsOfPlayer(player);
+            int totalMoves = countMovesInTurns(playerTurns);
+            return totalMoves == 0 ? 0 : calculateDurationInMillis(playerTurns) / totalMoves / 1000;
+        }
+
+        public double calculatePlayerAvgTurnDuration(Player player) {
+            List<Turn> playerTurns = getTurnsOfPlayer(player);
+            return playerTurns.isEmpty() ? 0 : calculateDurationInMillis(playerTurns) / playerTurns.size() / 1000;
+        }
+
+        public String calculateGameStyle() {
+            int totalMoves = countTotalMoves();
+            if (totalMoves == 0) return "Unknown";
+
+            int aggressiveMoves = 0;
+            for (Turn turn : turns) {
+                if (isMoveAggressive(turn.getFirstMove())) aggressiveMoves++;
+                if (isMoveAggressive(turn.getSecondMove())) aggressiveMoves++;
+            }
+
+            return ((double) aggressiveMoves / totalMoves) >= 0.5 ? "Aggressive" : "Passive";
+        }
+
 
     public void setTurns(ArrayList<Turn> turns) {
         this.turns = turns;

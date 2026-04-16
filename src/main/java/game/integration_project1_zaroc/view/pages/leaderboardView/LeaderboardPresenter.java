@@ -10,6 +10,7 @@ import game.integration_project1_zaroc.dao.ZarocDaoException;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
+import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
