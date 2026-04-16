@@ -10,6 +10,7 @@ import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.ProfilePicturePickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
+import game.integration_project1_zaroc.model.selectionslider.ThemePickerModel;
 
 
 public class AppController {
@@ -18,6 +19,7 @@ public class AppController {
     private PawnColorPickerModel colorTwo;
     private StartingPlayerSelector startingPlayerSelector;
     private ProfilePicturePickerModel profilePicturePickerModel;
+    private ThemePickerModel themePickerModel;
     private GamesDao gamesDao;
     private GameParticipationDao gameParticipationDao;
     private PlayersDao playersDao;
@@ -49,6 +51,10 @@ public class AppController {
         this.profilePicturePickerModel = new ProfilePicturePickerModel();
         this.startingPlayerSelector.setPlayer1(player1);
         this.startingPlayerSelector.setPlayer2(player2);
+
+        this.themePickerModel = new ThemePickerModel();
+        this.themePickerModel.setCurrentIndex(0);
+
 
         this.game = null;
 
@@ -174,6 +180,8 @@ public class AppController {
     public ProfilePicturePickerModel getProfilePicturePickerModel() {
         return profilePicturePickerModel;
     }
+
+    public ThemePickerModel getThemePickerModel(){return themePickerModel;}
 
     public void setAllowedToUseDatabase(boolean allowedToUseDatabase) {
         this.allowedToUseDatabase = allowedToUseDatabase;

@@ -1,9 +1,11 @@
 package game.integration_project1_zaroc.view.pages.settingsview;
 
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
+import game.integration_project1_zaroc.view.components.slidercomponents.TextSliderComponent;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Slider;
@@ -22,6 +24,9 @@ public class SettingsView extends BorderPane {
     private Text titel;
     private Text soundLabel;
     private Text volumeLabel;
+    private Text themeLabel;
+    private TextSliderComponent themeSelector;
+
 
 
     private ImageView volumeIconView;
@@ -46,6 +51,7 @@ public class SettingsView extends BorderPane {
         titel = new Text("Instellingen");
         soundLabel = new Text("Geluid");
         volumeLabel = new Text("Muziek");
+        themeLabel = new Text("Thema");
 
 
         volumeIconView = new ImageView();
@@ -67,6 +73,7 @@ public class SettingsView extends BorderPane {
 
         volumeIconView.setImage(imgVolumeOn);
         soundIconView.setImage(imgSoundOn);
+        this.themeSelector = new TextSliderComponent(resourceManager);
     }
 
     public void layoutNodes() {
@@ -94,6 +101,8 @@ public class SettingsView extends BorderPane {
         volumeLabel.setFill(textColor);
         soundLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         soundLabel.setFill(textColor);
+        themeLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+        themeLabel.setFill(textColor);
 
         volume.setMaxSize(250, 0);
         volume.setMinSize(250, 0);
@@ -114,6 +123,8 @@ public class SettingsView extends BorderPane {
         HBox soundControlBox = new HBox(15, soundIconView, sound);
         soundControlBox.setAlignment(Pos.CENTER);
 
+        HBox themeControlBox = new HBox(30, themeSelector );
+        themeControlBox.setAlignment(Pos.CENTER);
 
         VBox volumeBox = new VBox(10, volumeLabel, volumeControlBox);
         volumeBox.setAlignment(Pos.CENTER);
@@ -121,7 +132,11 @@ public class SettingsView extends BorderPane {
         VBox soundBox = new VBox(10, soundLabel, soundControlBox);
         soundBox.setAlignment(Pos.CENTER);
 
-        VBox sliders = new VBox(40, volumeBox, soundBox);
+        VBox themeBox = new VBox(10, themeLabel, themeControlBox);
+        themeBox.setAlignment(Pos.CENTER);
+
+
+        VBox sliders = new VBox(30, volumeBox, soundBox, themeBox);
         sliders.setAlignment(Pos.TOP_CENTER);
         sliders.setPadding(new Insets(30, 0, 0, 0));
 
@@ -156,5 +171,11 @@ public class SettingsView extends BorderPane {
 
     public Slider getSoundSlider() {
         return sound;
+    }
+
+    public TextSliderComponent getThemeSelector(){return themeSelector;}
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
     }
 }

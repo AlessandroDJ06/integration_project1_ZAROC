@@ -1,7 +1,9 @@
 package game.integration_project1_zaroc.view.pages.settingsview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.model.selectionslider.ThemePickerModel;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
@@ -12,11 +14,15 @@ public class SettingsPresenter {
 
         private final SettingsView view;
         private final AppController model;
+        private final ThemePickerModel themePickerModel;
+
 
         public SettingsPresenter(SettingsView View, AppController model) {
             this.view = View;
             this.model = model;
+            this.themePickerModel = model.getThemePickerModel();
             addEventHandlers();
+            updateView();
 
         }
 
@@ -47,9 +53,27 @@ public class SettingsPresenter {
                 setSoundIcon();
             });
 
+            //sliders
+            view.getThemeSelector().getRightButton().setOnAction(actionEvent -> {
+            themePickerModel.increaseCurrentIndex();
+            updateView();
+            setResourceManagerTheme(Themes.values()[model.getThemePickerModel().getCurrentIndex()]);
+            });
+
+            view.getThemeSelector().getLeftButton().setOnAction(actionEvent -> {
+            themePickerModel.decreaseCurrentIndex();
+            updateView();
+                setResourceManagerTheme(Themes.values()[model.getThemePickerModel().getCurrentIndex()]);
+            });
 
 
         }
+
+        private void updateView(){
+            view.getThemeSelector().getLabel().setText(Themes.values()[model.getThemePickerModel().getCurrentIndex()].name());
+        }
+
+
     private void setVolumeIcon() {
         double currentValue = view.getVolumeSlider().getValue();
         if(currentValue==0){
@@ -65,5 +89,8 @@ public class SettingsPresenter {
         }else{
             view.setSoundIcon(new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/sound.png").toExternalForm()));
         }
+    }
+    public void setResourceManagerTheme(Themes theme){
+        view.getResourceManager().setTheme(theme);
     }
 }
