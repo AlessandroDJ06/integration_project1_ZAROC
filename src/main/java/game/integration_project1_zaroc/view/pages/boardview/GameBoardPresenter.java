@@ -8,6 +8,7 @@ import game.integration_project1_zaroc.model.gamelogic.Move;
 import game.integration_project1_zaroc.model.gamelogic.Turn;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.Player;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
@@ -19,6 +20,7 @@ import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandle
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -36,13 +38,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class GameBoardPresenter {
+public class GameBoardPresenter implements Observer {
     private GameBoardView view;
     private AppController model;
     private List<HBox> rows;
@@ -53,28 +54,46 @@ public class GameBoardPresenter {
     private Timeline undoTimer;
     private int remainingUndoSeconds;
 
-
     private ImageView selectedPawn;
 
-    public GameBoardPresenter(GameBoardView view,AppController model){
+    public GameBoardPresenter(GameBoardView view, AppController model) {
         this.view = view;
         this.model = model;
-        this.rows = Arrays.asList(view.getPegRowFour(),view.getPegRowThree(),view.getPegRowTwo());
-        this.buttons = Arrays.asList(view.getUndoButton(),view.getSettingsButton(),view.getInfoButton());
+        this.rows = Arrays.asList(view.getPegRowFour(), view.getPegRowThree(), view.getPegRowTwo());
+        this.buttons = Arrays.asList(view.getUndoButton(), view.getSettingsButton(), view.getInfoButton());
         this.player1Animation = createPulseAnimation(view.getPlayersPlayingComponent().getFirstPlayer());
         this.player2Animation = createPulseAnimation(view.getPlayersPlayingComponent().getSecondPlayer());
 
         this.selectedPawn = null;
+
+        if (this.model.getMultiplayerService() != null) {
+            this.model.getMultiplayerService().addObserver(this);
+
+            if (this.model.isOnlineMultiplayer()) {
+                String myUsername = model.getPlayer1().getUsername();
+                int gameId = model.getOnlineGameId();
+                this.model.getMultiplayerService().startTurnPolling(gameId, 0, myUsername);
+            }
+        }
+
         updateView();
         addEventHandlers();
         processTurn();
     }
 
+    @Override
+    public void update(Object args) {
+        System.out.println("Remote zet ontvangen, UI updaten!");
+        Platform.runLater(() -> {
+            updateView();
+            processTurn();
+        });
+    }
 
-    private void addEventHandlers(){
+    private void addEventHandlers() {
         view.getSettingsButton().setOnAction(actionEvent -> {
             SettingsView settingsView = new SettingsView(view.getResourceManager());
-            new SettingsPresenter(settingsView,this.model);
+            new SettingsPresenter(settingsView, this.model);
             Scene settingsScene = new Scene(settingsView);
             settingsScene.setFill(Color.TRANSPARENT);
             Stage settingsStage = new Stage();
@@ -85,13 +104,11 @@ public class GameBoardPresenter {
             settingsStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             settingsStage.setResizable(false);
             settingsStage.showAndWait();
-
         });
 
         view.getInfoButton().setOnAction(event -> {
-
             RuleView ruleView = new RuleView(view.getResourceManager());
-            new RuleViewPresenter(ruleView,this.model);
+            new RuleViewPresenter(ruleView, this.model);
             Scene ruleScene = new Scene(ruleView);
             ruleScene.setFill(Color.TRANSPARENT);
             Stage ruleStage = new Stage();
@@ -102,15 +119,13 @@ public class GameBoardPresenter {
             ruleStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             ruleStage.setResizable(false);
             ruleStage.showAndWait();
-
-
         });
 
-        for (Button button : buttons){
+        for (Button button : buttons) {
             GeneralEventhandlers.addHoverEffect(button);
         }
 
-        for (HBox row : rows){
+        for (HBox row : rows) {
             row.setOnMouseEntered(mouseEvent -> {
                 row.setScaleY(1.5);
                 row.setScaleX(1.5);
@@ -124,16 +139,16 @@ public class GameBoardPresenter {
             });
         }
 
-        for (ImageView position : view.getBoard().getPegPositions()){
+        for (ImageView position : view.getBoard().getPegPositions()) {
             position.setOnMouseClicked(event -> {
                 int col = GridPane.getColumnIndex(position);
                 int row = GridPane.getRowIndex(position);
                 handlePegClick(col, row);
-
             });
         }
+
         view.getUndoButton().setOnAction(e -> {
-                undoTimer.stop();
+            undoTimer.stop();
             view.getUndoTimer().setVisible(false);
             view.getUndoButton().setDisable(true);
 
@@ -145,11 +160,10 @@ public class GameBoardPresenter {
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~UPDATE METHODS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //----------------------------------------------------------------------------------------------
-    private void updateView(){
-        if (model.getGame() != null){
+    private void updateView() {
+        if (model.getGame() != null) {
             view.getPlayersPlayingComponent().setFirstPlayer(
                     model.getGame().getParticipation1().getPlayer().getUsername()
-
             );
 
             view.getPlayersPlayingComponent().setSecondPlayer(
@@ -159,7 +173,7 @@ public class GameBoardPresenter {
             System.out.println("fatal error");
         }
 
-        if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername().equals(model.getGame().getParticipation1().getPlayer().getUsername())){
+        if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername().equals(model.getGame().getParticipation1().getPlayer().getUsername())) {
             player1Animation.play();
             player2Animation.stop();
             view.getPlayersPlayingComponent().getSecondPlayer().setScaleX(1);
@@ -235,22 +249,48 @@ public class GameBoardPresenter {
     //----------------------------------------------------------------------------------------------
     private void processTurn() {
         updateView();
+
         if (model.getGame().getStatus() == GameStatus.ENDED) {
             System.out.println("Winnaar: " + model.getGame().getWinner().getUsername());
+            if (model.getMultiplayerService() != null) {
+                model.getMultiplayerService().stopPolling();
+            }
             return;
         }
+
         Player currentPlayer = model.getGame().getCurrentTurn().getCurrentPlayer();
 
         if (currentPlayer instanceof AIPlayer) {
             view.getUndoButton().setDisable(true);
             view.getBoard().getBoard().setDisable(true);
-            executeAiLogic((game.integration_project1_zaroc.model.players.AIPlayer) currentPlayer);
-        } else {
+            executeAiLogic((AIPlayer) currentPlayer);
+        }
+        else if (isRemotePlayer(currentPlayer)) {
+            view.getUndoButton().setDisable(true);
+            view.getBoard().getBoard().setDisable(true);
+        }
+        else {
             view.getBoard().getBoard().setDisable(false);
             view.getUndoButton().setDisable(true);
         }
     }
 
+    private boolean isRemotePlayer(Player p) {
+        if (!model.isOnlineMultiplayer()) return false;
+        if (model.getGame() == null || model.getGame().getGameId() == -1) return false;
+        return !p.getUsername().equals(model.getPlayer1().getUsername());
+    }
+
+    private int calculateTotalMoves() {
+        int moveCount = 0;
+        if (model.getGame() != null && model.getGame().getTurns() != null) {
+            for (Turn t : model.getGame().getTurns()) {
+                if (t.getFirstMove() != null) moveCount++;
+                if (t.getSecondMove() != null) moveCount++;
+            }
+        }
+        return moveCount;
+    }
 
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HANDLE   AI    MOVE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -259,13 +299,13 @@ public class GameBoardPresenter {
         Thread aiThread = new Thread(() -> {
             Turn bestTurn = ai.decideTurn(model.getGame());
 
-            javafx.application.Platform.runLater(() -> {
+            Platform.runLater(() -> {
                 if (bestTurn != null) {
                     executeSingleMove(bestTurn.getFirstMove());
                     updateView();
 
                     if (bestTurn.getSecondMove() != null) {
-                        javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(800));
+                        javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(Duration.millis(800));
                         pause.setOnFinished(event -> {
                             executeSingleMove(bestTurn.getSecondMove());
                             model.getGame().switchCurrentPlayer();
@@ -303,7 +343,6 @@ public class GameBoardPresenter {
     //----------------------------------------------------------------------------------------------
     private void handlePegClick(int col, int row) {
 
-        // stoppen na 2 zetten
         if (model.getGame().getCurrentTurn().getSecondMove() != null) {
             return;
         }
@@ -367,13 +406,25 @@ public class GameBoardPresenter {
         Integer columnPos = GridPane.getColumnIndex(node);
         Integer rowPos = GridPane.getRowIndex(node);
         return columnPos != null && rowPos != null && columnPos == col && rowPos == row;
-
     }
+
     private void startUndoTimer() {
+        if (model.isOnlineMultiplayer()) {
+            view.getUndoTimer().setVisible(false);
+            view.getUndoButton().setDisable(true);
+
+            if (model.getGame().getCurrentTurn().getSecondMove() != null) {
+                model.getGame().switchCurrentPlayer();
+                processTurn();
+            }
+            return;
+        }
+
+
         if (undoTimer != null) {
             undoTimer.stop();
         }
-        remainingUndoSeconds=5;
+        remainingUndoSeconds = 5;
 
         view.getUndoTimer().setVisible(true);
         view.getUndoTimer().setText("00:0" + remainingUndoSeconds);
@@ -475,6 +526,4 @@ public class GameBoardPresenter {
 
         highlightAnimation.play();
     }
-
-
 }

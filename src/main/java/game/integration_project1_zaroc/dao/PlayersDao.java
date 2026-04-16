@@ -86,6 +86,27 @@ public class PlayersDao {
         return null;
     }
 
+    public HumanPlayer getPlayerById(int playerId) throws ZarocDaoException {
+        String sql = "SELECT * FROM PLAYERS WHERE player_id = ?";
+
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, playerId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return HumanPlayer.fromResultSet(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Database is onbereikbaar", e);
+        }
+
+        return null;
+    }
+
     public void updatePlayerPlaystyle(Player player) throws ZarocDaoException{
         String sql = "UPDATE PLAYERS SET playstyle = ? WHERE player_id = ?";
 

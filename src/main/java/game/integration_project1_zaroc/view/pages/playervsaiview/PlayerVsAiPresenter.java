@@ -4,6 +4,7 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.Difficulty;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -71,6 +72,8 @@ public class PlayerVsAiPresenter {
                 closeWindow();
             });
         }
+
+        GeneralEventhandlers.addHoverEffect(view.getReturnButton());
     }
 
     private void addEventHandlers() {

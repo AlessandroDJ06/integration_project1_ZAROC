@@ -19,6 +19,7 @@ public class SelectGamemodeView extends BorderPane {
 
     private Button playerVsPlayerButton;
     private Button playerVsAiButton;
+    private Button multiPlayerButton;
     private LongButtonComponent unfinishedGamesButton;
 
     private Button settingsButton;
@@ -35,6 +36,7 @@ public class SelectGamemodeView extends BorderPane {
     private void initialiseNodes(){
         this.playerVsPlayerButton = new Button();
         this.playerVsAiButton = new Button();
+        this.multiPlayerButton = new Button();
         this.unfinishedGamesButton = new LongButtonComponent(resourceManager,"UNFINISHED GAMES");
 
         this.settingsButton = new GeneralActionsComponent(this.resourceManager, Components.SETTINGS);
@@ -88,7 +90,16 @@ public class SelectGamemodeView extends BorderPane {
         playerVsAiSection.setAlignment(Pos.CENTER);
         playerVsAiSection.setSpacing(15);
 
-        HBox gameModeSelectors = new HBox(playerVsPlayerSection, playerVsAiSection);
+        multiPlayerButton.setGraphic(new ImageView(resourceManager.getImage(Components.MULTIPLAYER)));
+        multiPlayerButton.setBackground(Background.EMPTY);
+        Label playerVsPlayerMultiplayerLabel = new Label("Multiplayer");
+        playerVsPlayerMultiplayerLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+        playerVsPlayerMultiplayerLabel.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        VBox playerVsPlayerMultiplayerSection = new VBox(playerVsPlayerMultiplayerLabel, multiPlayerButton);
+        playerVsPlayerMultiplayerSection.setSpacing(15);
+        playerVsPlayerMultiplayerSection.setAlignment(Pos.CENTER);
+
+        HBox gameModeSelectors = new HBox(playerVsPlayerMultiplayerSection,playerVsPlayerSection, playerVsAiSection);
 
         Label seperator = new Label("-- or --");
         seperator.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
@@ -145,5 +156,9 @@ public class SelectGamemodeView extends BorderPane {
 
     Button getPlayerVsPlayerButton() {
         return playerVsPlayerButton;
+    }
+
+    Button getMultiPlayerButton(){
+        return multiPlayerButton;
     }
 }
