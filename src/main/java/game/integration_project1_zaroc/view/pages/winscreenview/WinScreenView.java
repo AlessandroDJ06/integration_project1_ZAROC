@@ -60,6 +60,7 @@ public class WinScreenView extends BorderPane {
         statsHBox.setSpacing(15);
         statsHBox.setAlignment(Pos.CENTER);
 
+        //nieuwe medium font toegevoegd in Fonts enum
         gameStatsTitle.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
         playerStatsTitle.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
         gameStats.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
