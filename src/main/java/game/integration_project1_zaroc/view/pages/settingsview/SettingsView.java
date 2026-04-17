@@ -5,6 +5,7 @@ import game.integration_project1_zaroc.view.components.slidercomponents.TextSlid
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
+import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Slider;
@@ -65,6 +66,10 @@ public class SettingsView extends BorderPane {
         soundIconView.setFitHeight(24);
         soundIconView.setPreserveRatio(true);
 
+        imgVolumeOn = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/music.png").toExternalForm());
+        imgVolumeMuted = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/mute_music.png").toExternalForm());
+        imgSoundOn = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/sound.png").toExternalForm());
+        imgSoundMuted = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/mute_sound.png").toExternalForm());
 
         volumeIconView.setImage(imgVolumeOn);
         soundIconView.setImage(imgSoundOn);

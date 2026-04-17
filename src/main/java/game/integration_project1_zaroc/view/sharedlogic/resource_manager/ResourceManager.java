@@ -109,4 +109,6 @@ public class ResourceManager {
     public MusicManager getMusicManager() {
         return musicManager;
     }
+
+    public void setTheme(Themes theme){this.theme = theme;}
 }
