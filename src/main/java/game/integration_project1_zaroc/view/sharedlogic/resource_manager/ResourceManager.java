@@ -98,6 +98,18 @@ public class ResourceManager {
         return loadedSideViews.get(sideView);
     }
 
+    public byte[] getNeuralNetworkModel() {
+        String path = "/game/integration_project1_zaroc/neuralnetwork/zaroc_model.onnx";
+        try (java.io.InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                throw new RuntimeException("AI Model niet gevonden op pad: " + path);
+            }
+            return is.readAllBytes();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Fout bij het laden van het AI model", e);
+        }
+    }
+
     public Themes getTheme() {
         return theme;
     }

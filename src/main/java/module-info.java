@@ -5,6 +5,7 @@ module game.integration_project1_zaroc {
     requires java.desktop;
     requires java.sql;
     requires jbcrypt;
+    requires com.microsoft.onnxruntime;
     requires javafx.media;
     //requires game.integration_project1_zaroc;
 
