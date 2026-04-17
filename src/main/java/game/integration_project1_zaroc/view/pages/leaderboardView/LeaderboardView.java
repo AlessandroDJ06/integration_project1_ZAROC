@@ -219,4 +219,8 @@ public class LeaderboardView extends BorderPane {
     public ComboBox<String> getSortDropdown() {
         return sortDropdown;
     }
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
 }

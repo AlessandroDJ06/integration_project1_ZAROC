@@ -23,6 +23,7 @@ public class MultiplayerSetupPresenter {
                 view.getHostGame(),
                 view.getJoinGame())){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
         view.getReturnButton().setOnAction(event -> {

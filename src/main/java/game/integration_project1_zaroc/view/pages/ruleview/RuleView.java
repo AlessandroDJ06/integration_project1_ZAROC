@@ -127,4 +127,8 @@ public class RuleView extends BorderPane {
     public Button getReturnButton() {
         return returnButton;
     }
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
 }

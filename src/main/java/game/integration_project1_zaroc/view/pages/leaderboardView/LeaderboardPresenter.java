@@ -43,6 +43,7 @@ public class LeaderboardPresenter {
             stage.close();
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
+        GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());
         view.getSortDropdown().valueProperty().addListener(
                 (obs, oldVal, newVal) -> applySortAndDisplay(newVal)
         );
