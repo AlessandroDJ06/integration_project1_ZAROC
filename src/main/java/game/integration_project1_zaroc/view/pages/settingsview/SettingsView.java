@@ -65,10 +65,6 @@ public class SettingsView extends BorderPane {
         soundIconView.setFitHeight(24);
         soundIconView.setPreserveRatio(true);
 
-        imgVolumeOn = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/music.png").toExternalForm());
-        imgVolumeMuted = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/mute_music.png").toExternalForm());
-        imgSoundOn = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/sound.png").toExternalForm());
-        imgSoundMuted = new Image(getClass().getResource("/game/integration_project1_zaroc/ui/icons/mute_sound.png").toExternalForm());
 
         volumeIconView.setImage(imgVolumeOn);
         soundIconView.setImage(imgSoundOn);

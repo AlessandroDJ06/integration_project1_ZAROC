@@ -105,4 +105,8 @@ public class ResourceManager {
     public SFXManager getSfxManager() {
         return sfxManager;
     }
+
+    public MusicManager getMusicManager() {
+        return musicManager;
+    }
 }

@@ -31,5 +31,12 @@ public void startMusic(){
         }
     }
 
+    public void setVolume(double volume) {
+        this.volume = volume/10;
+        backgroundMusic.setVolume(this.volume);
+    }
 
+    public double getVolume() {
+        return volume;
+    }
 }

@@ -35,7 +35,11 @@ public class SFXManager {
     }
 
     public void setVolume(double volume) {
-        this.volume = volume;
+        this.volume = volume/10;
+    }
+
+    public double getVolume() {
+        return volume;
     }
 }
 
