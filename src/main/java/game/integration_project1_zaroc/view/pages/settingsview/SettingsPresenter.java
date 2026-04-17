@@ -18,11 +18,13 @@ public class SettingsPresenter {
         }
 
         private void addEventHandlers(){
+            GeneralEventhandlers.addHoverEffect(view.getReturnButton());
+            GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());
             view.getReturnButton().setOnAction(actionEvent ->{
                 Stage stage = (Stage) view.getScene().getWindow();
                 stage.close();
             });
-            GeneralEventhandlers.addHoverEffect(view.getReturnButton());
+
         }
 
 }

@@ -32,6 +32,7 @@ public class WinScreenPresenter {
             closeWindow();
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
+        GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());
 
         view.getRematchButton().setOnAction(event -> {
 
@@ -43,6 +44,7 @@ public class WinScreenPresenter {
 
         });
         GeneralEventhandlers.addHoverEffect(view.getRematchButton());
+        GeneralEventhandlers.addSoundEffect(view.getRematchButton(), view.getResourceManager());
 
     }
     public void closeWindow(){

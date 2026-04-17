@@ -32,6 +32,7 @@ public class LoginPresenter {
                 view.getReturnButton());
         for (Button button : buttons){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
         view.getReturnButton().setOnAction(event -> {

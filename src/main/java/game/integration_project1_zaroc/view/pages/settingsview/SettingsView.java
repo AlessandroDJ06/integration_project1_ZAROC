@@ -106,4 +106,8 @@ public class SettingsView extends BorderPane {
     public TextButton getReturnButton() {
         return returnButton;
     }
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
 }

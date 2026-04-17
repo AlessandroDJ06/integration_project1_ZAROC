@@ -21,5 +21,6 @@ private final RuleView view;
             stage.close();
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
+        GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());
     }
 }

@@ -74,6 +74,7 @@ public class PlayerVsAiPresenter {
         }
 
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
+        GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());
     }
 
     private void addEventHandlers() {
