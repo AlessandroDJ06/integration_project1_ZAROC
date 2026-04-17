@@ -93,4 +93,5 @@ public class ResourceManager {
     public Themes getTheme() {
         return theme;
     }
+    public void setTheme(Themes theme){this.theme = theme;}
 }
