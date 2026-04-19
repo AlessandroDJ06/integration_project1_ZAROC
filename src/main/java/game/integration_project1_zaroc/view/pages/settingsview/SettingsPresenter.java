@@ -65,11 +65,11 @@ public class SettingsPresenter {
     }
 
     private void setVolumeMusicSlider() {
-        view.getResourceManager().getMusicManager().setVolume(view.getVolumeSlider().getValue() / 10.0);
+        view.getResourceManager().getMusicManager().setVolume(view.getVolumeSlider().getValue());
     }
 
     private void setVolumeSoundSlider() {
-        view.getResourceManager().getSfxManager().setVolume(view.getSoundSlider().getValue() / 10.0);
+        view.getResourceManager().getSfxManager().setVolume(view.getSoundSlider().getValue());
     }
 
     private void setVolumeIcon() {
