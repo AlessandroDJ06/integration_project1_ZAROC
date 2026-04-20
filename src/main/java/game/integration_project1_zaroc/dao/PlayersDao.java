@@ -119,8 +119,56 @@ public class PlayersDao {
             throw new ZarocDaoException("Kon de speler niet updaten.", sqlException);
     }
 
+}
+    public int getTotalGamesPlayed(int playerId) throws ZarocDaoException {
+        String sql = "SELECT COUNT(*) FROM games g JOIN game_participation gp ON g.game_id = gp.game_id WHERE gp.player_id = ?";
 
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            ps.setInt(1, playerId);
 
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Kon aantal games niet ophalen", e);
+        }
+        return 0;
+    }
+    public int getTotalWins(int playerId) throws ZarocDaoException {
+        String sql = "SELECT COUNT(*) FROM game_participation WHERE player_id = ? AND winner = true";
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, playerId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Kon aantal wins niet ophalen", e);
+        }
+        return 0;
+    }
 
-}}
+    public String getMostUsedDifficulty(int playerId) throws ZarocDaoException {
+        String sql = """
+        SELECT p.difficulty FROM players p
+        JOIN game_participation gp ON p.player_id = gp.player_id
+        JOIN game_participation gp2 ON gp.game_id = gp2.game_id
+        WHERE gp2.player_id = ? AND p.difficulty IS NOT NULL
+        GROUP BY p.difficulty ORDER BY COUNT(*) DESC LIMIT 1
+        """;
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, playerId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getString("difficulty");
+            }
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Kon moeilijkheidsgraad niet ophalen", e);
+        }
+        return "X";
+    }
+}

@@ -83,8 +83,10 @@ public class PlayerVsPlayerPresenter {
 
     private void updateView(){
         view.getPlayerOneName().setText(model.getPlayer1().getUsername());
-        view.getPlayerOnePfp().setImage(view.getResourceManager().getProfilePicture(ProfilePictures.valueOf(model.getPlayer1().getProfilePicture())));
-
+        String pic1 = model.getPlayer1().getProfilePicture();
+        if (pic1 != null) {
+            view.getPlayerOnePfp().setImage(view.getResourceManager().getProfilePicture(ProfilePictures.valueOf(pic1)));
+        }
         if (model.getPlayer2() != null){
             view.getPlayerTwoName().setText(model.getPlayer2().getUsername());
             view.getPlayerTwoPfp().setImage(view.getResourceManager().getProfilePicture(ProfilePictures.valueOf(model.getPlayer2().getProfilePicture())));

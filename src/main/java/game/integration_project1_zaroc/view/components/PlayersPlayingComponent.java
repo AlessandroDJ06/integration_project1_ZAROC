@@ -1,11 +1,15 @@
 package game.integration_project1_zaroc.view.components;
 
+import game.integration_project1_zaroc.view.components.buttons.ShortButtonComponent;
+import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -26,6 +30,7 @@ public class PlayersPlayingComponent extends HBox {
     private ProfilePictures playerTwoPfp;
     private Label pointPlayerOne;
     private Label pointPlayerTwo;
+    private Button pauseButton;
 
 
 
@@ -47,6 +52,7 @@ public class PlayersPlayingComponent extends HBox {
         this.pointPlayerTwo = new Label("Points: 0");
         this.playerOnePfp = ProfilePictures.EMPTY;
         this.playerTwoPfp = ProfilePictures.EMPTY;
+        this.pauseButton = new TextButton(resourceManager,"II");
     }
 
     private void layoutNodes(){
@@ -80,10 +86,12 @@ public class PlayersPlayingComponent extends HBox {
             label.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         }
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Region spacer1 = new Region();
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
 
-        getChildren().addAll(this.firsPlayerPfpFrame,nameSectionPlayer1,spacer,nameSectionPlayer2,this.secondPlayerPfpFrame);
+        getChildren().addAll(this.firsPlayerPfpFrame,nameSectionPlayer1,spacer1,pauseButton,spacer2,nameSectionPlayer2,this.secondPlayerPfpFrame);
 
         setBackground(new Background(myBI));
         setAlignment(Pos.CENTER_LEFT);
@@ -135,5 +143,9 @@ public class PlayersPlayingComponent extends HBox {
 
     public Label getSecondPlayer() {
         return secondPlayer;
+    }
+
+    public Button getPauseButton() {
+        return pauseButton;
     }
 }
