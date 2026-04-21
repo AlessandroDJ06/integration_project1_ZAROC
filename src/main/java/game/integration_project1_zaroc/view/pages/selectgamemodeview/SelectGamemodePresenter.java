@@ -19,6 +19,8 @@ import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
+import game.integration_project1_zaroc.view.pages.statisticsview.StatisticsPresenter;
+import game.integration_project1_zaroc.view.pages.statisticsview.StatisticsView;
 import game.integration_project1_zaroc.view.pages.unfinishedgamesview.UnfinishedGamesPresenter;
 import game.integration_project1_zaroc.view.pages.unfinishedgamesview.UnfinishedGamesView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
@@ -183,6 +185,22 @@ public class SelectGamemodePresenter {
                     checkIfGameIsEmpty();
                 }
             }
+        });
+
+        view.getProfileButton().setOnAction(event -> {
+
+            StatisticsView statisticsView = new StatisticsView(view.getResourceManager());
+            new StatisticsPresenter(statisticsView,model);
+            Scene statsScene = new Scene(statisticsView);
+            statsScene.setFill(Color.TRANSPARENT);
+            Stage statsStage = new Stage();
+
+            statsStage.setScene(statsScene);
+            statsStage.initStyle(StageStyle.TRANSPARENT);
+            statsStage.initModality(Modality.APPLICATION_MODAL);
+            statsStage.setResizable(false);
+            statsStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            statsStage.showAndWait();
         });
 
     }

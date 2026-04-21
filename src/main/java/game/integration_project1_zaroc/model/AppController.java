@@ -335,4 +335,28 @@ public class AppController {
     public void setHost(boolean host) {
         this.isHost = host;
     }
+
+    public int getTotalGamesPlayed() {
+        try {
+            return playersDao.getTotalGamesPlayed(player1.getPlayerId());
+        } catch (ZarocDaoException e) {
+            return 0;
+        }
+    }
+
+    public int getTotalWins() {
+        try {
+            return playersDao.getTotalWins(player1.getPlayerId());
+        } catch (ZarocDaoException e) {
+            return 0;
+        }
+    }
+
+    public String getMostUsedDifficulty() {
+        try {
+            return playersDao.getMostUsedDifficulty(player1.getPlayerId());
+        } catch (ZarocDaoException e) {
+            return "Unknown";
+        }
+    }
 }

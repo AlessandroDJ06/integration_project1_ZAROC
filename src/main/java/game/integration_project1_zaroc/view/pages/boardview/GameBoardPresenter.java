@@ -9,6 +9,8 @@ import game.integration_project1_zaroc.model.gamelogic.Turn;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.utils.Observer;
+import game.integration_project1_zaroc.view.pages.pausescreenview.PauseScreenPresenter;
+import game.integration_project1_zaroc.view.pages.pausescreenview.PauseScreenView;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
@@ -19,6 +21,7 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncol
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -123,6 +126,61 @@ public class GameBoardPresenter implements Observer {
             ruleStage.showAndWait();
         });
 
+        view.getUndoButton().setOnAction(e -> {
+            undoTimer.stop();
+            view.getUndoTimer().setVisible(false);
+            view.getSkipButton().setVisible(false);
+            view.getSkipButton().setDisable(true);
+            view.getUndoButton().setDisable(true);
+
+            model.getGame().undoMove();
+            updateView();
+        });
+        view.getPlayersPlayingComponent().getPauseButton().setOnAction(event -> {
+
+            boolean timerWasRunning = (undoTimer != null && undoTimer.getStatus() == Animation.Status.RUNNING);
+
+            player1Animation.pause();
+            player2Animation.pause();
+            if(timerWasRunning){
+                undoTimer.pause();
+            }
+            PauseScreenView pauseScreenView = new PauseScreenView(view.getResourceManager());
+            PauseScreenPresenter pauseScreenPresenter = new PauseScreenPresenter(pauseScreenView,model);
+
+            if (model.getGame().isAllowedSave()){
+                pauseScreenView.getNoteUnfinishedGame().setText("NOTE: Current game will be added to Unfinished Games");
+            }
+            Scene pauseScene = new Scene(pauseScreenView);
+            pauseScene.setFill(Color.TRANSPARENT);
+            Stage pauseStage = new Stage();
+            pauseStage.setScene(pauseScene);
+            pauseStage.initOwner(view.getScene().getWindow());
+            pauseStage.initStyle(StageStyle.TRANSPARENT);
+            pauseStage.initModality(Modality.APPLICATION_MODAL);
+            pauseStage.showAndWait();
+
+            if(pauseScreenPresenter.isContinued()){
+                if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername().equals(model.getGame().getParticipation1().getPlayer().getUsername())) {
+                    player1Animation.play();
+                }
+                else{
+                    player2Animation.play();
+                }
+
+                if(timerWasRunning){
+                    undoTimer.play();
+                }
+            }
+
+        });
+        view.getSkipButton().setOnAction(event -> {
+            this.remainingUndoSeconds = 0;
+        });
+        GeneralEventhandlers.addHoverEffect(view.getPlayersPlayingComponent().getPauseButton());
+        GeneralEventhandlers.addHoverEffect(view.getSkipButton());
+
+
         for (Button button : buttons) {
             GeneralEventhandlers.addHoverEffect(button);
             GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
@@ -150,14 +208,6 @@ public class GameBoardPresenter implements Observer {
             });
         }
 
-        view.getUndoButton().setOnAction(e -> {
-            undoTimer.stop();
-            view.getUndoTimer().setVisible(false);
-            view.getUndoButton().setDisable(true);
-
-            model.getGame().undoMove();
-            updateView();
-        });
     }
 
     //----------------------------------------------------------------------------------------------
@@ -189,9 +239,19 @@ public class GameBoardPresenter implements Observer {
             view.getPlayersPlayingComponent().getFirstPlayer().setScaleY(1);
         }
 
-        view.getPlayersPlayingComponent().setPlayerTwoPfp(ProfilePictures.valueOf(model.getPlayer2().getProfilePicture()));
-        view.getPlayersPlayingComponent().setPlayerOnePfp(ProfilePictures.valueOf(model.getPlayer1().getProfilePicture()));
+        String pfp1 = model.getPlayer1().getProfilePicture();
+        String pfp2 = model.getPlayer2().getProfilePicture();
+        if (pfp1 != null) {
+            view.getPlayersPlayingComponent().setPlayerOnePfp(ProfilePictures.valueOf(pfp1));
+        } else {
+            view.getPlayersPlayingComponent().setPlayerOnePfp(ProfilePictures.EMPTY);
+        }
 
+        if (pfp2 != null) {
+            view.getPlayersPlayingComponent().setPlayerTwoPfp(ProfilePictures.valueOf(pfp2));
+        } else {
+            view.getPlayersPlayingComponent().setPlayerTwoPfp(ProfilePictures.EMPTY);
+        }
         renderBoard();
     }
 
@@ -439,6 +499,8 @@ public class GameBoardPresenter implements Observer {
     private void startUndoTimer() {
         if (model.isOnlineMultiplayer()) {
             view.getUndoTimer().setVisible(false);
+            view.getSkipButton().setVisible(false);
+            view.getSkipButton().setDisable(true);
             view.getUndoButton().setDisable(true);
 
             if (model.getGame().getCurrentTurn().getSecondMove() != null) {
@@ -448,13 +510,14 @@ public class GameBoardPresenter implements Observer {
             return;
         }
 
-
         if (undoTimer != null) {
             undoTimer.stop();
         }
         remainingUndoSeconds = 5;
 
         view.getUndoTimer().setVisible(true);
+        view.getSkipButton().setVisible(true);
+        view.getSkipButton().setDisable(false);
         view.getUndoTimer().setText("00:0" + remainingUndoSeconds);
         view.getUndoButton().setDisable(false);
 
@@ -466,6 +529,8 @@ public class GameBoardPresenter implements Observer {
             if (remainingUndoSeconds <= 0) {
                 undoTimer.stop();
                 view.getUndoTimer().setVisible(false);
+                view.getSkipButton().setVisible(false);
+                view.getSkipButton().setDisable(true);
                 view.getUndoButton().setDisable(true);
 
                 //debugging

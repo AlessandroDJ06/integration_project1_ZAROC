@@ -423,6 +423,10 @@ public class Game {
         this.allowedSave = allowedSave;
     }
 
+    public boolean isAllowedSave() {
+        return allowedSave;
+    }
+
     public Move getLastMove() {
         return lastMove;
     }

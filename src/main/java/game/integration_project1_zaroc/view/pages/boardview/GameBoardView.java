@@ -3,6 +3,8 @@ import game.integration_project1_zaroc.view.components.BoardComponent;
 import game.integration_project1_zaroc.view.components.buttons.GeneralActionsComponent;
 import game.integration_project1_zaroc.view.components.PegSideViewComponent;
 import game.integration_project1_zaroc.view.components.PlayersPlayingComponent;
+import game.integration_project1_zaroc.view.components.buttons.ShortButtonComponent;
+import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
@@ -27,6 +29,7 @@ public class GameBoardView extends BorderPane {
     private PlayersPlayingComponent playersPlayingComponent;
     private PegSideViewComponent pegView;
     private Label undoTimer;
+    private Button skipButton;
 
 
 
@@ -44,6 +47,7 @@ public class GameBoardView extends BorderPane {
         this.playersPlayingComponent = new PlayersPlayingComponent(resourceManager);
         this.pegView = new PegSideViewComponent(this.resourceManager);
         this.undoTimer = new Label("");
+        this.skipButton = new TextButton(resourceManager,"SKIP");
     }
 
     public void layoutNodes() {
@@ -53,7 +57,15 @@ public class GameBoardView extends BorderPane {
         BorderPane topHeader = new BorderPane();
         topHeader.setPadding(new Insets(30, 30, 0, 30));
 
-        HBox undoHbox = new HBox(this.undoButton, this.undoTimer);
+
+        skipButton.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
+        skipButton.setVisible(false);
+        skipButton.setDisable(true);
+        VBox undoVBox = new VBox(this.undoTimer,this.skipButton);
+        undoVBox.setAlignment(Pos.CENTER);
+        undoVBox.setSpacing(10);
+
+        HBox undoHbox = new HBox(this.undoButton, undoVBox);
         undoHbox.setAlignment(Pos.CENTER_LEFT);
         undoHbox.setSpacing(30);
         undoHbox.setMaxHeight(Region.USE_PREF_SIZE);
@@ -133,5 +145,9 @@ public class GameBoardView extends BorderPane {
     }
     Label getUndoTimer() {
         return undoTimer;
+    }
+
+    Button getSkipButton(){
+        return skipButton;
     }
 }

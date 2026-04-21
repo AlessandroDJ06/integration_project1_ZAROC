@@ -13,6 +13,8 @@ import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamem
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
+import game.integration_project1_zaroc.view.pages.statisticsview.StatisticsPresenter;
+import game.integration_project1_zaroc.view.pages.statisticsview.StatisticsView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.animation.KeyFrame;
@@ -22,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
