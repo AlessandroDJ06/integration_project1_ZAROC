@@ -33,6 +33,7 @@ public class PlayerVsPlayerPresenter {
     private void addEventHandlers(){
         for (Button button : Arrays.asList(view.getReturnButton(), view.getCreateAccountPlayerTwo(), view.getLoginPlayerTwo(), view.getStartGame())){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
         view.getReturnButton().setOnAction(e -> {
             model.setPlayer2(null);

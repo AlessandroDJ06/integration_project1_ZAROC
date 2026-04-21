@@ -36,6 +36,7 @@ public class MultiPlayerGuestPresenter {
     private void addEventHandlers() {
         for (Button button : Arrays.asList(view.getJoinButton(),view.getGuestColorPicker().getRightButton(),view.getGuestColorPicker().getLeftButton(),view.getReturnButton())){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
         view.getGuestColorPicker().getRightButton().setOnAction(event -> {

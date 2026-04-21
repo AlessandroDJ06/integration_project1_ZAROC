@@ -140,4 +140,8 @@ public class LoginView extends BorderPane {
     Button getPlayAsGuest() {
         return playAsGuest;
     }
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
 }

@@ -59,6 +59,7 @@ public class SelectGamemodePresenter {
                 view.getMultiPlayerButton()
         )){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
         view.getSettingsButton().setOnAction(actionEvent -> {

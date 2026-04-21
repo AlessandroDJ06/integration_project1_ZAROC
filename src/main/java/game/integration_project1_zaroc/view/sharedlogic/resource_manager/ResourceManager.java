@@ -5,6 +5,8 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncol
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
+import game.integration_project1_zaroc.view.sharedlogic.utils.MusicManager;
+import game.integration_project1_zaroc.view.sharedlogic.utils.SFXManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Font;
@@ -20,6 +22,8 @@ public class ResourceManager {
     private  Map<PawnColorPaths,Image> loadedPawnColors;
     private  Map<PawnSideViews,Image> loadedSideViews;
     private Themes theme;
+    private SFXManager sfxManager;
+    private MusicManager musicManager;
 
     public ResourceManager(Themes theme){
         this.loadedImages = new HashMap<>();
@@ -28,6 +32,10 @@ public class ResourceManager {
         this.loadedPawnColors = new HashMap<>();
         this.loadedSideViews = new HashMap<>();
         this.theme=theme;
+        this.sfxManager=new SFXManager();
+        this.musicManager = new MusicManager();
+        musicManager.startMusic();
+
     }
 
     public Image getImage(Components componentType) {
@@ -90,7 +98,29 @@ public class ResourceManager {
         return loadedSideViews.get(sideView);
     }
 
+    public byte[] getNeuralNetworkModel() {
+        String path = "/game/integration_project1_zaroc/neuralnetwork/zaroc_model.onnx";
+        try (java.io.InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                throw new RuntimeException("AI Model niet gevonden op pad: " + path);
+            }
+            return is.readAllBytes();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Fout bij het laden van het AI model", e);
+        }
+    }
+
     public Themes getTheme() {
         return theme;
     }
+
+    public SFXManager getSfxManager() {
+        return sfxManager;
+    }
+
+    public MusicManager getMusicManager() {
+        return musicManager;
+    }
+
+    public void setTheme(Themes theme){this.theme = theme;}
 }

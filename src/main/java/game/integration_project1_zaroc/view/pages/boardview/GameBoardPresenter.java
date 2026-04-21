@@ -183,6 +183,7 @@ public class GameBoardPresenter implements Observer {
 
         for (Button button : buttons) {
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
         for (HBox row : rows) {

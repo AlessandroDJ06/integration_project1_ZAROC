@@ -34,6 +34,7 @@ public class CreateAccountPresenter {
 
         for (Button button : buttons){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
 

@@ -74,6 +74,7 @@ public class GameSetupPresenter {
 
         for (Button button : buttons){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
         view.getColorPickerOne().getLeftButton().setOnAction(event -> {

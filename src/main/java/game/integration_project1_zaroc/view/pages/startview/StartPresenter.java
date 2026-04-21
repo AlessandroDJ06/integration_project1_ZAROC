@@ -45,6 +45,7 @@ public class StartPresenter {
     private void addEventHandlers(){
         for (Button button : buttons){
             GeneralEventhandlers.addHoverEffect(button);
+            GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
         }
 
         view.getLoginButton().setOnAction(event -> {
