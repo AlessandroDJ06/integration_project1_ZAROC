@@ -44,6 +44,7 @@ public class Game {
         this.gamesDao = new GamesDao();
         this.gameParticipationDao = new GameParticipationDao();
         this.selectedPeg = null;
+        this.startTimeMove = Timestamp.from(Instant.now());
     }
 
     public void switchCurrentPlayer() {
