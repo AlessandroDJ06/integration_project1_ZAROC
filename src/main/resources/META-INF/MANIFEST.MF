@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: game.integration_project1_zaroc.Main
+

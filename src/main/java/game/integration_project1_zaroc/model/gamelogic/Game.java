@@ -1,8 +1,6 @@
 package game.integration_project1_zaroc.model.gamelogic;
 
-import game.integration_project1_zaroc.dao.MovesDao;
-import game.integration_project1_zaroc.dao.TurnsDao;
-import game.integration_project1_zaroc.dao.ZarocDaoException;
+import game.integration_project1_zaroc.dao.*;
 import game.integration_project1_zaroc.model.boardinfo.Board;
 import game.integration_project1_zaroc.model.boardinfo.Pawn;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
@@ -25,8 +23,11 @@ public class Game {
     private int gameId;
     private TurnsDao turnsDao;
     private MovesDao movesDao;
+    private GamesDao gamesDao;
+    private GameParticipationDao gameParticipationDao;
     private boolean allowedSave;
     private Peg selectedPeg;
+    private Timestamp startTimeMove;
 
 
 
@@ -40,6 +41,8 @@ public class Game {
         this.allowedSave = true;
         this.turnsDao = new TurnsDao();
         this.movesDao = new MovesDao();
+        this.gamesDao = new GamesDao();
+        this.gameParticipationDao = new GameParticipationDao();
         this.selectedPeg = null;
     }
 
@@ -93,6 +96,7 @@ public class Game {
         MoveNumber moveNumber = (currentTurn.getFirstMove() == null) ? MoveNumber.FIRST_MOVE : MoveNumber.SECOND_MOVE;
 
         Move newMove = new Move(moveNumber, startPeg, destinationPeg);
+        newMove.setStartTime(startTimeMove);
         currentTurn.addMove(newMove);
 
         Pawn upperPawn = startPeg.getUpperPawn();
@@ -101,6 +105,7 @@ public class Game {
         upperPawn.setCurrentPeg(destinationPeg);
 
         newMove.setEndTime(Timestamp.from(Instant.now()));
+        startTimeMove = Timestamp.from(Instant.now());
 
        // if (moveNumber == MoveNumber.SECOND_MOVE) {
         //   switchCurrentPlayer();
@@ -245,9 +250,34 @@ public class Game {
         if (countColor1 >= 3) {
             gameParticipations[0].setWinner(true);
             setStatus(GameStatus.ENDED);
+            if (allowedSave){
+                updateGameStatus();
+                updateGameParticipation(gameParticipations[0]);
+            }
+
         } else if (countColor2 >= 3) {
             gameParticipations[1].setWinner(true);
             setStatus(GameStatus.ENDED);
+            if (allowedSave){
+                updateGameStatus();
+                updateGameParticipation(gameParticipations[1]);
+            }
+        }
+    }
+
+    private void updateGameStatus(){
+        try{
+            gamesDao.updateGame(this);
+        } catch (ZarocDaoException e) {
+            System.out.println("kon niet opslagen");
+        }
+    }
+
+    private void updateGameParticipation(GameParticipation gameParticipation){
+        try{
+            gameParticipationDao.updateGameParticipationWinner(this,gameParticipation);
+        } catch (ZarocDaoException e) {
+            System.out.println("kon niet opslagen");
         }
     }
 
@@ -255,34 +285,33 @@ public class Game {
     public Game gameCopy() {
         Game copy = new Game(this.getParticipation1().copy(), this.getParticipation2().copy());
         copy.setStatus(this.getStatus());
-
         copy.setBoard(this.board.boardCopy());
         copy.setAllowedSave(false);
 
         if (this.lastMove != null) {
             Peg newStart = copy.getBoard().getPegPosition(this.lastMove.getStartPeg().getYPosition(), this.lastMove.getStartPeg().getXPosition());
             Peg newDest = copy.getBoard().getPegPosition(this.lastMove.getDestinationPeg().getYPosition(), this.lastMove.getDestinationPeg().getXPosition());
-            copy.lastMove = new Move(this.lastMove.getMoveNumber(),newStart, newDest); // Echt een nieuw object!
+            copy.lastMove = new Move(this.lastMove.getMoveNumber(), newStart, newDest);
         }
 
-
         ArrayList<Turn> turnsCopy = new ArrayList<>();
-        for (Turn originalTurn : this.turns) {
-            Turn newTurn = new Turn(originalTurn.getCurrentPlayer());
-            newTurn.setTurnNumber(originalTurn.getTurnNumber());
+        if (!this.turns.isEmpty()) {
+            Turn currentOriginalTurn = this.getCurrentTurn();
+            Turn newTurn = new Turn(currentOriginalTurn.getCurrentPlayer());
+            newTurn.setTurnNumber(currentOriginalTurn.getTurnNumber());
 
-            if (originalTurn.getFirstMove() != null) {
-                Move oldMove = originalTurn.getFirstMove();
+            if (currentOriginalTurn.getFirstMove() != null) {
+                Move oldMove = currentOriginalTurn.getFirstMove();
                 Peg newStart = copy.getBoard().getPegPosition(oldMove.getStartPeg().getYPosition(), oldMove.getStartPeg().getXPosition());
                 Peg newDest = copy.getBoard().getPegPosition(oldMove.getDestinationPeg().getYPosition(), oldMove.getDestinationPeg().getXPosition());
-                newTurn.addMove(new Move(MoveNumber.FIRST_MOVE,newStart, newDest));
+                newTurn.addMove(new Move(MoveNumber.FIRST_MOVE, newStart, newDest));
             }
 
-            if (originalTurn.getSecondMove() != null) {
-                Move oldMove = originalTurn.getSecondMove();
+            if (currentOriginalTurn.getSecondMove() != null) {
+                Move oldMove = currentOriginalTurn.getSecondMove();
                 Peg newStart = copy.getBoard().getPegPosition(oldMove.getStartPeg().getYPosition(), oldMove.getStartPeg().getXPosition());
                 Peg newDest = copy.getBoard().getPegPosition(oldMove.getDestinationPeg().getYPosition(), oldMove.getDestinationPeg().getXPosition());
-                newTurn.addMove(new Move(MoveNumber.SECOND_MOVE,newStart, newDest));
+                newTurn.addMove(new Move(MoveNumber.SECOND_MOVE, newStart, newDest));
             }
             turnsCopy.add(newTurn);
         }

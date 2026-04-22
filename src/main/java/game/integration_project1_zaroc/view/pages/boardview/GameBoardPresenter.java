@@ -306,19 +306,21 @@ public class GameBoardPresenter implements Observer {
             }
         }
     }
-    private void showWinner(){
-        WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
-        new WinScreenPresenter(winScreenView,model);
+    private void showWinner() {
+        Platform.runLater(() -> {
+            WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
+            new WinScreenPresenter(winScreenView, model);
 
-        Scene winScene = new Scene(winScreenView);
-        winScene.setFill(Color.TRANSPARENT);
-        Stage winStage = new Stage();
-        winStage.initOwner(view.getScene().getWindow());
-        winStage.setTitle("test");
-        winStage.initStyle(StageStyle.TRANSPARENT);
-        winStage.initModality(Modality.APPLICATION_MODAL);
-        winStage.setScene(winScene);
-        winStage.showAndWait();
+            Scene winScene = new Scene(winScreenView);
+            winScene.setFill(Color.TRANSPARENT);
+            Stage winStage = new Stage();
+            winStage.initOwner(view.getScene().getWindow());
+            winStage.setTitle("test");
+            winStage.initStyle(StageStyle.TRANSPARENT);
+            winStage.initModality(Modality.APPLICATION_MODAL);
+            winStage.setScene(winScene);
+            winStage.showAndWait();
+        });
     }
 
     //----------------------------------------------------------------------------------------------
@@ -381,22 +383,32 @@ public class GameBoardPresenter implements Observer {
                     executeSingleMove(bestTurn.getFirstMove());
                     updateView();
 
+                    if (model.getGame().getStatus() == GameStatus.ENDED) {
+                        showWinner();
+                        return;
+                    }
+
                     if (bestTurn.getSecondMove() != null) {
                         javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(Duration.millis(800));
                         pause.setOnFinished(event -> {
                             executeSingleMove(bestTurn.getSecondMove());
+                            updateView();
                             model.getGame().switchCurrentPlayer();
 
-                            if(model.getGame().getStatus() == GameStatus.ENDED){
+                            if (model.getGame().getStatus() == GameStatus.ENDED) {
                                 showWinner();
                                 return;
                             }
                             processTurn();
-
                         });
                         pause.play();
                     } else {
                         model.getGame().switchCurrentPlayer();
+
+                        if (model.getGame().getStatus() == GameStatus.ENDED) {
+                            showWinner();
+                            return;
+                        }
                         processTurn();
                     }
                 }

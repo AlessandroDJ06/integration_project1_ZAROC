@@ -31,17 +31,16 @@ public class GameParticipationDao {
         }
     }
 
-    public void updateGameParticipationWinner(Game game) throws ZarocDaoException {
+    public void updateGameParticipationWinner(Game game,GameParticipation gameParticipation) throws ZarocDaoException {
         String sql = "UPDATE GAME_PARTICIPATION SET winner = ? WHERE game_id = ? AND player_id = ?";
 
         try (Connection conn = DaoUtils.createConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             GameParticipation[] gameParticipations = game.getGameParticipations();
-            for(GameParticipation gameParticipation:gameParticipations){
             ps.setBoolean(1, gameParticipation.getWinner());
             ps.setInt(2, game.getGameId());
             ps.setInt(3, gameParticipation.getPlayer().getPlayerId());
-            }
+
 
             ps.executeUpdate();
 
