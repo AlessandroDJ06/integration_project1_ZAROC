@@ -86,6 +86,27 @@ public class PlayersDao {
         return null;
     }
 
+    public int getOrCreateAiPlayer(AIPlayer player) throws ZarocDaoException {
+        String selectSql = "SELECT player_id FROM PLAYERS WHERE username = ? AND difficulty = ?";
+
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(selectSql)) {
+
+            ps.setString(1, player.getUsername());
+            ps.setString(2, player.getDifficulty().toString());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("player_id");
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Kon AI speler niet ophalen", e);
+        }
+        return createAiPlayer(player);
+    }
+
     public HumanPlayer getPlayerById(int playerId) throws ZarocDaoException {
         String sql = "SELECT * FROM PLAYERS WHERE player_id = ?";
 
@@ -96,6 +117,7 @@ public class PlayersDao {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    System.out.println("ik ben hier");
                     return HumanPlayer.fromResultSet(rs);
                 }
             }

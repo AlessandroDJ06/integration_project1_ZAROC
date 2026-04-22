@@ -17,6 +17,7 @@ public class AiModel {
 
     private final ZarocNeuralNet neuralNet;
     private final ZarocMCTS mcts;
+    private double ucbConstant;
 
     public AiModel(int difficulty, String name) {
         this.aiUsername = name.toUpperCase();
@@ -25,8 +26,16 @@ public class AiModel {
             case 0  -> 1000;
             case 1  -> 2000;
             case 2  -> 3000;
-            case 3  -> 5000;
+            case 3  -> 4000;
             default -> 500;
+        };
+
+        this.ucbConstant = switch (difficulty) {
+            case 0  -> 0.5;
+            case 1  -> 1.0;
+            case 2  -> 1.2;
+            case 3  -> Math.sqrt(2);
+            default -> 1;
         };
 
         String modelPath = "/game/integration_project1_zaroc/neuralnetwork/zaroc_model_v6.onnx";
@@ -34,7 +43,7 @@ public class AiModel {
         System.out.println(modelPath);
 
         this.neuralNet = new ZarocNeuralNet(modelPath);
-        this.mcts = new ZarocMCTS(neuralNet, iterations);
+        this.mcts = new ZarocMCTS(neuralNet, iterations,ucbConstant);
     }
 
     public Turn getBestTurn(Game actualGame, AIPlayer aiPlayer) {
