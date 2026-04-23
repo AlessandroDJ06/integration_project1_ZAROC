@@ -235,7 +235,7 @@ public class Game {
         int count = 0;
 
         for (int i = 0; i < board.getAmountOfColumns(); i++) {
-            Peg finishPeg = board.getPegPosition(1, i);
+            Peg finishPeg = board.getPegPosition(3, i);
 
             if (finishPeg != null && !finishPeg.getPawns().isEmpty()) {
                 for (Pawn pawn : finishPeg.getPawns()) {
