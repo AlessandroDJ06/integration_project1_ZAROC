@@ -4,6 +4,8 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
+import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
 import game.integration_project1_zaroc.view.pages.startview.StartPresenter;
 import game.integration_project1_zaroc.view.pages.startview.StartView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
@@ -24,10 +26,12 @@ public class WinScreenPresenter {
 
     private void addEventHandlers() {
         view.getReturnButton().setOnAction(event -> {
-            Stage menuStage = (Stage) ((Stage) view.getScene().getWindow()).getOwner();
-            StartView startView = new StartView(view.getResourceManager());
-            new StartPresenter(model, startView);
-            menuStage.getScene().setRoot(startView);
+            Stage selectStage = (Stage) ((Stage) view.getScene().getWindow()).getOwner();
+            SelectGamemodeView selectView = new SelectGamemodeView(view.getResourceManager());
+            new SelectGamemodePresenter(model, selectView);
+            selectStage.getScene().setRoot(selectView);
+            closeWindow();
+
 
             closeWindow();
         });
