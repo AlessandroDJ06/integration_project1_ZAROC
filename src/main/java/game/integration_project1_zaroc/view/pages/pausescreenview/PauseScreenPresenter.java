@@ -22,8 +22,7 @@ public class PauseScreenPresenter {
         view.getContinueButton().setOnAction(event -> {
             isContinued = true;
             model.getGame().setStatus(GameStatus.PLAYING);
-            Stage currentStage = (Stage) view.getScene().getWindow();
-            currentStage.close();
+            closeWindow();
         });
         GeneralEventhandlers.addHoverEffect(view.getContinueButton());
 
@@ -33,10 +32,15 @@ public class PauseScreenPresenter {
             StartView startView = new StartView(view.getResourceManager());
             new StartPresenter(model, startView);
             menuStage.getScene().setRoot(startView);
-            menuStage.close();
+            closeWindow();
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
 
+    }
+
+    public void closeWindow(){
+        Stage currentStage = (Stage) view.getScene().getWindow();
+        currentStage.close();
     }
 
     public boolean isContinued(){

@@ -359,10 +359,10 @@ public class GameBoardPresenter implements Observer {
         warningStage.show();
     }
     private void showWinWarningIfNeeded() {
-        Player close = model.getGame().getPlayerCloseToWinning();
-        if (close == null) return;
+        Player player = model.getGame().getPlayerCloseToWinning();
+        if (player == null) return;
 
-        boolean isPlayer1 = close.getUsername().equals(model.getPlayer1().getUsername());
+        boolean isPlayer1 = player.getUsername().equals(model.getPlayer1().getUsername());
 
         if (isPlayer1 && !player1Warned) {
             player1Warned = true;

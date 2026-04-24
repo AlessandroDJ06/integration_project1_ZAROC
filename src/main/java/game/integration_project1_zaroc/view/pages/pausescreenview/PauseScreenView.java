@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 public class PauseScreenView extends BorderPane {
     private ResourceManager resourceManager;
@@ -31,7 +32,9 @@ public class PauseScreenView extends BorderPane {
 
     private void layoutNodes() {
         gamePaused.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
+        gamePaused.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         noteUnfinishedGame.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
+        noteUnfinishedGame.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
         noteUnfinishedGame.setWrapText(true);
         noteUnfinishedGame.setMaxWidth(250);
