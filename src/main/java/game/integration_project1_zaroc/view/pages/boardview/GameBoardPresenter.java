@@ -58,6 +58,9 @@ public class GameBoardPresenter implements Observer {
     private Timeline highlightAnimation;
     private Timeline undoTimer;
     private int remainingUndoSeconds;
+    private Timeline afkTimer;
+    private final int AFK_TIME_LIMIT = 15;
+    private int remainingAfkSeconds;
 
     private ImageView selectedPawn;
 
@@ -135,6 +138,8 @@ public class GameBoardPresenter implements Observer {
 
             model.getGame().undoMove();
             updateView();
+
+            startAfkTimer();
         });
         view.getPlayersPlayingComponent().getPauseButton().setOnAction(event -> {
 
@@ -340,17 +345,20 @@ public class GameBoardPresenter implements Observer {
         Player currentPlayer = model.getGame().getCurrentTurn().getCurrentPlayer();
 
         if (currentPlayer instanceof AIPlayer) {
+            stopAfkTimer();
             view.getUndoButton().setDisable(true);
             view.getBoard().getBoard().setDisable(true);
             executeAiLogic((AIPlayer) currentPlayer);
         }
         else if (isRemotePlayer(currentPlayer)) {
+            stopAfkTimer();
             view.getUndoButton().setDisable(true);
             view.getBoard().getBoard().setDisable(true);
         }
         else {
             view.getBoard().getBoard().setDisable(false);
             view.getUndoButton().setDisable(true);
+            startAfkTimer();
         }
     }
 
@@ -471,6 +479,8 @@ public class GameBoardPresenter implements Observer {
             }
 
             if (isLegal) {
+                stopAfkTimer();
+
                 model.getGame().selectStartPeg(startPeg);
                 model.getGame().executeMove(destinationPeg);
                 System.out.println("Zet uitgevoerd naar: " + col + "," + row);
@@ -506,6 +516,52 @@ public class GameBoardPresenter implements Observer {
         Integer columnPos = GridPane.getColumnIndex(node);
         Integer rowPos = GridPane.getRowIndex(node);
         return columnPos != null && rowPos != null && columnPos == col && rowPos == row;
+    }
+    private void startAfkTimer() {
+        stopAfkTimer();
+        remainingAfkSeconds = AFK_TIME_LIMIT;
+
+        view.getAfkTimer().setVisible(true);
+        view.getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
+
+        afkTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            remainingAfkSeconds--;
+            view.getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
+
+            if (remainingAfkSeconds <= 0) {
+                stopAfkTimer();
+                System.out.println("Voer random zet uit");
+                selectedPawn = null;
+                clearHighlights();
+                model.getGame().executeRandomMove();
+                updateView();
+
+                if (model.getGame().getStatus() == GameStatus.ENDED) {
+                    showWinner();
+                    return;
+                }
+
+                view.getUndoTimer().setVisible(false);
+                view.getUndoButton().setDisable(true);
+
+                if (model.getGame().getCurrentTurn().getSecondMove() != null) {
+                    model.getGame().switchCurrentPlayer();
+                    processTurn();
+                } else {
+                    startAfkTimer();
+                }
+            }
+        }));
+
+        afkTimer.setCycleCount(AFK_TIME_LIMIT);
+        afkTimer.play();
+    }
+
+    private void stopAfkTimer() {
+        if (afkTimer != null) {
+            afkTimer.stop();
+        }
+        view.getAfkTimer().setVisible(false);
     }
 
     private void startUndoTimer() {
@@ -553,7 +609,10 @@ public class GameBoardPresenter implements Observer {
                 if (model.getGame().getCurrentTurn().getSecondMove() != null) {
                     model.getGame().switchCurrentPlayer();
                     processTurn();
+                }else{
+                    startAfkTimer();
                 }
+
             }
         }));
         undoTimer.setCycleCount(5);

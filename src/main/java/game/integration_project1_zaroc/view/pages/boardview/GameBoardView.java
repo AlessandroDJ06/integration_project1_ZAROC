@@ -1,4 +1,5 @@
 package game.integration_project1_zaroc.view.pages.boardview;
+
 import game.integration_project1_zaroc.view.components.BoardComponent;
 import game.integration_project1_zaroc.view.components.buttons.GeneralActionsComponent;
 import game.integration_project1_zaroc.view.components.PegSideViewComponent;
@@ -29,8 +30,8 @@ public class GameBoardView extends BorderPane {
     private PlayersPlayingComponent playersPlayingComponent;
     private PegSideViewComponent pegView;
     private Label undoTimer;
+    private Label afkTimer;
     private Button skipButton;
-
 
 
     public GameBoardView(ResourceManager resourceManager) {
@@ -42,12 +43,13 @@ public class GameBoardView extends BorderPane {
     public void initialiseNodes() {
         this.board = new BoardComponent(this.resourceManager);
         this.undoButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO);
-        this.settingsButton = new GeneralActionsComponent(this.resourceManager,Components.SETTINGS);
-        this.infoButton = new GeneralActionsComponent(this.resourceManager,Components.RULES);
+        this.settingsButton = new GeneralActionsComponent(this.resourceManager, Components.SETTINGS);
+        this.infoButton = new GeneralActionsComponent(this.resourceManager, Components.RULES);
         this.playersPlayingComponent = new PlayersPlayingComponent(resourceManager);
         this.pegView = new PegSideViewComponent(this.resourceManager);
         this.undoTimer = new Label("");
-        this.skipButton = new TextButton(resourceManager,"SKIP");
+        this.afkTimer = new Label("");
+        this.skipButton = new TextButton(resourceManager, "SKIP");
     }
 
     public void layoutNodes() {
@@ -61,7 +63,7 @@ public class GameBoardView extends BorderPane {
         skipButton.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
         skipButton.setVisible(false);
         skipButton.setDisable(true);
-        VBox undoVBox = new VBox(this.undoTimer,this.skipButton);
+        VBox undoVBox = new VBox(this.undoTimer, this.skipButton);
         undoVBox.setAlignment(Pos.CENTER);
         undoVBox.setSpacing(10);
 
@@ -73,8 +75,13 @@ public class GameBoardView extends BorderPane {
         topHeader.setLeft(undoHbox);
         BorderPane.setAlignment(undoHbox, Pos.TOP_LEFT);
 
-        topHeader.setCenter(playersPlayingComponent);
-        BorderPane.setAlignment(playersPlayingComponent, Pos.TOP_CENTER);
+
+        VBox centerVBox = new VBox(playersPlayingComponent, afkTimer);
+        centerVBox.setAlignment(Pos.TOP_CENTER);
+        centerVBox.setSpacing(10);
+
+        topHeader.setCenter(centerVBox);
+        BorderPane.setAlignment(centerVBox, Pos.TOP_CENTER);
 
         VBox infoAndSettingsVbox = new VBox(this.settingsButton, this.infoButton);
         infoAndSettingsVbox.setSpacing(15);
@@ -101,6 +108,10 @@ public class GameBoardView extends BorderPane {
 
         this.undoTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         this.undoTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+
+        this.afkTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        this.afkTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+        this.afkTimer.setVisible(false);
     }
 
 
@@ -143,11 +154,16 @@ public class GameBoardView extends BorderPane {
     List<VBox> getPegContainers() {
         return pegView.getPegContainers();
     }
+
     Label getUndoTimer() {
         return undoTimer;
     }
 
-    Button getSkipButton(){
+    Button getSkipButton() {
         return skipButton;
+    }
+
+    Label getAfkTimer() {
+        return afkTimer;
     }
 }
