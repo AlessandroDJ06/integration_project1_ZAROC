@@ -67,6 +67,7 @@ public class GameListCell extends ListCell<UnfinishedGame> {
 
         if (empty || game == null){
             setGraphic(null);
+            setStyle("-fx-background-color: transparent;");
         } else {
             this.currentPlayerName.setText(game.getCurrentUserName());
             this.currentPlayerPfp.setImage(
