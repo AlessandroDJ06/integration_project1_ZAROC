@@ -96,6 +96,7 @@ public class PlayersPlayingComponent extends HBox {
 
 
         VBox middelsection = new VBox(pauseButton,afkTimer);
+        afkTimer.setTranslateX(3);
         middelsection.setAlignment(Pos.CENTER);
         middelsection.setSpacing(20);
 
