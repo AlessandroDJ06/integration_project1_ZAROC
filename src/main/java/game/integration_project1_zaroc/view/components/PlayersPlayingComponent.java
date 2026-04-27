@@ -31,6 +31,7 @@ public class PlayersPlayingComponent extends HBox {
     private Label pointPlayerOne;
     private Label pointPlayerTwo;
     private Button pauseButton;
+    private Label afkTimer;
 
 
 
@@ -53,6 +54,7 @@ public class PlayersPlayingComponent extends HBox {
         this.playerOnePfp = ProfilePictures.EMPTY;
         this.playerTwoPfp = ProfilePictures.EMPTY;
         this.pauseButton = new TextButton(resourceManager,"II");
+        this.afkTimer = new Label("");
     }
 
     private void layoutNodes(){
@@ -79,8 +81,9 @@ public class PlayersPlayingComponent extends HBox {
         secondPlayer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         pointPlayerOne.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
         pointPlayerTwo.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+        afkTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
 
-        List<Label> setFontColors = Arrays.asList(firstPlayer,secondPlayer,pointPlayerOne,pointPlayerTwo);
+        List<Label> setFontColors = Arrays.asList(firstPlayer,secondPlayer,pointPlayerOne,pointPlayerTwo,afkTimer);
 
         for (Label label : setFontColors){
             label.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
@@ -91,7 +94,12 @@ public class PlayersPlayingComponent extends HBox {
         Region spacer2 = new Region();
         HBox.setHgrow(spacer2, Priority.ALWAYS);
 
-        getChildren().addAll(this.firsPlayerPfpFrame,nameSectionPlayer1,spacer1,pauseButton,spacer2,nameSectionPlayer2,this.secondPlayerPfpFrame);
+
+        VBox middelsection = new VBox(pauseButton,afkTimer);
+        middelsection.setAlignment(Pos.CENTER);
+        middelsection.setSpacing(20);
+
+        getChildren().addAll(this.firsPlayerPfpFrame,nameSectionPlayer1,spacer1,middelsection,spacer2,nameSectionPlayer2,this.secondPlayerPfpFrame);
 
         setBackground(new Background(myBI));
         setAlignment(Pos.CENTER_LEFT);
@@ -147,5 +155,9 @@ public class PlayersPlayingComponent extends HBox {
 
     public Button getPauseButton() {
         return pauseButton;
+    }
+
+    public Label getAfkTimer() {
+        return afkTimer;
     }
 }

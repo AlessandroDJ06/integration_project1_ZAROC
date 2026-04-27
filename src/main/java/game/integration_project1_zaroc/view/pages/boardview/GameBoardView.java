@@ -1,5 +1,6 @@
 package game.integration_project1_zaroc.view.pages.boardview;
 
+import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.view.components.BoardComponent;
 import game.integration_project1_zaroc.view.components.buttons.GeneralActionsComponent;
 import game.integration_project1_zaroc.view.components.PegSideViewComponent;
@@ -30,7 +31,7 @@ public class GameBoardView extends BorderPane {
     private PlayersPlayingComponent playersPlayingComponent;
     private PegSideViewComponent pegView;
     private Label undoTimer;
-    private Label afkTimer;
+//    private Label afkTimer;
     private Button skipButton;
 
 
@@ -48,7 +49,7 @@ public class GameBoardView extends BorderPane {
         this.playersPlayingComponent = new PlayersPlayingComponent(resourceManager);
         this.pegView = new PegSideViewComponent(this.resourceManager);
         this.undoTimer = new Label("");
-        this.afkTimer = new Label("");
+//        this.afkTimer = new Label("");
         this.skipButton = new TextButton(resourceManager, "SKIP");
     }
 
@@ -76,7 +77,7 @@ public class GameBoardView extends BorderPane {
         BorderPane.setAlignment(undoHbox, Pos.TOP_LEFT);
 
 
-        VBox centerVBox = new VBox(playersPlayingComponent, afkTimer);
+        VBox centerVBox = new VBox(playersPlayingComponent);
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setSpacing(10);
 
@@ -109,9 +110,9 @@ public class GameBoardView extends BorderPane {
         this.undoTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         this.undoTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
 
-        this.afkTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
-        this.afkTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
-        this.afkTimer.setVisible(false);
+//        this.afkTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+//        this.afkTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+//        this.afkTimer.setVisible(false);
     }
 
 
@@ -163,7 +164,7 @@ public class GameBoardView extends BorderPane {
         return skipButton;
     }
 
-    Label getAfkTimer() {
-        return afkTimer;
+    PlayersPlayingComponent getAfkTimer() {
+        return playersPlayingComponent;
     }
 }

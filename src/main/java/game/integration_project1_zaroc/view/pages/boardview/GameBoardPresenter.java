@@ -522,11 +522,11 @@ public class GameBoardPresenter implements Observer {
         remainingAfkSeconds = AFK_TIME_LIMIT;
 
         view.getAfkTimer().setVisible(true);
-        view.getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
+        view.getAfkTimer().getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
 
         afkTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             remainingAfkSeconds--;
-            view.getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
+            view.getAfkTimer().getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
 
             if (remainingAfkSeconds <= 0) {
                 stopAfkTimer();
