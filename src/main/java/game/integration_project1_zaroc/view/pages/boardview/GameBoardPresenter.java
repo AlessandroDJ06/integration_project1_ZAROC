@@ -143,6 +143,8 @@ public class GameBoardPresenter implements Observer {
         });
         view.getPlayersPlayingComponent().getPauseButton().setOnAction(event -> {
 
+            pauzeAfkTimer();
+
             boolean timerWasRunning = (undoTimer != null && undoTimer.getStatus() == Animation.Status.RUNNING);
 
             player1Animation.pause();
@@ -176,7 +178,10 @@ public class GameBoardPresenter implements Observer {
                 if(timerWasRunning){
                     undoTimer.play();
                 }
+
+                continueAfkTimer();
             }
+
 
         });
         view.getSkipButton().setOnAction(event -> {
@@ -521,12 +526,12 @@ public class GameBoardPresenter implements Observer {
         stopAfkTimer();
         remainingAfkSeconds = AFK_TIME_LIMIT;
 
-        view.getAfkTimer().setVisible(true);
-        view.getAfkTimer().getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
+        view.getPlayersPlayingComponent().getAfkTimer().setVisible(true);
+        view.getPlayersPlayingComponent().getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
 
         afkTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             remainingAfkSeconds--;
-            view.getAfkTimer().getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
+            view.getPlayersPlayingComponent().getAfkTimer().setText("00:" + String.format("%02d", remainingAfkSeconds));
 
             if (remainingAfkSeconds <= 0) {
                 stopAfkTimer();
@@ -561,7 +566,18 @@ public class GameBoardPresenter implements Observer {
         if (afkTimer != null) {
             afkTimer.stop();
         }
-        view.getAfkTimer().setVisible(false);
+        view.getPlayersPlayingComponent().getAfkTimer().setVisible(false);
+    }
+
+    private void pauzeAfkTimer(){
+        if (afkTimer != null){
+            afkTimer.pause();
+        }
+    }
+    private void continueAfkTimer(){
+        if (afkTimer!= null){
+            afkTimer.play();
+        }
     }
 
     private void startUndoTimer() {

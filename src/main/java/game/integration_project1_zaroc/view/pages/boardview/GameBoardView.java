@@ -1,11 +1,9 @@
 package game.integration_project1_zaroc.view.pages.boardview;
 
-import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.view.components.BoardComponent;
 import game.integration_project1_zaroc.view.components.buttons.GeneralActionsComponent;
 import game.integration_project1_zaroc.view.components.PegSideViewComponent;
 import game.integration_project1_zaroc.view.components.PlayersPlayingComponent;
-import game.integration_project1_zaroc.view.components.buttons.ShortButtonComponent;
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
@@ -31,7 +29,6 @@ public class GameBoardView extends BorderPane {
     private PlayersPlayingComponent playersPlayingComponent;
     private PegSideViewComponent pegView;
     private Label undoTimer;
-//    private Label afkTimer;
     private Button skipButton;
 
 
@@ -49,7 +46,7 @@ public class GameBoardView extends BorderPane {
         this.playersPlayingComponent = new PlayersPlayingComponent(resourceManager);
         this.pegView = new PegSideViewComponent(this.resourceManager);
         this.undoTimer = new Label("");
-//        this.afkTimer = new Label("");
+
         this.skipButton = new TextButton(resourceManager, "SKIP");
     }
 
@@ -110,9 +107,7 @@ public class GameBoardView extends BorderPane {
         this.undoTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         this.undoTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
 
-//        this.afkTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
-//        this.afkTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
-//        this.afkTimer.setVisible(false);
+
     }
 
 
@@ -164,7 +159,4 @@ public class GameBoardView extends BorderPane {
         return skipButton;
     }
 
-    PlayersPlayingComponent getAfkTimer() {
-        return playersPlayingComponent;
-    }
 }
