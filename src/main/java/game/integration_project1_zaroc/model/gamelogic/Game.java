@@ -129,7 +129,7 @@ public class Game {
         Peg dest = board.getPegPosition(move.getDestinationPeg().getYPosition(), move.getDestinationPeg().getXPosition());
 
         if (start != null && dest != null) {
-            getCurrentTurn().addMove(move);
+            turns.getLast().addMove(move);
 
             Pawn upperPawn = start.getUpperPawn();
             if (upperPawn != null) {

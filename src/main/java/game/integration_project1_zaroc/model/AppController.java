@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.model;
 
 import game.integration_project1_zaroc.dao.*;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
+import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.model.gamelogic.Game;
 import game.integration_project1_zaroc.model.gameinfo.GameParticipation;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
@@ -44,6 +45,7 @@ public class AppController {
 
     private MultiplayerService multiplayerService;
     private boolean isOnlineMultiplayer;
+    private boolean continueInMultiplayer;
     private boolean isHost;
 
     public AppController(boolean canConnect){
@@ -78,6 +80,8 @@ public class AppController {
 
         this.multiplayerService = new MultiplayerService(this);
         this.isOnlineMultiplayer = false;
+        this.continueInMultiplayer = false;
+
         this.isHost = false;
     }
 
@@ -178,8 +182,17 @@ public class AppController {
                     new GameParticipation(player1,this.player1Color),
                     new GameParticipation(player2,this.player2Color)
             );
-            this.game.getBoard().setupStart();
+
+            if (isOnlineMultiplayer){
+                this.game.getBoard().setupStart(this.isHost);
+            } else {
+                this.game.getBoard().setupStart();
+            }
+
             this.game.setGameId(gameId);
+            this.game.setStatus(GameStatus.PLAYING);
+            gamesDao.updateGame(this.game);
+            this.game.setTurns(turns);
 
             for (MovesUnfinishedGame turnUnfinishedGame : movesUnfinishedGame){
                 Player currentPlayer = (turnUnfinishedGame.getUsername().equals(player1.getUsername()) ? player1:player2);
@@ -213,13 +226,17 @@ public class AppController {
                 }
             }
 
-            this.game.setTurns(turns);
+
 
             if (!turns.isEmpty()) {
                 Turn lastTurn = turns.getLast();
                 if (lastTurn.getSecondMove() != null) {
                     this.game.switchCurrentPlayer();
+                } else {
+                    this.game.startNewTurn(lastTurn.getCurrentPlayer());
                 }
+            } else {
+                this.game.startNewTurn(player1);
             }
 
         } catch (ZarocDaoException e) {
@@ -242,6 +259,10 @@ public class AppController {
         this.game.setGameId(onlineGameId);
         this.game.getBoard().setupStart(isHost);
         this.game.setAllowedSave(true);
+
+        if (amIHost) {
+            saveGameParticipations(this.game);
+        }
 
         Player startingPlayer = amIHost ? this.player1 : this.player2;
         this.game.startNewTurn(startingPlayer);
@@ -358,5 +379,13 @@ public class AppController {
         } catch (ZarocDaoException e) {
             return "Unknown";
         }
+    }
+
+    public void setContinueInMultiplayer(boolean continueInMultiplayer) {
+        this.continueInMultiplayer = continueInMultiplayer;
+    }
+
+    public boolean isContinueInMultiplayer() {
+        return continueInMultiplayer;
     }
 }

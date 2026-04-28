@@ -71,6 +71,20 @@ public class MultiPlayerGuestPresenter {
 
             try {
                 currentRoomCode = code;
+                RoomDTO room = model.getMultiplayerService().getRoomDao().getRoomByCode(currentRoomCode);
+
+                if (room == null) {
+                    showAlert("Kamer niet gevonden!");
+                    return;
+                }
+
+                if (room.getGameId() != 0) {
+                    if (!model.getMultiplayerService().getRoomDao().isPlayerInGame(room.getGameId(), model.getPlayer1().getPlayerId())) {
+                        showAlert("Je bent niet de juiste speler voor deze game!");
+                        return;
+                    }
+                }
+
                 model.getMultiplayerService().getRoomDao().joinRoom(currentRoomCode, model.getPlayer1().getPlayerId());
                 updateGuestColor();
 
@@ -143,7 +157,15 @@ public class MultiPlayerGuestPresenter {
             PawnColor hostColor = currentRoomData.getHostColor();
             PawnColor guestColor = PawnColor.values()[model.getColorOne().getCurrentIndex()];
 
-            model.initOnlineGame(currentRoomData.getGameId(), host, guestColor, hostColor, false);
+            if (currentRoomData.getGameId() != 0) {
+                model.setPlayer2(host);
+                model.setColorPlayerOne(guestColor);
+                model.setColorPlayerTwo(hostColor);
+                model.setOnlineMultiplayer(true);
+                model.resumeGame(currentRoomData.getGameId());
+            } else {
+                model.initOnlineGame(currentRoomData.getGameId(), host, guestColor, hostColor, false);
+            }
             closeWindow();
         } catch (ZarocDaoException e) {
             showAlert("Kan spel niet starten: " + e.getMessage());

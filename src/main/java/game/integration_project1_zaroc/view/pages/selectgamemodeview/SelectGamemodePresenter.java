@@ -226,7 +226,7 @@ public class SelectGamemodePresenter {
 
     private void navigateHostView(){
         MultiPlayerHostView multiPlayerHostView = new MultiPlayerHostView(view.getResourceManager());
-        new MultiPlayerHostPresenter(multiPlayerHostView, model);
+        new MultiPlayerHostPresenter(multiPlayerHostView, model,-1);
         Scene hostScene = new Scene(multiPlayerHostView, 900, 750);
         hostScene.setFill(Color.TRANSPARENT);
         Stage hostStage = new Stage();
