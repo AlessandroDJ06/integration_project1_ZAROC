@@ -267,7 +267,7 @@ public class Game {
             setStatus(GameStatus.ENDED);
             if (allowedSave) {
                 updateGameStatus();
-                updateGameParticipation(gameParticipations[0]);
+                updateGameParticipation(winner);
             }
         }
     }
