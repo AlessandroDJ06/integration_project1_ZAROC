@@ -269,14 +269,6 @@ public class Game {
                 updateGameStatus();
                 updateGameParticipation(gameParticipations[0]);
             }
-
-        } else if (countColor2 >= 3) {
-            gameParticipations[1].setWinner(true);
-            setStatus(GameStatus.ENDED);
-            if (allowedSave) {
-                updateGameStatus();
-                updateGameParticipation(winner);
-            }
         }
     }
 
