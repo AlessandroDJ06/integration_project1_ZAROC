@@ -9,6 +9,8 @@ import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
 import game.integration_project1_zaroc.view.pages.loginview.LoginView;
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
+import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
+import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -97,6 +99,22 @@ public class StartPresenter {
             leaderboardStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             leaderboardStage.setResizable(false);
             leaderboardStage.showAndWait();
+
+        });
+
+        view.getSettingsButton().setOnAction(actionEvent -> {
+            SettingsView settingsView = new SettingsView(view.getResourceManager());
+            new SettingsPresenter(settingsView,this.model);
+            Scene settingsScene = new Scene(settingsView);
+            settingsScene.setFill(Color.TRANSPARENT);
+            Stage settingsStage = new Stage();
+            settingsStage.setScene(settingsScene);
+            settingsStage.setTitle("Settings");
+            settingsStage.initStyle(StageStyle.TRANSPARENT);
+            settingsStage.initModality(Modality.APPLICATION_MODAL);
+            settingsStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+            settingsStage.setResizable(false);
+            settingsStage.showAndWait();
 
         });
 

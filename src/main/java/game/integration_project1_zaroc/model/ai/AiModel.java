@@ -31,7 +31,7 @@ public class AiModel {
         };
 
         this.ucbConstant = switch (difficulty) {
-            case 0  -> 0.5;
+            case 0  -> 4;
             case 1  -> 1.0;
             case 2  -> 1.2;
             case 3  -> Math.sqrt(2);

@@ -1,4 +1,4 @@
-package game.integration_project1_zaroc.view.pages.multiplayersetup;
+package game.integration_project1_zaroc.view.pages.unfinishedgameplayervplayer;
 
 import game.integration_project1_zaroc.view.components.buttons.LongButtonComponent;
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
@@ -12,14 +12,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-public class MultiplayerSetupView extends BorderPane {
+public class UnfinishedGamePlayerVsPlayerSetupView extends BorderPane {
     private ResourceManager resourceManager;
     private Button returnButton;
-    private Button hostGame;
-    private Button joinGame;
+    private Button localGame;
+    private Button multiplayerGame;
 
 
-    public MultiplayerSetupView(ResourceManager resourceManager){
+    public UnfinishedGamePlayerVsPlayerSetupView(ResourceManager resourceManager){
         this.resourceManager = resourceManager;
         initialiseNodes();
         layoutNodes();
@@ -28,8 +28,8 @@ public class MultiplayerSetupView extends BorderPane {
 
     private void initialiseNodes(){
         this.returnButton = new TextButton(resourceManager,"←");
-        this.hostGame = new LongButtonComponent(resourceManager,"Play host");
-        this.joinGame= new LongButtonComponent(resourceManager,"Join as guest");
+        this.localGame = new LongButtonComponent(resourceManager,"Play local");
+        this.multiplayerGame = new LongButtonComponent(resourceManager,"Play online");
     }
 
     private void layoutNodes(){
@@ -62,7 +62,7 @@ public class MultiplayerSetupView extends BorderPane {
         VBox centerContainer = new VBox(30);
         centerContainer.setAlignment(Pos.CENTER);
 
-        Label hostGameLabel = new Label("Play as Host");
+        Label hostGameLabel = new Label("Local");
         hostGameLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         hostGameLabel.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
@@ -70,12 +70,12 @@ public class MultiplayerSetupView extends BorderPane {
         spacer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         spacer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
-        Label joinGameLabel = new Label("Play as Guest");
+        Label joinGameLabel = new Label("Multiplayer");
         joinGameLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         joinGameLabel.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
 
-        centerContainer.getChildren().addAll(hostGameLabel,hostGame,spacer,joinGameLabel,joinGame);
+        centerContainer.getChildren().addAll(hostGameLabel, localGame,spacer,joinGameLabel, multiplayerGame);
         setCenter(centerContainer);
         centerContainer.setMaxWidth(240);
 
@@ -85,12 +85,12 @@ public class MultiplayerSetupView extends BorderPane {
         return resourceManager;
     }
 
-    Button getJoinGame() {
-        return joinGame;
+    Button getMultiplayerGame() {
+        return multiplayerGame;
     }
 
-    Button getHostGame() {
-        return hostGame;
+    Button getLocalGame() {
+        return localGame;
     }
 
     Button getReturnButton() {

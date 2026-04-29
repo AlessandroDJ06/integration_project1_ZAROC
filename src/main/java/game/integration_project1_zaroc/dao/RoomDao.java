@@ -142,4 +142,30 @@ public class RoomDao {
             throw new ZarocDaoException("kon status niet updaten",e);
         }
     }
+
+    public boolean isPlayerInGame(int gameId, int playerId) throws ZarocDaoException {
+        String sql = "SELECT 1 FROM GAME_PARTICIPATION WHERE game_id = ? AND player_id = ?";
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, gameId);
+            ps.setInt(2, playerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Kon niet controleren of speler in game zit", e);
+        }
+    }
+
+    public void resumeGameInRoom(String roomCode, int existingGameId) throws ZarocDaoException {
+        String sql = "UPDATE GAME_ROOMS SET game_id = ? WHERE room_code = ?";
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, existingGameId);
+            ps.setString(2, roomCode);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Kon game niet hervatten in room", e);
+        }
+    }
 }
