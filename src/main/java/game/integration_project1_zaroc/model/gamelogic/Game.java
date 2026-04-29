@@ -232,25 +232,38 @@ public class Game {
         }
     }
 
-    public void checkWinCondition() {
-        int countColor1 = 0;
-        int countColor2 = 0;
+    private int countPawnsOnLastRow(PawnColor color) {
+        int count = 0;
 
         for (int i = 0; i < board.getAmountOfColumns(); i++) {
             Peg finishPeg = board.getPegPosition(3, i);
 
             if (finishPeg != null && !finishPeg.getPawns().isEmpty()) {
                 for (Pawn pawn : finishPeg.getPawns()) {
-                    PawnColor color = pawn.getPawnColor();
-                    if (color == gameParticipations[0].getChosenPawnColor()) countColor1++;
-                    else if (color == gameParticipations[1].getChosenPawnColor()) countColor2++;
+                    if (pawn.getPawnColor() == color) {
+                        count++;
+                    }
                 }
             }
         }
+        return count;
+    }
 
 
-        if (countColor1 >= 3) {
-            gameParticipations[0].setWinner(true);
+    public void checkWinCondition() {
+        int countPlayer1 = countPawnsOnLastRow(gameParticipations[0].getChosenPawnColor());
+        int countPlayer2 = countPawnsOnLastRow(gameParticipations[1].getChosenPawnColor());
+
+        GameParticipation winner = null;
+
+        if (countPlayer1 >= 3) {
+            winner = gameParticipations[0];
+        } else if (countPlayer2 >= 3) {
+            winner = gameParticipations[1];
+        }
+
+        if (winner != null) {
+            winner.setWinner(true);
             setStatus(GameStatus.ENDED);
             if (allowedSave) {
                 updateGameStatus();
@@ -262,13 +275,26 @@ public class Game {
             setStatus(GameStatus.ENDED);
             if (allowedSave) {
                 updateGameStatus();
-                updateGameParticipation(gameParticipations[1]);
+                updateGameParticipation(winner);
             }
         }
     }
 
-    private void updateGameStatus() {
-        try {
+    public Player getPlayerCloseToWinning() {
+        int countPlayer1 = countPawnsOnLastRow(gameParticipations[0].getChosenPawnColor());
+        int countPlayer2 = countPawnsOnLastRow(gameParticipations[1].getChosenPawnColor());
+
+        if (countPlayer1 == 2) {
+            return gameParticipations[0].getPlayer();
+        } else if (countPlayer2 == 2) {
+            return gameParticipations[1].getPlayer();
+        }
+
+        return null;
+    }
+
+    private void updateGameStatus(){
+        try{
             gamesDao.updateGame(this);
         } catch (ZarocDaoException e) {
             System.out.println("kon niet opslagen");

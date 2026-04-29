@@ -124,11 +124,11 @@ public class AppController {
     }
 
     public void createGame() {
-        if (allowedToUseDatabase){
+        if (allowedToUseDatabase && player2 instanceof AIPlayer) {
             try {
-                player2.setPlayerId(playersDao.createAiPlayer((AIPlayer) player2));
+                player2.setPlayerId(playersDao.getOrCreateAiPlayer((AIPlayer) player2));
             } catch (ZarocDaoException e) {
-                System.out.println("kon niet worden opgeslagen");
+                System.out.println("Kon AI speler niet ophalen of aanmaken: " + e.getMessage());
             }
         }
 

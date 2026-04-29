@@ -16,6 +16,8 @@ import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.pages.winscreenview.WinScreenPresenter;
 import game.integration_project1_zaroc.view.pages.winscreenview.WinScreenView;
+import game.integration_project1_zaroc.view.pages.winwarningview.WinWarningPresenter;
+import game.integration_project1_zaroc.view.pages.winwarningview.WinWarningView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
@@ -41,6 +43,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -63,6 +66,8 @@ public class GameBoardPresenter implements Observer {
     private int remainingAfkSeconds;
 
     private ImageView selectedPawn;
+    private boolean player1Warned = false;
+    private boolean player2Warned = false;
 
     public GameBoardPresenter(GameBoardView view, AppController model) {
         this.view = view;
@@ -185,7 +190,16 @@ public class GameBoardPresenter implements Observer {
 
         });
         view.getSkipButton().setOnAction(event -> {
-            this.remainingUndoSeconds = 0;
+            undoTimer.stop();
+            view.getUndoTimer().setVisible(false);
+            view.getSkipButton().setVisible(false);
+            view.getSkipButton().setDisable(true);
+            view.getUndoButton().setDisable(true);
+
+            if (model.getGame().getCurrentTurn().getSecondMove() != null) {
+                model.getGame().switchCurrentPlayer();
+                processTurn();
+            }
         });
         GeneralEventhandlers.addHoverEffect(view.getPlayersPlayingComponent().getPauseButton());
         GeneralEventhandlers.addHoverEffect(view.getSkipButton());
@@ -316,21 +330,58 @@ public class GameBoardPresenter implements Observer {
             }
         }
     }
-    private void showWinner() {
-        Platform.runLater(() -> {
-            WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
-            new WinScreenPresenter(winScreenView, model);
+    private void showWinner(){
+        WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
+        new WinScreenPresenter(winScreenView,model);
 
-            Scene winScene = new Scene(winScreenView);
-            winScene.setFill(Color.TRANSPARENT);
-            Stage winStage = new Stage();
-            winStage.initOwner(view.getScene().getWindow());
-            winStage.setTitle("test");
-            winStage.initStyle(StageStyle.TRANSPARENT);
-            winStage.initModality(Modality.APPLICATION_MODAL);
-            winStage.setScene(winScene);
-            winStage.showAndWait();
+        Scene winScene = new Scene(winScreenView);
+        winScene.setFill(Color.TRANSPARENT);
+        Stage winStage = new Stage();
+        winStage.initOwner(view.getScene().getWindow());
+        winStage.initStyle(StageStyle.TRANSPARENT);
+        winStage.initModality(Modality.APPLICATION_MODAL);
+        winStage.setScene(winScene);
+        winStage.showAndWait();
+    }
+
+    private void showWinWarning(){
+        WinWarningView winWarningView = new WinWarningView(this.view.getResourceManager());
+        new WinWarningPresenter(model,winWarningView);
+
+        winWarningView.getWinWarning().setText(model.getGame().getPlayerCloseToWinning().getUsername().toUpperCase() + " IS CLOSE TO WINNING!");
+        Scene warningScene = new Scene(winWarningView);
+        warningScene.setFill(Color.TRANSPARENT);
+        Stage warningStage = new Stage();
+        warningStage.initStyle(StageStyle.TRANSPARENT);
+        warningStage.initOwner(view.getScene().getWindow());
+        warningStage.initModality(Modality.NONE);
+        warningStage.setScene(warningScene);
+
+        warningStage.setOnShown(e -> {
+            Window owner = view.getScene().getWindow();
+
+            double x = owner.getX() + owner.getWidth() - warningStage.getWidth() - 10;
+            double y = owner.getY() + owner.getHeight() - warningStage.getHeight() - 10;
+
+            warningStage.setX(x);
+            warningStage.setY(y);
         });
+
+        warningStage.show();
+    }
+    private void showWinWarningIfNeeded() {
+        Player player = model.getGame().getPlayerCloseToWinning();
+        if (player == null) return;
+
+        boolean isPlayer1 = player.getUsername().equals(model.getPlayer1().getUsername());
+
+        if (isPlayer1 && !player1Warned) {
+            player1Warned = true;
+            showWinWarning();
+        } else if (!isPlayer1 && !player2Warned) {
+            player2Warned = true;
+            showWinWarning();
+        }
     }
 
     //----------------------------------------------------------------------------------------------
@@ -396,32 +447,25 @@ public class GameBoardPresenter implements Observer {
                     executeSingleMove(bestTurn.getFirstMove());
                     updateView();
 
-                    if (model.getGame().getStatus() == GameStatus.ENDED) {
-                        showWinner();
-                        return;
-                    }
-
                     if (bestTurn.getSecondMove() != null) {
                         javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(Duration.millis(800));
                         pause.setOnFinished(event -> {
                             executeSingleMove(bestTurn.getSecondMove());
                             updateView();
-                            model.getGame().switchCurrentPlayer();
 
-                            if (model.getGame().getStatus() == GameStatus.ENDED) {
-                                showWinner();
+                            if(model.getGame().getStatus() == GameStatus.ENDED){
+                                Platform.runLater(() -> showWinner());
                                 return;
                             }
+                            showWinWarningIfNeeded();
+                            model.getGame().switchCurrentPlayer();
                             processTurn();
+
                         });
                         pause.play();
                     } else {
+                        showWinWarningIfNeeded();
                         model.getGame().switchCurrentPlayer();
-
-                        if (model.getGame().getStatus() == GameStatus.ENDED) {
-                            showWinner();
-                            return;
-                        }
                         processTurn();
                     }
                 }
@@ -496,6 +540,7 @@ public class GameBoardPresenter implements Observer {
                     showWinner();
                     return;
                 }
+                showWinWarningIfNeeded();
                 startUndoTimer();
             } else {
                 selectedPawn.setOpacity(1.0);
@@ -600,8 +645,8 @@ public class GameBoardPresenter implements Observer {
         remainingUndoSeconds = 5;
 
         view.getUndoTimer().setVisible(true);
-        view.getSkipButton().setVisible(true);
-        view.getSkipButton().setDisable(false);
+        view.getSkipButton().setVisible(model.getGame().getCurrentTurn().getSecondMove() != null);
+        view.getSkipButton().setDisable(model.getGame().getCurrentTurn().getSecondMove() == null);
         view.getUndoTimer().setText("00:0" + remainingUndoSeconds);
         view.getUndoButton().setDisable(false);
 
@@ -617,7 +662,7 @@ public class GameBoardPresenter implements Observer {
                 view.getSkipButton().setDisable(true);
                 view.getUndoButton().setDisable(true);
 
-                //debugging
+                // voor debugging
                 System.out.println("Timer afgelopen, currentPlayer: " +
                         model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
                 System.out.println("secondMove: " + model.getGame().getCurrentTurn().getSecondMove());

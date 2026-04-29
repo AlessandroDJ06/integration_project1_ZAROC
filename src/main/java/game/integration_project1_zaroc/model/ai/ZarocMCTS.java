@@ -13,8 +13,8 @@ public class ZarocMCTS {
 
     private final ZarocNeuralNet neuralNet;
     private final int totalIterations;
-    private final int numThreads = Runtime.getRuntime().availableProcessors() / 2 ;
-    private final double ucbConstant = Math.sqrt(2);
+    private final int numThreads = Runtime.getRuntime().availableProcessors() - 2 ;
+    private double ucbConstant;
 
     private String aiUsername;
     private PawnColor aiColor;
@@ -22,9 +22,10 @@ public class ZarocMCTS {
 
     private enum Result { PLAYING, AI_WINS, OPP_WINS }
 
-    public ZarocMCTS(ZarocNeuralNet neuralNet, int totalIterations) {
+    public ZarocMCTS(ZarocNeuralNet neuralNet, int totalIterations,double ucbConstant) {
         this.neuralNet = neuralNet;
         this.totalIterations = totalIterations;
+        this.ucbConstant = ucbConstant;
     }
 
     private ZarocNode runMctsThread(Game base, int iterations, List<Turn> rootBeam) {
