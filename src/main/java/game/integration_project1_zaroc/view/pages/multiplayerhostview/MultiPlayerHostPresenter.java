@@ -82,7 +82,7 @@ public class MultiPlayerHostPresenter {
                     model.setColorPlayerOne(gekozenHostKleur);
                     model.setColorPlayerTwo(guestKleur);
                     model.setOnlineMultiplayer(true);
-                    model.resumeGame(gameId);
+                    model.resumeGame(gameId,true);
                 }
                 closeWindow();
 

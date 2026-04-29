@@ -116,7 +116,7 @@ public class SelectGamemodePresenter {
 
         view.getPlayerVsPlayerButton().setOnAction(event -> {
             PlayerVsPlayerView playerVsPlayerView = new PlayerVsPlayerView(view.getResourceManager());
-            new PlayerVsPlayerPresenter(playerVsPlayerView, model);
+            new PlayerVsPlayerPresenter(playerVsPlayerView, model,null);
 
             Scene playerVsPlayerScene = new Scene(playerVsPlayerView, 900, 750);
             playerVsPlayerScene.setFill(Color.TRANSPARENT);
@@ -138,7 +138,7 @@ public class SelectGamemodePresenter {
 
         view.getUnfinishedGamesButton().setOnAction(event -> {
             UnfinishedGamesView unfinishedView = new UnfinishedGamesView(view.getResourceManager());
-            new UnfinishedGamesPresenter(unfinishedView, model);
+            UnfinishedGamesPresenter unfinishedGamesPresenter = new UnfinishedGamesPresenter(unfinishedView, model);
             Scene unfinishedScene = new Scene(unfinishedView, 900, 750);
             unfinishedScene.setFill(Color.TRANSPARENT);
             Stage unfinishedStage = new Stage();
@@ -151,7 +151,15 @@ public class SelectGamemodePresenter {
             )));
             unfinishedStage.setResizable(false);
             unfinishedStage.showAndWait();
-            checkIfGameIsEmpty();
+
+            if (model.isContinueInMultiplayer()){
+                checkIfGameIsEmpty();
+            } else if (model.getPlayer2() != null && model.isContinueInLocalPlayer()) {
+                checkIfGameIsEmpty();
+            } else if (model.getPlayer2() != null) {
+                checkIfGameIsEmpty();
+            }
+
 
         });
 

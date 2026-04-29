@@ -37,12 +37,16 @@ public class UnfinishedGamesPresenter {
     private AppController model;
     private UnfinishedGamesDao unfinishedGamesDao;
     private boolean continueMultiplayer;
+    private Player playerTwo;
+    private int selectedGameId;
 
     public UnfinishedGamesPresenter(UnfinishedGamesView view,AppController model){
         this.model = model;
         this.view = view;
         this.unfinishedGamesDao = new UnfinishedGamesDao();
         this.continueMultiplayer = false;
+        this.playerTwo = null;
+        this.selectedGameId = -1;
         addEventHandlers();
     }
 
@@ -60,13 +64,13 @@ public class UnfinishedGamesPresenter {
                             : new HumanPlayer(selected.getCurrentUserName(),selected.getCurrEmail()));
                     playerOne.setPlayerId(selected.getCurrId());
                     playerOne.setProfilePicture(selected.getCurrentPlayerPfp());
-                    Player playerTwo;
+                    selectedGameId = selected.getGameId();
 
                     if(!selected.isOppIsAi()){
                         UnfinishedGamePlayerVsPlayerSetupView unfinishedGamePlayerVsPlayerSetupView = new UnfinishedGamePlayerVsPlayerSetupView(view.getResourceManager());
-                        new UnfinishedGamePlayerVsPlayerSetupPresenter(unfinishedGamePlayerVsPlayerSetupView,model,new HumanPlayer(selected.getOpponentName(),selected.getOppEmail()));
+                        new UnfinishedGamePlayerVsPlayerSetupPresenter(unfinishedGamePlayerVsPlayerSetupView,model,selected);
 
-                        Scene playerVsPlayerScene = new Scene(unfinishedGamePlayerVsPlayerSetupView, 900, 750);
+                        Scene playerVsPlayerScene = new Scene(unfinishedGamePlayerVsPlayerSetupView);
                         playerVsPlayerScene.setFill(Color.TRANSPARENT);
 
                         Stage playerVsPlayerStage = new Stage();
@@ -81,7 +85,7 @@ public class UnfinishedGamesPresenter {
                         if (model.isOnlineMultiplayer()){
                             model.setContinueInMultiplayer(true);
                             MultiPlayerHostView multiPlayerHostView = new MultiPlayerHostView(view.getResourceManager());
-                            new MultiPlayerHostPresenter(multiPlayerHostView, model,selected.getGameId());
+                            new MultiPlayerHostPresenter(multiPlayerHostView, model,selectedGameId);
                             Scene hostScene = new Scene(multiPlayerHostView, 900, 750);
                             hostScene.setFill(Color.TRANSPARENT);
                             Stage hostStage = new Stage();
@@ -96,9 +100,11 @@ public class UnfinishedGamesPresenter {
                             hostStage.setResizable(false);
                             hostStage.showAndWait();
                             checkIfGameIsEmpty();
+
+                        }else if (model.getPlayer2() != null){
                             playerTwo = model.getPlayer2();
-                        }else{
-                            playerTwo = model.getPlayer2();
+                            model.setColorPlayerTwo(selected.getOpponentPlayerColor());
+                            model.setColorPlayerOne(selected.getCurrentPlayerColor());
                         }
 
                     }else{
@@ -106,16 +112,18 @@ public class UnfinishedGamesPresenter {
                     }
 
                     if (!model.isOnlineMultiplayer()){
-                        playerTwo.setPlayerId(selected.getOppId());
-                        playerTwo.setProfilePicture(selected.getOpponentPfp());
+                        if (model.getPlayer2() != null){
+                            playerTwo.setPlayerId(selected.getOppId());
+                            playerTwo.setProfilePicture(selected.getOpponentPfp());
+                            model.setPlayer2(playerTwo);
+                        }
 
                         if (model.getPlayer1() == null){
                             model.setPlayer1(playerOne);
                         }
-                        model.setPlayer2(playerTwo);
 
-                        model.resumeGame(selected.getGameId());
-                        view.getScene().getWindow().hide();
+                        model.resumeGame(selectedGameId,model.getPlayer1().getUsername().equals(selected.getCurrentUserName()));
+                        closeWindow();
                     }
 
                 }
@@ -163,8 +171,7 @@ public class UnfinishedGamesPresenter {
         stage.close();
     }
 
-
-
-
-
+    public int getSelectedGameId() {
+        return selectedGameId;
+    }
 }

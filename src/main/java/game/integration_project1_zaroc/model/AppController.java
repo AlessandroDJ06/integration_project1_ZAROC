@@ -47,6 +47,7 @@ public class AppController {
     private boolean isOnlineMultiplayer;
     private boolean continueInMultiplayer;
     private boolean isHost;
+    private boolean continueInLocalPlayer;
 
     public AppController(boolean canConnect){
         this.allowedToUseDatabase = canConnect;
@@ -81,6 +82,7 @@ public class AppController {
         this.multiplayerService = new MultiplayerService(this);
         this.isOnlineMultiplayer = false;
         this.continueInMultiplayer = false;
+        this.continueInLocalPlayer = false;
 
         this.isHost = false;
     }
@@ -144,7 +146,7 @@ public class AppController {
                 new GameParticipation(this.player2, this.player2Color)
         );
 
-        this.game.getBoard().setupStart();
+
         this.game.setAllowedSave(allowedToUseDatabase);
         if (allowedToUseDatabase){
             createGameId();
@@ -154,6 +156,7 @@ public class AppController {
         this.startingPlayerSelector.setPlayer1(player1);
         this.startingPlayerSelector.setPlayer2(player2);
 
+        this.game.getBoard().setupStart((startingPlayerSelector.getPlayers()[startingPlayerSelector.getCurrentIndex()] == player1));
         this.game.startNewTurn(startingPlayerSelector.getPlayers()[startingPlayerSelector.getCurrentIndex()]);
     }
 
@@ -173,21 +176,28 @@ public class AppController {
         }
     }
 
-    public void resumeGame(int gameId){
+    public void resumeGame(int gameId,boolean playerStarts){
         try{
             List<MovesUnfinishedGame> movesUnfinishedGame = unfinishedGamesDao.fetchMovesUnfinishedGame(gameId);
             ArrayList<Turn> turns = new ArrayList<>();
+                this.game = new Game(
+                        new GameParticipation(player1,this.player1Color),
+                        new GameParticipation(player2,this.player2Color)
+                );
 
-            this.game = new Game(
-                    new GameParticipation(player1,this.player1Color),
-                    new GameParticipation(player2,this.player2Color)
-            );
+            boolean hostLayout = true;
 
-            if (isOnlineMultiplayer){
-                this.game.getBoard().setupStart(this.isHost);
+            if (!movesUnfinishedGame.isEmpty()) {
+                String firstMoveUsername = movesUnfinishedGame.get(0).getUsername();
+
+                if (!firstMoveUsername.equals(player1.getUsername())) {
+                    hostLayout = false;
+                }
             } else {
-                this.game.getBoard().setupStart();
+                hostLayout = playerStarts;
             }
+            this.game.getBoard().setupStart(hostLayout);
+
 
             this.game.setGameId(gameId);
             this.game.setStatus(GameStatus.PLAYING);
@@ -260,12 +270,13 @@ public class AppController {
         this.game.getBoard().setupStart(isHost);
         this.game.setAllowedSave(true);
 
-        if (amIHost) {
+        if (amIHost && !continueInMultiplayer) {
             saveGameParticipations(this.game);
+            Player startingPlayer = amIHost ? this.player1 : this.player2;
+            this.game.startNewTurn(startingPlayer);
         }
 
-        Player startingPlayer = amIHost ? this.player1 : this.player2;
-        this.game.startNewTurn(startingPlayer);
+
     }
 
     public int getOnlineGameId() {
@@ -387,5 +398,13 @@ public class AppController {
 
     public boolean isContinueInMultiplayer() {
         return continueInMultiplayer;
+    }
+
+    public boolean isContinueInLocalPlayer() {
+        return continueInLocalPlayer;
+    }
+
+    public void setContinueInLocalPlayer(boolean continueInLocalPlayer) {
+        this.continueInLocalPlayer = continueInLocalPlayer;
     }
 }

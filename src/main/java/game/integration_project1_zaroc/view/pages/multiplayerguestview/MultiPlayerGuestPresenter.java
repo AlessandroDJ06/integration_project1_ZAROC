@@ -162,7 +162,7 @@ public class MultiPlayerGuestPresenter {
                 model.setColorPlayerOne(guestColor);
                 model.setColorPlayerTwo(hostColor);
                 model.setOnlineMultiplayer(true);
-                model.resumeGame(currentRoomData.getGameId());
+                model.resumeGame(currentRoomData.getGameId(),true);
             } else {
                 model.initOnlineGame(currentRoomData.getGameId(), host, guestColor, hostColor, false);
             }

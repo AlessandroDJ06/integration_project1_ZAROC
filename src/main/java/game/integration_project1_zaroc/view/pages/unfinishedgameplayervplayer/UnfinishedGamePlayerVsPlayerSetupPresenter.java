@@ -1,5 +1,6 @@
 package game.integration_project1_zaroc.view.pages.unfinishedgameplayervplayer;
 
+import game.integration_project1_zaroc.dao.UnfinishedGame;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPlayerPresenter;
@@ -20,9 +21,9 @@ import java.util.Objects;
 public class UnfinishedGamePlayerVsPlayerSetupPresenter {
     private UnfinishedGamePlayerVsPlayerSetupView view;
     private AppController model;
-    private Player playerTwo;
+    private UnfinishedGame playerTwo;
 
-    public UnfinishedGamePlayerVsPlayerSetupPresenter(UnfinishedGamePlayerVsPlayerSetupView view, AppController model , Player playerTwo) {
+    public UnfinishedGamePlayerVsPlayerSetupPresenter(UnfinishedGamePlayerVsPlayerSetupView view, AppController model , UnfinishedGame playerTwo) {
         this.view = view;
         this.model = model;
         this.playerTwo = playerTwo;
@@ -44,7 +45,8 @@ public class UnfinishedGamePlayerVsPlayerSetupPresenter {
 
         view.getLocalGame().setOnAction(event -> {
             PlayerVsPlayerView playerVsPlayerView = new PlayerVsPlayerView(view.getResourceManager());
-            new PlayerVsPlayerPresenter(playerVsPlayerView, model);
+            new PlayerVsPlayerPresenter(playerVsPlayerView, model,playerTwo);
+            model.setContinueInLocalPlayer(true);
 
             Scene playerVsPlayerScene = new Scene(playerVsPlayerView, 900, 750);
             playerVsPlayerScene.setFill(Color.TRANSPARENT);
@@ -58,22 +60,13 @@ public class UnfinishedGamePlayerVsPlayerSetupPresenter {
             playerVsPlayerStage.setResizable(false);
 
             playerVsPlayerStage.showAndWait();
-
-
-            if (model.getPlayer2() != null && model.getPlayer2() == playerTwo ){
-                closeWindow();
-            } else if (model.getPlayer2() != playerTwo){
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("ERROR");
-                alert.setHeaderText("wrong user");
-                alert.setContentText("The user logged in isn't the user who played the game!");
-                model.setPlayer2(null);
-            }
+            closeWindow();
 
         });
 
         view.getMultiplayerGame().setOnAction(event -> {
             model.setOnlineMultiplayer(true);
+            model.setContinueInMultiplayer(true);
             model.setHost(true);
             closeWindow();
         });
