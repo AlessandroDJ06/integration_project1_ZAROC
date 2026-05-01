@@ -410,18 +410,36 @@ public class Game {
             return playerTurns.isEmpty() ? 0 : calculateDurationInMillis(playerTurns) / playerTurns.size() / 1000;
         }
 
-        public String calculateGameStyle() {
-            int totalMoves = countTotalMoves();
-            if (totalMoves == 0) return "Unknown";
-
+        public String calculatePlaystyle(Player player) {
+            int playerMoves = 0;
             int aggressiveMoves = 0;
+            if (playerMoves == 0) return "Unknown";
+
+            for (Turn turn : turns) {
+                if (turn.getCurrentPlayer() != null && turn.getCurrentPlayer().equals(player)) {
+
+                    if (turn.getFirstMove() != null) {
+                        playerMoves++;
+                        if (isMoveAggressive(turn.getFirstMove())) {
+                            aggressiveMoves++;
+                        }
+                    }
+                    if (turn.getSecondMove() != null) {
+                        playerMoves++;
+                        if (isMoveAggressive(turn.getSecondMove())) {
+                            aggressiveMoves++;
+                        }
+                    }
+                }
+            }
             for (Turn turn : turns) {
                 if (isMoveAggressive(turn.getFirstMove())) aggressiveMoves++;
                 if (isMoveAggressive(turn.getSecondMove())) aggressiveMoves++;
             }
 
-            return ((double) aggressiveMoves / totalMoves) >= 0.5 ? "Aggressive" : "Passive";
-        }
+            double aggressiveRatio = (double) aggressiveMoves / playerMoves;
+
+            return aggressiveRatio >= 0.5 ? "Aggressive" : "Passive";        }
 
 
     public void setTurns(ArrayList<Turn> turns) {

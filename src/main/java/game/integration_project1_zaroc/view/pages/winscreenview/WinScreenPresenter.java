@@ -6,8 +6,6 @@ import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresent
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
-import game.integration_project1_zaroc.view.pages.startview.StartPresenter;
-import game.integration_project1_zaroc.view.pages.startview.StartView;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.stage.Stage;
 
@@ -69,7 +67,7 @@ public class WinScreenPresenter {
         double avgPlayerMoveDuration = model.getGame().calculatePlayerAvgMoveDuration(model.getPlayer1());
         double durationSeconds = model.getGame().calculateGameDuration();
 
-        String style = model.getGame().calculateGameStyle();
+        String style = model.getGame().calculatePlaystyle(model.getPlayer1());
 
         view.getPlayerWon().setText(model.getGame().getWinner().getUsername().toUpperCase() + " WON!");
 
