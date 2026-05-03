@@ -4,10 +4,7 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.awt.*;
 
 public class StatisticsPresenter {
     private AppController model;
@@ -32,6 +29,8 @@ public class StatisticsPresenter {
 
     private void updateStats() {
 
+        HumanPlayer player = (HumanPlayer) model.getPlayer1();
+
         if (!model.isAllowedToUseDatabase()) {
             view.showGuestText();
             return;
@@ -40,12 +39,11 @@ public class StatisticsPresenter {
         String playstyle = "None";
 
         if(model.getGame() !=null) {
-            playstyle = model.getGame().calculateGameStyle();
+            playstyle = model.getGame().calculatePlaystyle(player);
         }
         int totalGames = model.getTotalGamesPlayed();
         int totalWins = model.getTotalWins();
         double winRate = (totalGames == 0) ? 0 : (double) totalWins / totalGames * 100;
-        HumanPlayer player = (HumanPlayer) model.getPlayer1();
         view.getAccountInfo().setText("Username: " + player.getUsername() + "\nEmail: " + player.getEmail());
 
 
