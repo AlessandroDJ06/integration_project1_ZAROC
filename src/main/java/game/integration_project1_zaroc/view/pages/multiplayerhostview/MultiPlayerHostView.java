@@ -50,7 +50,7 @@ public class MultiPlayerHostView extends BorderPane {
         this.hostColorPicker = new ImageSliderComponent(resourceManager);
 
         this.guestPfpView = createProfilePictureView();
-        this.guestName = new Label("Wachten...");
+        this.guestName = new Label("Waiting...");
         this.guestColor = new ImageView();
     }
 

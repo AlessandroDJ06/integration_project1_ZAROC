@@ -1,6 +1,8 @@
 package game.integration_project1_zaroc.view.pages.playervsplayerview;
 
+import game.integration_project1_zaroc.dao.UnfinishedGame;
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountPresenter;
 import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountView;
 import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
@@ -8,6 +10,7 @@ import game.integration_project1_zaroc.view.pages.loginview.LoginView;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -22,10 +25,12 @@ import java.util.Objects;
 public class PlayerVsPlayerPresenter {
     private PlayerVsPlayerView view;
     private AppController model;
+    private UnfinishedGame playerTwo;
 
-    public PlayerVsPlayerPresenter(PlayerVsPlayerView view, AppController model) {
+    public PlayerVsPlayerPresenter(PlayerVsPlayerView view, AppController model, UnfinishedGame playerTwo) {
         this.view = view;
         this.model = model;
+        this.playerTwo = playerTwo;
         addEventHandlers();
         updateView();
     }
@@ -57,9 +62,29 @@ public class PlayerVsPlayerPresenter {
             loginStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
             loginStage.setResizable(false);
             loginStage.showAndWait();
-            if (model.getPlayer2() != null) {
-                updateView();
+
+            if (model.isContinueInLocalPlayer()){
+                if (model.getPlayer2() != null &&
+                        model.getPlayer2().getUsername().equals(playerTwo.getCurrentUserName()) ||
+                        model.getPlayer2().getUsername().equals(playerTwo.getOpponentName()) &&
+                                !model.getPlayer2().getUsername().equals(model.getPlayer1().getUsername())){
+                    updateView();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("ERROR");
+                    alert.setHeaderText("wrong user");
+                    alert.setContentText("The user logged in isn't the user who played the game!");
+                    alert.showAndWait();
+                    model.setPlayer2(null);
+                    System.out.println("hier");
+                }
+            } else {
+                if (model.getPlayer2() != null) {
+                    updateView();
+                }
             }
+
+
         });
 
         view.getCreateAccountPlayerTwo().setOnAction(event -> {

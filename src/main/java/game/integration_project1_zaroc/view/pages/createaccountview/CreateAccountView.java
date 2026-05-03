@@ -50,6 +50,11 @@ public class CreateAccountView extends BorderPane {
         this.setMaxSize(550, 650);
         this.setPadding(new Insets(60, 40, 40, 40));
 
+        String color = resourceManager.getTheme().getTextColor();
+        nameField.setStyle("-fx-text-fill: "+color + "; -fx-prompt-text-fill: "+ color);
+        emailField.setStyle("-fx-text-fill: "+color + "; -fx-prompt-text-fill: "+ color);
+        passwordField.setStyle("-fx-prompt-text-fill: "+ color);
+
         // === Top ===
         returnButton.setMaxSize(40, 40);
         HBox titelSection = new HBox();

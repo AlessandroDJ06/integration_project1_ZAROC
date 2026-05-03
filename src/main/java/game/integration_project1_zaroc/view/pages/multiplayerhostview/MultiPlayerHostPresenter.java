@@ -19,11 +19,15 @@ public class MultiPlayerHostPresenter {
     private PlayersDao playersDao;
     private String currentRoomCode;
     private RoomDTO currentRoomData;
+    private boolean continueMultiplayerGame;
+    private int existingGameId;
 
-    public MultiPlayerHostPresenter(MultiPlayerHostView view, AppController model) {
+    public MultiPlayerHostPresenter(MultiPlayerHostView view, AppController model,int existingGameId) {
         this.view = view;
         this.model = model;
         this.playersDao = new PlayersDao();
+        this.existingGameId = existingGameId;
+        this.continueMultiplayerGame = model.isContinueInMultiplayer();
         updateView();
         initLobby();
         addEventHandlers();
@@ -57,17 +61,29 @@ public class MultiPlayerHostPresenter {
 
         view.getStartGameButton().setOnAction(e -> {
             try {
-                System.out.println("Host klikt op START. GameID aanmaken...");
-                int gameId = model.getMultiplayerService().getRoomDao().startGame(currentRoomData.getRoomId());
+                int gameId;
+                if (!continueMultiplayerGame) {
+                    gameId = model.getMultiplayerService().getRoomDao().startGame(currentRoomData.getRoomId());
+                } else {
+                    model.getMultiplayerService().getRoomDao().updateGameStatus("PLAYING", currentRoomCode);
+                    gameId = existingGameId;
+                }
 
                 model.getMultiplayerService().stopPolling();
 
                 Player guest = playersDao.getPlayerById(currentRoomData.getGuestId());
-
                 PawnColor gekozenHostKleur = PawnColor.values()[model.getColorOne().getCurrentIndex()];
                 PawnColor guestKleur = currentRoomData.getGuestColor();
 
-                model.initOnlineGame(gameId, guest, gekozenHostKleur, guestKleur, true);
+                if (!continueMultiplayerGame) {
+                    model.initOnlineGame(gameId, guest, gekozenHostKleur, guestKleur, true);
+                } else {
+                    model.setPlayer2(guest);
+                    model.setColorPlayerOne(gekozenHostKleur);
+                    model.setColorPlayerTwo(guestKleur);
+                    model.setOnlineMultiplayer(true);
+                    model.resumeGame(gameId,true);
+                }
                 closeWindow();
 
             } catch (ZarocDaoException ex) {
@@ -116,6 +132,11 @@ public class MultiPlayerHostPresenter {
         try {
             PawnColor startKleur = PawnColor.values()[model.getColorOne().getCurrentIndex()];
             model.getMultiplayerService().getRoomDao().createRoom(currentRoomCode, model.getPlayer1().getPlayerId(), startKleur);
+
+
+            if (continueMultiplayerGame) {
+                model.getMultiplayerService().getRoomDao().resumeGameInRoom(currentRoomCode, existingGameId);
+            }
 
             model.getMultiplayerService().startLobbyPolling(currentRoomCode, fetchedData -> {
                 Platform.runLater(() -> processRoomData(fetchedData));

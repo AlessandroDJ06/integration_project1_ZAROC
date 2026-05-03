@@ -86,11 +86,15 @@ public class LoginView extends BorderPane {
         nameField.setBackground(background);
         passwordField.setBackground(background);
 
+        String color = resourceManager.getTheme().getTextColor();
+        nameField.setStyle("-fx-text-fill: "+color + "; -fx-prompt-text-fill: "+ color);
+
         nameField.setPrefHeight(40);
         nameField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
 
         passwordField.setPrefHeight(40);
         passwordField.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+        passwordField.setStyle("-fx-prompt-text-fill: "+ color);
 
         Label usernameLabel = new Label("Username:");
         usernameLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));

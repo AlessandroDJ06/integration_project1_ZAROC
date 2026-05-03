@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Game {
     private GameStatus status;
@@ -30,12 +31,11 @@ public class Game {
     private Timestamp startTimeMove;
 
 
-
     public Game(GameParticipation gameParticipation1, GameParticipation gameParticipation2) {
         this.status = GameStatus.PLAYING;
-        board = new Board(gameParticipation1.getChosenPawnColor(),gameParticipation2.getChosenPawnColor());
+        board = new Board(gameParticipation1.getChosenPawnColor(), gameParticipation2.getChosenPawnColor());
         turns = new ArrayList<>();
-        gameParticipations = new GameParticipation[]{gameParticipation1,gameParticipation2};
+        gameParticipations = new GameParticipation[]{gameParticipation1, gameParticipation2};
         this.lastMove = null;
         this.gameId = -1;
         this.allowedSave = true;
@@ -59,26 +59,27 @@ public class Game {
         }
     }
 
-    public void startNewTurn(Player player){
-       // startUndoTimer();
+    public void startNewTurn(Player player) {
+        // startUndoTimer();
         Turn turn = new Turn(player);
         turn.setTurnNumber(turns.size() + 1);
         turns.add(turn);
-        if (allowedSave){
+        if (allowedSave) {
             try {
-                turn.setTurnId(turnsDao.saveTurn(gameId,turn));
+                System.out.println("nieuwe turn gestart: " + player.getUsername());
+                turn.setTurnId(turnsDao.saveTurn(gameId, turn));
             } catch (ZarocDaoException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public Turn getCurrentTurn(){
-        if(turns.isEmpty()) return null;
-        return turns.get(turns.size()-1);
+    public Turn getCurrentTurn() {
+        if (turns.isEmpty()) return null;
+        return turns.get(turns.size() - 1);
     }
 
-    public void selectStartPeg(Peg startPeg){
+    public void selectStartPeg(Peg startPeg) {
         this.selectedPeg = startPeg;
     }
 
@@ -107,10 +108,6 @@ public class Game {
 
         newMove.setEndTime(Timestamp.from(Instant.now()));
         startTimeMove = Timestamp.from(Instant.now());
-
-       // if (moveNumber == MoveNumber.SECOND_MOVE) {
-        //   switchCurrentPlayer();
-        //}
         return newMove;
     }
 
@@ -118,8 +115,11 @@ public class Game {
         if (allowedSave && newMove != null) {
             try {
                 movesDao.saveMove(getCurrentTurn().getTurnId(), newMove);
+                System.out.println("move opgeslagen");
             } catch (ZarocDaoException e) {
+                System.out.println("probleem");
                 throw new RuntimeException(e);
+
             }
         }
     }
@@ -187,6 +187,7 @@ public class Game {
             getParticipation2().setWinner(false);
         }
     }
+
     private void updateLastMoveAfterUndo() {
         if (turns.isEmpty()) {
             this.lastMove = null;
@@ -221,8 +222,8 @@ public class Game {
         return legalMoves;
     }
 
-    public Player getWinner(){
-        if (getParticipation1().getWinner()){
+    public Player getWinner() {
+        if (getParticipation1().getWinner()) {
             return getParticipation1().getPlayer();
         } else if (getParticipation2().getWinner()) {
             return getParticipation2().getPlayer();
@@ -264,7 +265,6 @@ public class Game {
         if (winner != null) {
             winner.setWinner(true);
             setStatus(GameStatus.ENDED);
-
             if (allowedSave) {
                 updateGameStatus();
                 updateGameParticipation(winner);
@@ -293,9 +293,9 @@ public class Game {
         }
     }
 
-    private void updateGameParticipation(GameParticipation gameParticipation){
-        try{
-            gameParticipationDao.updateGameParticipationWinner(this,gameParticipation);
+    private void updateGameParticipation(GameParticipation gameParticipation) {
+        try {
+            gameParticipationDao.updateGameParticipationWinner(this, gameParticipation);
         } catch (ZarocDaoException e) {
             System.out.println("kon niet opslagen");
         }
@@ -340,112 +340,120 @@ public class Game {
         return copy;
     }
 
-        public List<Turn> getTurnsOfPlayer(Player player) {
-            return turns.stream().filter(t -> t.getCurrentPlayer().equals(player)).toList();
+
+    public void executeRandomMove() {
+        if (status != GameStatus.PLAYING) {
+            return;
         }
 
-        public int countMovesInTurns(List<Turn> turns) {
-            int count = 0;
-            for (Turn turn : turns) {
-                if (turn.getFirstMove() != null) count++;
-                if (turn.getSecondMove() != null) count++;
-            }
-            return count;
-        }
+        List<Move> allPossibleMoves = new ArrayList<>();
+        Peg[][] allPegs = board.getAllPegs();
 
-        public double calculateDurationInMillis(List<Turn> turns) {
-            double totalDuration = 0;
-            for (Turn turn : turns) {
-                totalDuration += getMoveDuration(turn.getFirstMove());
-                totalDuration += getMoveDuration(turn.getSecondMove());
-            }
-            return totalDuration;
-        }
-
-        public double getMoveDuration(Move move) {
-            if (move != null && move.getStartTime() != null && move.getEndTime() != null) {
-                return move.getEndTime().getTime() - move.getStartTime().getTime();
-            }
-            return 0;
-        }
-
-        public boolean isMoveAggressive(Move move) {
-            return move != null && (move.getDestinationPeg().getYPosition() - move.getStartPeg().getYPosition() == 1);
-        }
-
-
-        public int countTotalMoves() {
-            return countMovesInTurns(this.turns);
-        }
-
-        public int countPlayerMoves(Player player) {
-            return countMovesInTurns(getTurnsOfPlayer(player));
-        }
-
-        public int countPlayerTurns(Player player) {
-            return getTurnsOfPlayer(player).size();
-        }
-
-        public double calculateGameDuration() {
-            return calculateDurationInMillis(this.turns) / 1000;
-        }
-
-        public double calculateTotalAvgMoveDuration() {
-            int totalMoves = countTotalMoves();
-            return calculateDurationInMillis(this.turns) / totalMoves / 1000;
-        }
-
-        public double calculateTotalAvgTurnDuration() {
-            return turns.isEmpty() ? 0 : calculateDurationInMillis(this.turns) / turns.size() / 1000;
-        }
-
-        public double calculatePlayerAvgMoveDuration(Player player) {
-            List<Turn> playerTurns = getTurnsOfPlayer(player);
-            int totalMoves = countMovesInTurns(playerTurns);
-            return totalMoves == 0 ? 0 : calculateDurationInMillis(playerTurns) / totalMoves / 1000;
-        }
-
-        public double calculatePlayerAvgTurnDuration(Player player) {
-            List<Turn> playerTurns = getTurnsOfPlayer(player);
-            return playerTurns.isEmpty() ? 0 : calculateDurationInMillis(playerTurns) / playerTurns.size() / 1000;
-        }
-
-        public String calculatePlaystyle(Player player) {
-            int playerMoves = 0;
-            int aggressiveMoves = 0;
-            if (playerMoves == 0) return "Unknown";
-
-            for (Turn turn : turns) {
-                if (turn.getCurrentPlayer() != null && turn.getCurrentPlayer().equals(player)) {
-
-                    if (turn.getFirstMove() != null) {
-                        playerMoves++;
-                        if (isMoveAggressive(turn.getFirstMove())) {
-                            aggressiveMoves++;
-                        }
-                    }
-                    if (turn.getSecondMove() != null) {
-                        playerMoves++;
-                        if (isMoveAggressive(turn.getSecondMove())) {
-                            aggressiveMoves++;
-                        }
-                    }
+        for (int row = 0; row < allPegs.length; row++) {
+            for (int col = 0; col < allPegs[row].length; col++) {
+                Peg currentPeg = allPegs[row][col];
+                if (currentPeg != null && !currentPeg.getPawns().isEmpty()) {
+                    allPossibleMoves.addAll(getLegalMoves(currentPeg));
                 }
             }
-            for (Turn turn : turns) {
-                if (isMoveAggressive(turn.getFirstMove())) aggressiveMoves++;
-                if (isMoveAggressive(turn.getSecondMove())) aggressiveMoves++;
-            }
+        }
+        if (!allPossibleMoves.isEmpty()) {
+            Random random = new Random();
+            Move randomMove = allPossibleMoves.get(random.nextInt(allPossibleMoves.size()));
+            selectStartPeg(randomMove.getStartPeg());
+            executeMove(randomMove.getDestinationPeg());
+        }
+    }
 
-            double aggressiveRatio = (double) aggressiveMoves / playerMoves;
+    public List<Turn> getTurnsOfPlayer(Player player) {
+        return turns.stream().filter(t -> t.getCurrentPlayer().equals(player)).toList();
+    }
 
-            return aggressiveRatio >= 0.5 ? "Aggressive" : "Passive";        }
+    public int countMovesInTurns(List<Turn> turns) {
+        int count = 0;
+        for (Turn turn : turns) {
+            if (turn.getFirstMove() != null) count++;
+            if (turn.getSecondMove() != null) count++;
+        }
+        return count;
+    }
+
+    public double calculateDurationInMillis(List<Turn> turns) {
+        double totalDuration = 0;
+        for (Turn turn : turns) {
+            totalDuration += getMoveDuration(turn.getFirstMove());
+            totalDuration += getMoveDuration(turn.getSecondMove());
+        }
+        return totalDuration;
+    }
+
+    public double getMoveDuration(Move move) {
+        if (move != null && move.getStartTime() != null && move.getEndTime() != null) {
+            return move.getEndTime().getTime() - move.getStartTime().getTime();
+        }
+        return 0;
+    }
+
+    public boolean isMoveAggressive(Move move) {
+        return move != null && (move.getDestinationPeg().getYPosition() - move.getStartPeg().getYPosition() == 1);
+    }
+
+
+    public int countTotalMoves() {
+        return countMovesInTurns(this.turns);
+    }
+
+    public int countPlayerMoves(Player player) {
+        return countMovesInTurns(getTurnsOfPlayer(player));
+    }
+
+    public int countPlayerTurns(Player player) {
+        return getTurnsOfPlayer(player).size();
+    }
+
+    public double calculateGameDuration() {
+        return calculateDurationInMillis(this.turns) / 1000;
+    }
+
+    public double calculateTotalAvgMoveDuration() {
+        int totalMoves = countTotalMoves();
+        return calculateDurationInMillis(this.turns) / totalMoves / 1000;
+    }
+
+    public double calculateTotalAvgTurnDuration() {
+        return turns.isEmpty() ? 0 : calculateDurationInMillis(this.turns) / turns.size() / 1000;
+    }
+
+    public double calculatePlayerAvgMoveDuration(Player player) {
+        List<Turn> playerTurns = getTurnsOfPlayer(player);
+        int totalMoves = countMovesInTurns(playerTurns);
+        return totalMoves == 0 ? 0 : calculateDurationInMillis(playerTurns) / totalMoves / 1000;
+    }
+
+    public double calculatePlayerAvgTurnDuration(Player player) {
+        List<Turn> playerTurns = getTurnsOfPlayer(player);
+        return playerTurns.isEmpty() ? 0 : calculateDurationInMillis(playerTurns) / playerTurns.size() / 1000;
+    }
+
+    public String calculateGameStyle() {
+        int totalMoves = countTotalMoves();
+        if (totalMoves == 0) return "Unknown";
+
+        int aggressiveMoves = 0;
+        for (Turn turn : turns) {
+            if (isMoveAggressive(turn.getFirstMove())) aggressiveMoves++;
+            if (isMoveAggressive(turn.getSecondMove())) aggressiveMoves++;
+        }
+
+        return ((double) aggressiveMoves / totalMoves) >= 0.5 ? "Aggressive" : "Passive";
+    }
 
 
     public void setTurns(ArrayList<Turn> turns) {
         this.turns = turns;
     }
-    public List<Turn> getTurns(){
+
+    public List<Turn> getTurns() {
         return turns;
     }
 
@@ -466,11 +474,11 @@ public class Game {
         return board;
     }
 
-    public GameParticipation getParticipation1(){
+    public GameParticipation getParticipation1() {
         return this.gameParticipations[0];
     }
 
-    public GameParticipation getParticipation2(){
+    public GameParticipation getParticipation2() {
         return this.gameParticipations[1];
     }
 

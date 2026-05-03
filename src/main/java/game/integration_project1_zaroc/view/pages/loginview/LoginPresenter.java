@@ -52,7 +52,12 @@ public class LoginPresenter {
                 } else {
                     showGuestLoginDialog(true,"database connection failed");
                 }
-                model.setAllowedToUseDatabase(false);
+                if(model.getPlayer1() != null && model.getPlayer1().getPlayerId() == 0){
+                    model.setAllowedToUseDatabase(false);
+                } else if (model.getPlayer1() != null){
+                    model.setAllowedToUseDatabase(true);
+                }
+
 
             }
         });

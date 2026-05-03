@@ -31,8 +31,9 @@ public class GamesDao {
 
         try (Connection conn = DaoUtils.createConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1,game.getStatus().toString());
-            ps.setInt(2,game.getGameId());
+             ps.setString(1,game.getStatus().name());
+             ps.setInt(2,game.getGameId());
+             ps.executeUpdate();
 
         } catch (SQLException sqlException){
                 throw new ZarocDaoException("Kon de game niet updaten.", sqlException);

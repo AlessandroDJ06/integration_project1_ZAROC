@@ -7,6 +7,7 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profile
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,6 +16,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StatisticsView extends BorderPane {
     private ResourceManager resourceManager;
@@ -66,14 +71,20 @@ public class StatisticsView extends BorderPane {
         this.setPrefSize(550, 550);
         this.setMaxSize(550, 550);
 
+        List<Text> texts = Arrays.asList(accountInfo,preferencesText,gameStatsText);
+        List<Label> titles = Arrays.asList(accountInfoTitle,preferencesTitle,gameStatsTitle);
+        for (Label title : titles) {
+            title.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
+            title.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
+        }
+        for(Text text : texts){
+            text.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+            text.setFill(Color.web(resourceManager.getTheme().getTextColor()));
+        }
         playerProfileTitle.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
-        accountInfoTitle.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
-        accountInfo.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
-        preferencesTitle.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
-        preferencesText.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
-        gameStatsTitle.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
-        gameStatsText.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+        playerProfileTitle.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         guestLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
+        guestLabel.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
 
         profilePicture.setFitWidth(100);
         profilePicture.setFitHeight(100);
@@ -118,13 +129,14 @@ public class StatisticsView extends BorderPane {
         Region leftLine = new Region();
         Region rightLine = new Region();
 
-        Background black = new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
+        Background background = new Background(new BackgroundFill(Color.web
+                (resourceManager.getTheme().getTextColor()), CornerRadii.EMPTY, Insets.EMPTY));
 
-        leftLine.setBackground(black);
+        leftLine.setBackground(background);
         leftLine.setMinHeight(2);
         leftLine.setMaxHeight(2);
 
-        rightLine.setBackground(black);
+        rightLine.setBackground(background);
         rightLine.setMinHeight(2);
         rightLine.setMaxHeight(2);
 
