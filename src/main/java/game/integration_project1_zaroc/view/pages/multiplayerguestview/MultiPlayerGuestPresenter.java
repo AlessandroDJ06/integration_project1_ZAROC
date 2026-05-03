@@ -157,12 +157,12 @@ public class MultiPlayerGuestPresenter {
             PawnColor hostColor = currentRoomData.getHostColor();
             PawnColor guestColor = PawnColor.values()[model.getColorOne().getCurrentIndex()];
 
-            if (currentRoomData.getGameId() != 0) {
+            if (model.isContinueInMultiplayer()) {
                 model.setPlayer2(host);
                 model.setColorPlayerOne(guestColor);
                 model.setColorPlayerTwo(hostColor);
                 model.setOnlineMultiplayer(true);
-                model.resumeGame(currentRoomData.getGameId(),true);
+                model.resumeGame(currentRoomData.getGameId(),false);
             } else {
                 model.initOnlineGame(currentRoomData.getGameId(), host, guestColor, hostColor, false);
             }

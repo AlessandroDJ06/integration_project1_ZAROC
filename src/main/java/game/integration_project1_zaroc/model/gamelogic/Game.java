@@ -66,6 +66,7 @@ public class Game {
         turns.add(turn);
         if (allowedSave) {
             try {
+                System.out.println("nieuwe turn gestart: " + player.getUsername());
                 turn.setTurnId(turnsDao.saveTurn(gameId, turn));
             } catch (ZarocDaoException e) {
                 throw new RuntimeException(e);
@@ -107,10 +108,6 @@ public class Game {
 
         newMove.setEndTime(Timestamp.from(Instant.now()));
         startTimeMove = Timestamp.from(Instant.now());
-
-        // if (moveNumber == MoveNumber.SECOND_MOVE) {
-        //   switchCurrentPlayer();
-        //}
         return newMove;
     }
 
@@ -118,8 +115,11 @@ public class Game {
         if (allowedSave && newMove != null) {
             try {
                 movesDao.saveMove(getCurrentTurn().getTurnId(), newMove);
+                System.out.println("move opgeslagen");
             } catch (ZarocDaoException e) {
+                System.out.println("probleem");
                 throw new RuntimeException(e);
+
             }
         }
     }
@@ -129,7 +129,7 @@ public class Game {
         Peg dest = board.getPegPosition(move.getDestinationPeg().getYPosition(), move.getDestinationPeg().getXPosition());
 
         if (start != null && dest != null) {
-            turns.getLast().addMove(move);
+            getCurrentTurn().addMove(move);
 
             Pawn upperPawn = start.getUpperPawn();
             if (upperPawn != null) {

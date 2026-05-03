@@ -85,7 +85,8 @@ public class GameBoardPresenter implements Observer {
             if (this.model.isOnlineMultiplayer()) {
                 String myUsername = model.getPlayer1().getUsername();
                 int gameId = model.getOnlineGameId();
-                this.model.getMultiplayerService().startTurnPolling(gameId, 0, myUsername);
+                int offset = model.getMultiplayerService().getLastKnownMoveCount();
+                this.model.getMultiplayerService().startTurnPolling(gameId, offset, myUsername);
             }
         }
 
@@ -250,17 +251,21 @@ public class GameBoardPresenter implements Observer {
             System.out.println("fatal error");
         }
 
-        if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername().equals(model.getGame().getParticipation1().getPlayer().getUsername())) {
-            player1Animation.play();
-            player2Animation.stop();
-            view.getPlayersPlayingComponent().getSecondPlayer().setScaleX(1);
-            view.getPlayersPlayingComponent().getSecondPlayer().setScaleY(1);
-
-        } else {
-            player1Animation.stop();
-            player2Animation.play();
-            view.getPlayersPlayingComponent().getFirstPlayer().setScaleX(1);
-            view.getPlayersPlayingComponent().getFirstPlayer().setScaleY(1);
+        // Bij online multiplayer kan de guest een lege turns lijst hebben
+        // (host is nog niet begonnen) → geen animatie starten
+        if (!model.isOnlineMultiplayer() || model.getGame().getCurrentTurn() != null) {
+            if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername()
+                    .equals(model.getGame().getParticipation1().getPlayer().getUsername())) {
+                player1Animation.play();
+                player2Animation.stop();
+                view.getPlayersPlayingComponent().getSecondPlayer().setScaleX(1);
+                view.getPlayersPlayingComponent().getSecondPlayer().setScaleY(1);
+            } else {
+                player1Animation.stop();
+                player2Animation.play();
+                view.getPlayersPlayingComponent().getFirstPlayer().setScaleX(1);
+                view.getPlayersPlayingComponent().getFirstPlayer().setScaleY(1);
+            }
         }
 
         String pfp1 = model.getPlayer1().getProfilePicture();
@@ -330,6 +335,7 @@ public class GameBoardPresenter implements Observer {
             }
         }
     }
+
     private void showWinner(){
         WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
         new WinScreenPresenter(winScreenView,model);
@@ -369,6 +375,7 @@ public class GameBoardPresenter implements Observer {
 
         warningStage.show();
     }
+
     private void showWinWarningIfNeeded() {
         Player player = model.getGame().getPlayerCloseToWinning();
         if (player == null) return;
@@ -388,6 +395,14 @@ public class GameBoardPresenter implements Observer {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CURRENT PLAYER HANDLE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //----------------------------------------------------------------------------------------------
     private void processTurn() {
+        // Bij online multiplayer kan de guest een lege turns lijst hebben
+        // omdat de host nog niet begonnen is → bord disablen en wachten op poller
+        if (model.isOnlineMultiplayer() && model.getGame().getCurrentTurn() == null) {
+            view.getBoard().getBoard().setDisable(true);
+            view.getUndoButton().setDisable(true);
+            return;
+        }
+
         updateView();
 
         if (model.getGame().getStatus() == GameStatus.ENDED) {
@@ -399,6 +414,7 @@ public class GameBoardPresenter implements Observer {
         }
 
         Player currentPlayer = model.getGame().getCurrentTurn().getCurrentPlayer();
+        System.out.println("processTurn: currentPlayer=" + currentPlayer.getUsername() + " isRemote=" + isRemotePlayer(currentPlayer));
 
         if (currentPlayer instanceof AIPlayer) {
             stopAfkTimer();
@@ -567,6 +583,7 @@ public class GameBoardPresenter implements Observer {
         Integer rowPos = GridPane.getRowIndex(node);
         return columnPos != null && rowPos != null && columnPos == col && rowPos == row;
     }
+
     private void startAfkTimer() {
         stopAfkTimer();
         remainingAfkSeconds = AFK_TIME_LIMIT;
@@ -619,6 +636,7 @@ public class GameBoardPresenter implements Observer {
             afkTimer.pause();
         }
     }
+
     private void continueAfkTimer(){
         if (afkTimer!= null){
             afkTimer.play();
@@ -662,7 +680,6 @@ public class GameBoardPresenter implements Observer {
                 view.getSkipButton().setDisable(true);
                 view.getUndoButton().setDisable(true);
 
-                // voor debugging
                 System.out.println("Timer afgelopen, currentPlayer: " +
                         model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
                 System.out.println("secondMove: " + model.getGame().getCurrentTurn().getSecondMove());

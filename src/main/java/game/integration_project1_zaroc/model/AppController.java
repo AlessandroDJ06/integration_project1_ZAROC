@@ -233,22 +233,38 @@ public class AppController {
                     } else {
                         turns.getLast().setMoveTwo(move);
                     }
+
+
                 }
             }
+
+            int opponentMoves = 0;
+            for (Turn turn : turns) {
+                if (!turn.getCurrentPlayer().getUsername().equals(player1.getUsername())) {
+                    if (turn.getFirstMove() != null) opponentMoves++;
+                    if (turn.getSecondMove() != null) opponentMoves++;
+                }
+            }
+            this.multiplayerService.setLastKnownMoveCount(opponentMoves);
 
 
 
             if (!turns.isEmpty()) {
                 Turn lastTurn = turns.getLast();
                 if (lastTurn.getSecondMove() != null) {
-                    this.game.switchCurrentPlayer();
+                    if (isOnlineMultiplayer && continueInMultiplayer) {
+                        Player nextPlayer = lastTurn.getCurrentPlayer().getUsername()
+                                .equals(player1.getUsername()) ? player2 : player1;
+                        this.game.startNewTurn(nextPlayer);
+                    } else {
+                        this.game.switchCurrentPlayer();
+                    }
                 } else {
                     this.game.startNewTurn(lastTurn.getCurrentPlayer());
                 }
             } else {
                 this.game.startNewTurn(player1);
             }
-
         } catch (ZarocDaoException e) {
             throw new RuntimeException(e);
         }
@@ -267,13 +283,17 @@ public class AppController {
         );
 
         this.game.setGameId(onlineGameId);
-        this.game.getBoard().setupStart(isHost);
+        this.game.getBoard().setupStart(amIHost);
         this.game.setAllowedSave(true);
 
         if (amIHost && !continueInMultiplayer) {
             saveGameParticipations(this.game);
             Player startingPlayer = amIHost ? this.player1 : this.player2;
             this.game.startNewTurn(startingPlayer);
+        } else {
+            this.game.setAllowedSave(false);
+            this.game.startNewTurn(this.player2);
+            this.game.setAllowedSave(true);
         }
 
 
