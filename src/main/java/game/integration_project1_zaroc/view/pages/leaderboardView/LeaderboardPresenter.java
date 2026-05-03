@@ -9,6 +9,7 @@ import game.integration_project1_zaroc.dao.ZarocDaoException;
 
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import javafx.application.Platform;
@@ -39,8 +40,7 @@ public class LeaderboardPresenter {
     private void attachEventHandlers() {
 
         view.getReturnButton().setOnAction(actionEvent ->{
-            Stage stage = (Stage) view.getScene().getWindow();
-            stage.close();
+            NavigationService.closeWindow(this.view);
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
         GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());

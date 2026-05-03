@@ -6,6 +6,7 @@ import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.Player;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import javafx.application.Platform;
@@ -84,7 +85,7 @@ public class MultiPlayerHostPresenter {
                     model.setOnlineMultiplayer(true);
                     model.resumeGame(gameId,true);
                 }
-                closeWindow();
+                NavigationService.closeWindow(this.view);
 
             } catch (ZarocDaoException ex) {
                 System.err.println("Starten mislukt: " + ex.getMessage());
@@ -104,7 +105,7 @@ public class MultiPlayerHostPresenter {
                 showAlert(ex.toString());
             }
 
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
     }
 
@@ -181,11 +182,6 @@ public class MultiPlayerHostPresenter {
         }
     }
 
-
-    private void closeWindow(){
-        Stage stage = (Stage) view.getScene().getWindow();
-        stage.close();
-    }
 
     private void showAlert(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR);

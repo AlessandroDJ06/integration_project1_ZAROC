@@ -4,6 +4,7 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.view.pages.startview.StartPresenter;
 import game.integration_project1_zaroc.view.pages.startview.StartView;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.stage.Stage;
 
@@ -22,25 +23,17 @@ public class PauseScreenPresenter {
         view.getContinueButton().setOnAction(event -> {
             isContinued = true;
             model.getGame().setStatus(GameStatus.PLAYING);
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
         GeneralEventhandlers.addHoverEffect(view.getContinueButton());
 
         view.getReturnButton().setOnAction(event -> {
             model.getGame().setStatus(GameStatus.PAUSED);
-            Stage menuStage = (Stage) ((Stage) view.getScene().getWindow()).getOwner();
-            StartView startView = new StartView(view.getResourceManager());
-            new StartPresenter(model, startView);
-            menuStage.getScene().setRoot(startView);
-            closeWindow();
+            NavigationService.navigateToGameModeSelection(this.view.getResourceManager(),this.model,this.view);
+            NavigationService.closeWindow(this.view);
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
 
-    }
-
-    public void closeWindow(){
-        Stage currentStage = (Stage) view.getScene().getWindow();
-        currentStage.close();
     }
 
     public boolean isContinued(){

@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.view.pages.statisticsview;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.stage.Stage;
@@ -20,8 +21,7 @@ public class StatisticsPresenter {
 
     private void addEventHandlers() {
         view.getReturnButton().setOnAction(event -> {
-            Stage currentStage = (Stage) view.getScene().getWindow();
-            currentStage.close();
+            NavigationService.closeWindow(this.view);
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
     }

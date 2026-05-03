@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.view.pages.createaccountview;
 
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Alert;
@@ -39,7 +40,7 @@ public class CreateAccountPresenter {
 
 
 
-        view.getReturnButton().setOnAction(e -> closeWindow());
+        view.getReturnButton().setOnAction(e -> NavigationService.closeWindow(this.view));
 
         view.getCreateButton().setOnAction(e -> {
             String username = view.getUsername();
@@ -49,7 +50,7 @@ public class CreateAccountPresenter {
 
             try {
                 model.createAccount(username, email, password,profilePicture,isPlayerOne);
-                closeWindow();
+                NavigationService.closeWindow(this.view);
             } catch (ZarocDaoException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
@@ -68,11 +69,6 @@ public class CreateAccountPresenter {
             model.getProfilePicturePickerModel().increaseCurrentIndex();
             updateView();
         });
-    }
-
-    private void closeWindow() {
-        Stage stage = (Stage) view.getScene().getWindow();
-        stage.close();
     }
 
     private void updateView(){

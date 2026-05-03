@@ -11,6 +11,7 @@ module game.integration_project1_zaroc {
     //requires game.integration_project1_zaroc;
     //requires game.integration_project1_zaroc;
     //requires game.integration_project1_zaroc;
+    //requires game.integration_project1_zaroc;
 
     exports game.integration_project1_zaroc;
 }

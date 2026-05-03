@@ -18,6 +18,7 @@ import game.integration_project1_zaroc.view.pages.winscreenview.WinScreenPresent
 import game.integration_project1_zaroc.view.pages.winscreenview.WinScreenView;
 import game.integration_project1_zaroc.view.pages.winwarningview.WinWarningPresenter;
 import game.integration_project1_zaroc.view.pages.winwarningview.WinWarningView;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
 import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
@@ -106,33 +107,11 @@ public class GameBoardPresenter implements Observer {
 
     private void addEventHandlers() {
         view.getSettingsButton().setOnAction(actionEvent -> {
-            SettingsView settingsView = new SettingsView(view.getResourceManager());
-            new SettingsPresenter(settingsView, this.model);
-            Scene settingsScene = new Scene(settingsView);
-            settingsScene.setFill(Color.TRANSPARENT);
-            Stage settingsStage = new Stage();
-            settingsStage.setScene(settingsScene);
-            settingsStage.setTitle("Settings");
-            settingsStage.initStyle(StageStyle.TRANSPARENT);
-            settingsStage.initModality(Modality.APPLICATION_MODAL);
-            settingsStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
-            settingsStage.setResizable(false);
-            settingsStage.showAndWait();
+            NavigationService.navigateToSettings(view.getResourceManager(),this.model).showAndWait();
         });
 
         view.getInfoButton().setOnAction(event -> {
-            RuleView ruleView = new RuleView(view.getResourceManager());
-            new RuleViewPresenter(ruleView, this.model);
-            Scene ruleScene = new Scene(ruleView);
-            ruleScene.setFill(Color.TRANSPARENT);
-            Stage ruleStage = new Stage();
-            ruleStage.setScene(ruleScene);
-            ruleStage.setTitle("Regels");
-            ruleStage.initStyle(StageStyle.TRANSPARENT);
-            ruleStage.initModality(Modality.APPLICATION_MODAL);
-            ruleStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
-            ruleStage.setResizable(false);
-            ruleStage.showAndWait();
+            NavigationService.navigateToRules(view.getResourceManager(),this.model).showAndWait();
         });
 
         view.getUndoButton().setOnAction(e -> {
@@ -251,8 +230,6 @@ public class GameBoardPresenter implements Observer {
             System.out.println("fatal error");
         }
 
-        // Bij online multiplayer kan de guest een lege turns lijst hebben
-        // (host is nog niet begonnen) → geen animatie starten
         if (!model.isOnlineMultiplayer() || model.getGame().getCurrentTurn() != null) {
             if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername()
                     .equals(model.getGame().getParticipation1().getPlayer().getUsername())) {

@@ -6,6 +6,7 @@ import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.Player;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
@@ -106,7 +107,7 @@ public class MultiPlayerGuestPresenter {
             model.getMultiplayerService().stopPolling();
             model.setOnlineMultiplayer(false);
             model.setPlayer2(null);
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
     }
 
@@ -166,7 +167,7 @@ public class MultiPlayerGuestPresenter {
             } else {
                 model.initOnlineGame(currentRoomData.getGameId(), host, guestColor, hostColor, false);
             }
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         } catch (ZarocDaoException e) {
             showAlert("Kan spel niet starten: " + e.getMessage());
         }
@@ -179,10 +180,5 @@ public class MultiPlayerGuestPresenter {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private void closeWindow(){
-        Stage stage = (Stage) view.getScene().getWindow();
-        stage.close();
     }
 }

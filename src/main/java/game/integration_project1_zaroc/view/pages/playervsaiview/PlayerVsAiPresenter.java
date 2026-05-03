@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.view.pages.playervsaiview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.Difficulty;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
@@ -69,7 +70,7 @@ public class PlayerVsAiPresenter {
             btn.setOnAction(e -> {
                 model.setPlayer2(new AIPlayer(ai.difficulty,ai.name));
                 model.getPlayer2().setProfilePicture(ai.name);
-                closeWindow();
+                NavigationService.closeWindow(this.view);
             });
         }
 
@@ -79,13 +80,7 @@ public class PlayerVsAiPresenter {
 
     private void addEventHandlers() {
         view.getReturnButton().setOnAction(e -> {
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
     }
-
-    private void closeWindow(){
-        Stage stage = (Stage) view.getScene().getWindow();
-        stage.close();
-    }
-
 }

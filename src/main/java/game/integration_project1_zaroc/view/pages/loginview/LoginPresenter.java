@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.view.pages.loginview;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -36,7 +37,7 @@ public class LoginPresenter {
         }
 
         view.getReturnButton().setOnAction(event -> {
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
 
         view.getLoginButton().setOnAction(event -> {
@@ -45,7 +46,7 @@ public class LoginPresenter {
 
             try {
                 model.login(username, password,isPlayerOne);
-                closeWindow();
+                NavigationService.closeWindow(this.view);
             } catch (ZarocDaoException e) {
                 if (model.isAllowedToUseDatabase()){
                     showGuestLoginDialog(true,"User not found or password wrong");
@@ -109,13 +110,9 @@ public class LoginPresenter {
                 }
 
                 model.setAllowedToUseDatabase(false);
-                closeWindow();
+                NavigationService.closeWindow(this.view);
             }
         });
     }
 
-    private void closeWindow() {
-        Stage stage = (Stage) view.getScene().getWindow();
-        stage.close();
-    }
 }

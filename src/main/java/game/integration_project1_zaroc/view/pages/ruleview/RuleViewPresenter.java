@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.pages.ruleview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.stage.Stage;
 
@@ -17,8 +18,7 @@ private final RuleView view;
 
     private void addEventHandlers(){
         view.getReturnButton().setOnAction(actionEvent ->{
-            Stage stage = (Stage) view.getScene().getWindow();
-            stage.close();
+            NavigationService.closeWindow(this.view);
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
         GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());

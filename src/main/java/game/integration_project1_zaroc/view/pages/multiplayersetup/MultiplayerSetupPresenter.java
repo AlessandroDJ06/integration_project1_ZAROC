@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.pages.multiplayersetup;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -27,26 +28,22 @@ public class MultiplayerSetupPresenter {
         }
 
         view.getReturnButton().setOnAction(event -> {
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
 
         view.getHostGame().setOnAction(event -> {
             model.setOnlineMultiplayer(true);
             model.setHost(true);
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
 
         view.getJoinGame().setOnAction(event -> {
             model.setOnlineMultiplayer(true);
             model.setHost(false);
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
 
 
     }
 
-    private void closeWindow() {
-        Stage stage = (Stage) view.getScene().getWindow();
-        stage.close();
-    }
 }

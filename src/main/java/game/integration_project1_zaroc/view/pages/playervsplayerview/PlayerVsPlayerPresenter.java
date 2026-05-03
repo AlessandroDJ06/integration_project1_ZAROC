@@ -2,25 +2,13 @@ package game.integration_project1_zaroc.view.pages.playervsplayerview;
 
 import game.integration_project1_zaroc.dao.UnfinishedGame;
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.model.players.Player;
-import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountPresenter;
-import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountView;
-import game.integration_project1_zaroc.view.pages.loginview.LoginPresenter;
-import game.integration_project1_zaroc.view.pages.loginview.LoginView;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 public class PlayerVsPlayerPresenter {
     private PlayerVsPlayerView view;
@@ -42,26 +30,15 @@ public class PlayerVsPlayerPresenter {
         }
         view.getReturnButton().setOnAction(e -> {
             model.setPlayer2(null);
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
 
         view.getStartGame().setOnAction(event -> {
-            closeWindow();
+            NavigationService.closeWindow(this.view);
         });
 
         view.getLoginPlayerTwo().setOnAction(event -> {
-            LoginView loginView = new LoginView(this.view.getResourceManager());
-            new LoginPresenter(this.model, loginView,false);
-            Scene loginScene = new Scene(loginView);
-            loginScene.setFill(Color.TRANSPARENT);
-            Stage loginStage = new Stage();
-            loginStage.setScene(loginScene);
-            loginStage.setTitle("login");
-            loginStage.initStyle(StageStyle.TRANSPARENT);
-            loginStage.initModality(Modality.APPLICATION_MODAL);
-            loginStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
-            loginStage.setResizable(false);
-            loginStage.showAndWait();
+            NavigationService.navigateToLoginView(view.getResourceManager(),this.model,false).showAndWait();
 
             if (model.isContinueInLocalPlayer()){
                 if (model.getPlayer2() != null &&
@@ -83,23 +60,10 @@ public class PlayerVsPlayerPresenter {
                     updateView();
                 }
             }
-
-
         });
 
         view.getCreateAccountPlayerTwo().setOnAction(event -> {
-            CreateAccountView createAccountView = new CreateAccountView(this.view.getResourceManager());
-            new CreateAccountPresenter(this.model, createAccountView,false);
-            Scene createAccountScene = new Scene(createAccountView);
-            createAccountScene.setFill(Color.TRANSPARENT);
-            Stage createAccountStage = new Stage();
-            createAccountStage.setScene(createAccountScene);
-            createAccountStage.setTitle("createAccount");
-            createAccountStage.initStyle(StageStyle.TRANSPARENT);
-            createAccountStage.initModality(Modality.APPLICATION_MODAL);
-            createAccountStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
-            createAccountStage.setResizable(false);
-            createAccountStage.showAndWait();
+            NavigationService.navigateToCreateAccountView(view.getResourceManager(),model,false);
             if (model.getPlayer2() != null) {
                 updateView();
             }
@@ -120,10 +84,5 @@ public class PlayerVsPlayerPresenter {
             view.getContent().getChildren().remove(view.getLoginButtons());
             view.getContent().getChildren().add(view.getPlayerTwoInfo());
         }
-    }
-
-    private void closeWindow(){
-        Stage stage = (Stage) view.getScene().getWindow();
-        stage.close();
     }
 }

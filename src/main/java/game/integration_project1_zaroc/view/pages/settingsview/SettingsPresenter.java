@@ -4,6 +4,7 @@ package game.integration_project1_zaroc.view.pages.settingsview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.selectionslider.ThemePickerModel;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.image.Image;
@@ -44,8 +45,7 @@ public class SettingsPresenter {
 
         // Return Button
         view.getReturnButton().setOnAction(actionEvent -> {
-            Stage stage = (Stage) view.getScene().getWindow();
-            stage.close();
+            NavigationService.closeWindow(this.view);
         });
         GeneralEventhandlers.addHoverEffect(view.getReturnButton());
         GeneralEventhandlers.addSoundEffect(view.getReturnButton(), view.getResourceManager());

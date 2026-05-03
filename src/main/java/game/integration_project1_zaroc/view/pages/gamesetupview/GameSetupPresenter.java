@@ -7,14 +7,11 @@ import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPresenter;
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
-import game.integration_project1_zaroc.view.pages.ruleview.RuleView;
-import game.integration_project1_zaroc.view.pages.ruleview.RuleViewPresenter;
+
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodeView;
-import game.integration_project1_zaroc.view.pages.settingsview.SettingsPresenter;
-import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
-import game.integration_project1_zaroc.view.pages.statisticsview.StatisticsPresenter;
-import game.integration_project1_zaroc.view.pages.statisticsview.StatisticsView;
+
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.animation.KeyFrame;
@@ -24,7 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -116,64 +113,23 @@ public class GameSetupPresenter {
 
         view.getCreateGameButton().setOnAction(event -> {
             model.createGame();
-            GameBoardView GameBoardView = new GameBoardView(this.view.getResourceManager());
-            new GameBoardPresenter(GameBoardView,model);
-            view.getScene().setRoot(GameBoardView);
+            NavigationService.navigateToGameBoard(view.getResourceManager(),this.model,this.view);
         });
 
 
         view.getLeaderBoardButton().setOnAction(actionEvent -> {
-            LeaderboardView leaderboardView = new LeaderboardView(view.getResourceManager());
-            new LeaderboardPresenter(leaderboardView,this.model);
-            Scene leaderboardScene = new Scene(leaderboardView);
-            leaderboardScene.setFill(Color.TRANSPARENT);
-            Stage leaderboardStage = new Stage();
-            leaderboardStage.setScene(leaderboardScene);
-            leaderboardStage.setTitle("Leaderboard");
-            leaderboardStage.initStyle(StageStyle.TRANSPARENT);
-            leaderboardStage.initModality(Modality.APPLICATION_MODAL);
-            leaderboardStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
-            leaderboardStage.setResizable(false);
-            leaderboardStage.showAndWait();
-
+            NavigationService.navigateToLeaderboard(view.getResourceManager(),this.model).showAndWait();
         });
-
-
         view.getInfoButton().setOnAction(event -> {
-            RuleView ruleView = new RuleView(view.getResourceManager());
-            new RuleViewPresenter(ruleView,this.model);
-            Scene ruleScene = new Scene(ruleView);
-            ruleScene.setFill(Color.TRANSPARENT);
-            Stage ruleStage = new Stage();
-            ruleStage.setScene(ruleScene);
-            ruleStage.setTitle("Regels");
-            ruleStage.initStyle(StageStyle.TRANSPARENT);
-            ruleStage.initModality(Modality.APPLICATION_MODAL);
-            ruleStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
-            ruleStage.setResizable(false);
-            ruleStage.showAndWait();
+            NavigationService.navigateToRules(view.getResourceManager(),this.model).showAndWait();
         });
         view.getSettingsButton().setOnAction(actionEvent -> {
-            SettingsView settingsView = new SettingsView(view.getResourceManager());
-            new SettingsPresenter(settingsView,this.model);
-            Scene settingsScene = new Scene(settingsView);
-            settingsScene.setFill(Color.TRANSPARENT);
-            Stage settingsStage = new Stage();
-            settingsStage.setScene(settingsScene);
-            settingsStage.setTitle("Settings");
-            settingsStage.initStyle(StageStyle.TRANSPARENT);
-            settingsStage.initModality(Modality.APPLICATION_MODAL);
-            settingsStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
-            settingsStage.setResizable(false);
-            settingsStage.showAndWait();
-
+            NavigationService.navigateToSettings(view.getResourceManager(),this.model).showAndWait();
         });
 
         view.getReturnButton().setOnAction(event -> {
             model.setPlayer2(null);
-            SelectGamemodeView gamemodeView = new SelectGamemodeView(view.getResourceManager());
-            new SelectGamemodePresenter(model,gamemodeView);
-            view.getScene().setRoot(gamemodeView);
+            NavigationService.navigateToGameModeSelection(view.getResourceManager(),this.model,this.view);
         });
 
     }
