@@ -39,7 +39,7 @@ public class StatisticsPresenter {
         String playstyle = "None";
 
         if(model.getGame() !=null) {
-            playstyle = model.getGame().calculatePlaystyle(player);
+            playstyle = model.getGame().calculateGameStyle();
         }
         int totalGames = model.getTotalGamesPlayed();
         int totalWins = model.getTotalWins();

@@ -67,7 +67,7 @@ public class WinScreenPresenter {
         double avgPlayerMoveDuration = model.getGame().calculatePlayerAvgMoveDuration(model.getPlayer1());
         double durationSeconds = model.getGame().calculateGameDuration();
 
-        String style = model.getGame().calculatePlaystyle(model.getPlayer1());
+        String style = model.getGame().calculateGameStyle();
 
         view.getPlayerWon().setText(model.getGame().getWinner().getUsername().toUpperCase() + " WON!");
 
