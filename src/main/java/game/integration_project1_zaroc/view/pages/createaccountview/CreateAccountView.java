@@ -1,5 +1,6 @@
 package game.integration_project1_zaroc.view.pages.createaccountview;
 
+import game.integration_project1_zaroc.view.components.buttons.GeneralActionsComponent;
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.components.slidercomponents.ImageSliderComponent;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
@@ -14,8 +15,8 @@ import javafx.scene.paint.Color;
 
 public class CreateAccountView extends BorderPane {
     private ResourceManager resourceManager;
-    private Button returnButton;
-    private Button createButton;
+    private TextButton returnButton;
+    private TextButton createButton;
 
     private ImageSliderComponent profilePicturePicker;
     private TextField nameField;
@@ -29,6 +30,9 @@ public class CreateAccountView extends BorderPane {
     }
 
     private void initialiseNodes() {
+        returnButton.updateLayout();
+        createButton.updateLayout();
+
         this.returnButton = new TextButton(resourceManager, "←");
         this.createButton = new TextButton(resourceManager, "CREATE ACCOUNT");
 
@@ -44,7 +48,7 @@ public class CreateAccountView extends BorderPane {
         this.passwordField.setPromptText("Type password...");
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
         setBackground(new Background(LayoutHelpers.setBackground(this.resourceManager, 550, 650)));
         this.setPrefSize(550, 650);
         this.setMaxSize(550, 650);

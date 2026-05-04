@@ -19,10 +19,10 @@ import javafx.scene.paint.Color;
 public class MultiPlayerGuestView extends BorderPane {
 
     private ResourceManager resourceManager;
-    private Button returnButton;
+    private TextButton returnButton;
 
     private TextField roomCodeInput;
-    private Button joinButton;
+    private LongButtonComponent joinButton;
     private Label statusLabel;
 
     private ImageView guestPfpView;
@@ -59,7 +59,9 @@ public class MultiPlayerGuestView extends BorderPane {
         this.hostColor = new ImageView();
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
+        returnButton.updateLayout();
+        joinButton.updateLayout();
         BorderPane centralContainer = new BorderPane();
         centralContainer.setBackground(new Background(new BackgroundImage(
                 resourceManager.getImage(Components.LARGECONTAINER),

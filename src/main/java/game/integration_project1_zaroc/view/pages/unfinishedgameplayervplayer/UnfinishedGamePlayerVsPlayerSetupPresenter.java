@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.view.pages.unfinishedgameplayervplayer;
 import game.integration_project1_zaroc.dao.UnfinishedGame;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.Player;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPlayerPresenter;
 import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPlayerView;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
@@ -19,7 +20,7 @@ import javafx.stage.StageStyle;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class UnfinishedGamePlayerVsPlayerSetupPresenter {
+public class UnfinishedGamePlayerVsPlayerSetupPresenter implements Observer {
     private UnfinishedGamePlayerVsPlayerSetupView view;
     private AppController model;
     private UnfinishedGame playerTwo;
@@ -28,6 +29,7 @@ public class UnfinishedGamePlayerVsPlayerSetupPresenter {
         this.view = view;
         this.model = model;
         this.playerTwo = playerTwo;
+        view.getResourceManager().addObserver(this);
         addEventHandlers();
     }
 
@@ -59,5 +61,10 @@ public class UnfinishedGamePlayerVsPlayerSetupPresenter {
         });
 
 
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

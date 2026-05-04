@@ -20,12 +20,12 @@ import javafx.scene.paint.Color;
 public class GameSetupView extends BorderPane {
     private ResourceManager resourceManager;
 
-    private Button profileButton;
-    private Button settingsButton;
-    private Button infoButton;
-    private Button leaderBoardButton;
-    private Button returnButton;
-    private Button createGameButton;
+    private GeneralActionsComponent profileButton;
+    private GeneralActionsComponent settingsButton;
+    private GeneralActionsComponent infoButton;
+    private LongButtonComponent leaderBoardButton;
+    private TextButton returnButton;
+    private TextButton createGameButton;
     private ImageSliderComponent colorPickerOne;
     private ImageSliderComponent colorPickerTwo;
     private TextSliderComponent startingPlayerPicker;
@@ -48,7 +48,14 @@ public class GameSetupView extends BorderPane {
         this.startingPlayerPicker = new TextSliderComponent(resourceManager);
     }
 
-    public void layoutNodes(){
+    void layoutNodes(){
+        profileButton.updateLayout();
+        settingsButton.updateLayout();
+        infoButton.updateLayout();
+        leaderBoardButton.updateLayout();
+        returnButton.updateLayout();
+        createGameButton.updateLayout();
+
         //center container (settings)
         BorderPane centraContainer = new BorderPane();
         centraContainer.setBackground(new Background(LayoutHelpers.setBackground(resourceManager,100,100)));

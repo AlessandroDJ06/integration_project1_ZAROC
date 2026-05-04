@@ -14,9 +14,9 @@ import javafx.scene.paint.Color;
 
 public class MultiplayerSetupView extends BorderPane {
     private ResourceManager resourceManager;
-    private Button returnButton;
-    private Button hostGame;
-    private Button joinGame;
+    private TextButton returnButton;
+    private LongButtonComponent hostGame;
+    private LongButtonComponent joinGame;
 
 
     public MultiplayerSetupView(ResourceManager resourceManager){
@@ -32,7 +32,10 @@ public class MultiplayerSetupView extends BorderPane {
         this.joinGame= new LongButtonComponent(resourceManager,"Join as guest");
     }
 
-    private void layoutNodes(){
+    void layoutNodes(){
+        returnButton.updateLayout();
+        hostGame.updateLayout();
+        joinGame.updateLayout();
         setBackground(new Background(LayoutHelpers.setBackground(this.resourceManager, 550, 650)));
         this.setPrefSize(550, 650);
         this.setMaxSize(550, 650);

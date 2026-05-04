@@ -1,17 +1,19 @@
 package game.integration_project1_zaroc.view.pages.selectgamemodeview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
 import java.util.Arrays;
 
-public class SelectGamemodePresenter {
+public class SelectGamemodePresenter implements Observer {
     private SelectGamemodeView view;
     private AppController model;
 
     public SelectGamemodePresenter(AppController model, SelectGamemodeView view) {
         this.view = view;
+        view.getResourceManager().addObserver(this);
         this.model = model;
         addEventHandlers();
     }
@@ -82,6 +84,11 @@ public class SelectGamemodePresenter {
         if (model.getGame() != null) {
             NavigationService.navigateToGameBoard(view.getResourceManager(), this.model, this.view);
         }
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 
 }

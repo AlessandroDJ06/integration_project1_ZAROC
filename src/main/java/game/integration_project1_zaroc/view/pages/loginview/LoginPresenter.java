@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.view.pages.loginview;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.Node;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LoginPresenter {
+public class LoginPresenter implements Observer {
     private AppController model;
     private LoginView view;
     private boolean isPlayerOne;
@@ -23,6 +24,7 @@ public class LoginPresenter {
         this.model = model;
         this.view = view;
         this.isPlayerOne = isPlayerOne;
+        view.getResourceManager().addObserver(this);
         addEventHandlers();
     }
 
@@ -113,6 +115,11 @@ public class LoginPresenter {
                 NavigationService.closeWindow(this.view);
             }
         });
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 
 }

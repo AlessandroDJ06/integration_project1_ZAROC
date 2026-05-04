@@ -12,6 +12,11 @@ public class TextButton extends Button {
 
     public TextButton(ResourceManager resourceManager, String text){
         super(text);
+        this.resourceManager = resourceManager;
+        updateLayout();
+    }
+
+    public void updateLayout(){
         setBackground(Background.EMPTY);
         setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         setTextFill(Color.web(resourceManager.getTheme().getTextColor()));

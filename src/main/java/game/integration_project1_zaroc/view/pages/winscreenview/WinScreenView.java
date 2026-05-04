@@ -43,7 +43,7 @@ public class WinScreenView extends BorderPane {
         playerStatsTitle = new Label("Player stats");
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
         VBox gameStatsVBox = new VBox(gameStatsTitle, gameStats);
         gameStatsVBox.setAlignment(Pos.TOP_RIGHT);
         gameStatsVBox.setSpacing(10);

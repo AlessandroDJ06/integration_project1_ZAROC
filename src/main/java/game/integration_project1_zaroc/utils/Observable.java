@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Observable {
-    private List<Observer> observers;
+    private List<Observer> observers = new ArrayList<>();
 
-    public Observable(){
-        this.observers = new ArrayList<>();
-    }
-
-    public void addObserver(Observer observer){
+    public void addObserver(Observer observer) {
         this.observers.add(observer);
     }
 
-    public void notifyObservers(Object args){
-        for (Observer observer : observers){
+    public void notifyObservers(Object args) {
+        for (Observer observer : observers) {
             observer.update(args);
+        }
+    }
+
+    public void notifyLayout(Object args) {
+        for (Observer observer : observers) {
+            observer.updateLayout(args);
         }
     }
 }

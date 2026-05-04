@@ -2,13 +2,14 @@ package game.integration_project1_zaroc.view.pages.pausescreenview;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.pages.startview.StartPresenter;
 import game.integration_project1_zaroc.view.pages.startview.StartView;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.stage.Stage;
 
-public class PauseScreenPresenter {
+public class PauseScreenPresenter implements Observer {
     private PauseScreenView view;
     private AppController model;
     private boolean isContinued = false;
@@ -16,6 +17,7 @@ public class PauseScreenPresenter {
     public PauseScreenPresenter(PauseScreenView view, AppController model) {
         this.view = view;
         this.model = model;
+        view.getResourceManager().addObserver(this);
         addEventHandlers();
     }
 
@@ -39,6 +41,12 @@ public class PauseScreenPresenter {
     public boolean isContinued(){
         return isContinued;
     }
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
+    }
+
+
 
 

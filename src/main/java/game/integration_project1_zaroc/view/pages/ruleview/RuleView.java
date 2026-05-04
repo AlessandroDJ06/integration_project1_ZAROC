@@ -31,7 +31,8 @@ public class RuleView extends BorderPane {
         returnButton = new TextButton(resourceManager, "X");
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
+        returnButton.updateLayout();
         this.setPrefSize(700, 700);
         this.setMaxSize(700, 700);
 

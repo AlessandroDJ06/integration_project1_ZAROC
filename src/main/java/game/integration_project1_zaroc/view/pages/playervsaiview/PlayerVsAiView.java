@@ -37,7 +37,8 @@ public class PlayerVsAiView extends BorderPane {
         this.aiGrid = new GridPane();
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
+        returnButton.updateLayout();
         BorderPane centralContainer = new BorderPane();
         centralContainer.setBackground(new Background(new BackgroundImage(
                 resourceManager.getImage(Components.LARGECONTAINER),

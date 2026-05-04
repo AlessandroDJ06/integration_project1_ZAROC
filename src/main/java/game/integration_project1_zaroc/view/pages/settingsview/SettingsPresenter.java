@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.view.pages.settingsview;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.selectionslider.ThemePickerModel;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
@@ -11,7 +12,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 
-public class SettingsPresenter {
+public class SettingsPresenter implements Observer {
 
     private SettingsView view;
     private AppController model;
@@ -20,6 +21,7 @@ public class SettingsPresenter {
     public SettingsPresenter(SettingsView view, AppController model) {
         this.view = view;
         this.model = model;
+        view.getResourceManager().addObserver(this);
         this.themePickerModel = model.getThemePickerModel();
 
         // Initialiseer de sliders op basis van de huidige waarden in de managers
@@ -90,5 +92,10 @@ public class SettingsPresenter {
 
     public void setResourceManagerTheme(Themes theme) {
         view.getResourceManager().setTheme(theme);
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

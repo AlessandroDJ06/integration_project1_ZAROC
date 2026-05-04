@@ -14,10 +14,10 @@ public class GeneralActionsComponent extends Button {
     public GeneralActionsComponent(ResourceManager resourceManager,Components path){
         this.resourceManager = resourceManager;
         this.component = path;
-        layoutNodes();
+        updateLayout();
     }
 
-    public void layoutNodes(){
+    public void updateLayout(){
         ImageView imageView = new ImageView(resourceManager.getImage(component));
         imageView.setFitHeight(88);
         imageView.setFitWidth(88);

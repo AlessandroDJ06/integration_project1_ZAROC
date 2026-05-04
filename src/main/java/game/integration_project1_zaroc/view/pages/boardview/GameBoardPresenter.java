@@ -73,6 +73,7 @@ public class GameBoardPresenter implements Observer {
     public GameBoardPresenter(GameBoardView view, AppController model) {
         this.view = view;
         this.model = model;
+        view.getResourceManager().addObserver(this);
         this.rows = Arrays.asList(view.getPegRowFour(), view.getPegRowThree(), view.getPegRowTwo());
         this.buttons = Arrays.asList(view.getUndoButton(), view.getSettingsButton(), view.getInfoButton());
         this.player1Animation = createPulseAnimation(view.getPlayersPlayingComponent().getFirstPlayer());
@@ -749,5 +750,10 @@ public class GameBoardPresenter implements Observer {
         }
 
         highlightAnimation.play();
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+            view.layoutNodes();
     }
 }

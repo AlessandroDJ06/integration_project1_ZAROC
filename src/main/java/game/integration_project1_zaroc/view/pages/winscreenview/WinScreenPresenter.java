@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.view.pages.winscreenview;
 
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupPresenter;
 import game.integration_project1_zaroc.view.pages.gamesetupview.GameSetupView;
 import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamemodePresenter;
@@ -9,7 +10,7 @@ import game.integration_project1_zaroc.view.pages.selectgamemodeview.SelectGamem
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.stage.Stage;
 
-public class WinScreenPresenter {
+public class WinScreenPresenter implements Observer {
     private AppController model;
     private WinScreenView view;
 
@@ -18,6 +19,7 @@ public class WinScreenPresenter {
     public WinScreenPresenter(WinScreenView view,AppController model){
         this.view = view;
         this.model = model;
+        view.getResourceManager().addObserver(this);
         updateInfo();
         addEventHandlers();
     }
@@ -100,6 +102,11 @@ public class WinScreenPresenter {
 
         view.getGameStats().setText(gameStats);
         view.getPlayerStats().setText(playerStats);
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 
     }

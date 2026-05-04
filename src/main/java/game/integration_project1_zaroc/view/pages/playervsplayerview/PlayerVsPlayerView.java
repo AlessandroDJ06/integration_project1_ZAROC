@@ -14,7 +14,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 public class PlayerVsPlayerView extends BorderPane {
-    private Button returnButton;
+    private TextButton returnButton;
     private ResourceManager resourceManager;
 
     private ImageView playerOnePfp;
@@ -23,9 +23,9 @@ public class PlayerVsPlayerView extends BorderPane {
     private ImageView playerTwoPfp;
     private Label playerTwoName;
 
-    private Button loginPlayerTwo;
-    private Button createAccountPlayerTwo;
-    private Button startGame;
+    private LongButtonComponent loginPlayerTwo;
+    private LongButtonComponent createAccountPlayerTwo;
+    private LongButtonComponent startGame;
 
     private VBox loginButtons;
     private VBox playerTwoInfo;
@@ -58,7 +58,12 @@ public class PlayerVsPlayerView extends BorderPane {
         this.content = new HBox();
     }
 
-    private void layoutNodes(){
+    void layoutNodes(){
+        returnButton.updateLayout();
+        loginPlayerTwo.updateLayout();
+        createAccountPlayerTwo.updateLayout();
+        startGame.updateLayout();
+
         BorderPane centralContainer = new BorderPane();
         centralContainer.setBackground(new Background(new BackgroundImage(
                 resourceManager.getImage(Components.LARGECONTAINER),

@@ -32,7 +32,7 @@ public class UnfinishedGamePlayerVsPlayerSetupView extends BorderPane {
         this.multiplayerGame = new LongButtonComponent(resourceManager,"Play online");
     }
 
-    private void layoutNodes(){
+    void layoutNodes(){
         setBackground(new Background(LayoutHelpers.setBackground(this.resourceManager, 550, 650)));
         this.setPrefSize(550, 650);
         this.setMaxSize(550, 650);

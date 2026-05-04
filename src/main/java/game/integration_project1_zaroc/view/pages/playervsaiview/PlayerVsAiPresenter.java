@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.view.pages.playervsaiview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.Difficulty;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerVsAiPresenter {
+public class PlayerVsAiPresenter implements Observer {
     private PlayerVsAiView view;
     private AppController model;
     private Map<Button, AiInfo> aiDataMap = new HashMap<>();
@@ -20,6 +21,7 @@ public class PlayerVsAiPresenter {
     public PlayerVsAiPresenter(PlayerVsAiView view, AppController model) {
         this.view = view;
         this.model = model;
+        view.getResourceManager().addObserver(this);
         initialiseGrid();
         addEventHandlers();
     }
@@ -82,5 +84,9 @@ public class PlayerVsAiPresenter {
         view.getReturnButton().setOnAction(e -> {
             NavigationService.closeWindow(this.view);
         });
+    }
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

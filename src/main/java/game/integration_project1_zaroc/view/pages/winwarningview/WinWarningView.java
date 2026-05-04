@@ -29,7 +29,7 @@ public class WinWarningView extends BorderPane {
         matchPoint = new Label("MATCH POINT!");
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
         this.winWarning.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
         this.matchPoint.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
 
@@ -68,5 +68,9 @@ public class WinWarningView extends BorderPane {
 
     public Label getWinWarning() {
         return winWarning;
+    }
+
+    ResourceManager getResourceManager() {
+        return resourceManager;
     }
 }

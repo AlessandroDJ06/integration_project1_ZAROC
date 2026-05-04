@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.view.pages.playervsplayerview;
 
 import game.integration_project1_zaroc.dao.UnfinishedGame;
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
@@ -10,7 +11,7 @@ import javafx.scene.control.Button;
 
 import java.util.Arrays;
 
-public class PlayerVsPlayerPresenter {
+public class PlayerVsPlayerPresenter implements Observer {
     private PlayerVsPlayerView view;
     private AppController model;
     private UnfinishedGame playerTwo;
@@ -19,6 +20,7 @@ public class PlayerVsPlayerPresenter {
         this.view = view;
         this.model = model;
         this.playerTwo = playerTwo;
+        view.getResourceManager().addObserver(this);
         addEventHandlers();
         updateView();
     }
@@ -84,5 +86,10 @@ public class PlayerVsPlayerPresenter {
             view.getContent().getChildren().remove(view.getLoginButtons());
             view.getContent().getChildren().add(view.getPlayerTwoInfo());
         }
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

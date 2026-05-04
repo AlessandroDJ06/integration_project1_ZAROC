@@ -22,9 +22,9 @@ public class SelectGamemodeView extends BorderPane {
     private Button multiPlayerButton;
     private LongButtonComponent unfinishedGamesButton;
 
-    private Button settingsButton;
-    private Button infoButton;
-    private Button profileButton;
+    private GeneralActionsComponent settingsButton;
+    private GeneralActionsComponent infoButton;
+    private GeneralActionsComponent profileButton;
 
 
     public SelectGamemodeView(ResourceManager resourceManager){
@@ -45,7 +45,11 @@ public class SelectGamemodeView extends BorderPane {
 
     }
 
-    private void layoutNodes(){
+    void layoutNodes(){
+        settingsButton.updateLayout();
+        infoButton.updateLayout();
+        profileButton.updateLayout();
+        unfinishedGamesButton.updateLayout();
         BorderPane centralContainer = new BorderPane();
         Image boardBackgroundImage = resourceManager.getImage(Components.LARGECONTAINER);
         BackgroundSize backgroundSize = new BackgroundSize(600, 440, true, true, true, false);

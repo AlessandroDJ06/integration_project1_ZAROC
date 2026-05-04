@@ -2,6 +2,7 @@ package game.integration_project1_zaroc.view.pages.createaccountview;
 
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreateAccountPresenter {
+public class CreateAccountPresenter implements Observer {
     private AppController model;
     private CreateAccountView view;
     private boolean isPlayerOne;
@@ -21,6 +22,7 @@ public class CreateAccountPresenter {
         this.model = model;
         this.view = view;
         this.isPlayerOne = isPlayerOne;
+        view.getResourceManager().addObserver(this);
         addEventHandlers();
         updateView();
     }
@@ -73,5 +75,9 @@ public class CreateAccountPresenter {
 
     private void updateView(){
         view.getProfilePicturePicker().getImageView().setImage(view.getResourceManager().getProfilePicture(ProfilePictures.values()[model.getProfilePicturePickerModel().getCurrentIndex()]));
+    }
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

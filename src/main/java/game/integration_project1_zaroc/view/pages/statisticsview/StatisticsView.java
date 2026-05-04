@@ -54,7 +54,7 @@ public class StatisticsView extends BorderPane {
         guestLabel = new Label("You are playing as a guest,\nlog in to save stats!");
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
 
         Image boardBackgroundImage = resourceManager.getImage(Components.PEGVIEW);
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);

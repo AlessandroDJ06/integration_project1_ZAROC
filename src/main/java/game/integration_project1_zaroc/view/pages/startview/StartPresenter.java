@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.pages.startview;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class StartPresenter {
+public class StartPresenter implements Observer {
     private AppController model;
     private StartView view;
     private List<Button> buttons;
@@ -16,6 +17,7 @@ public class StartPresenter {
     public StartPresenter(AppController model , StartView view){
         this.model = model;
         this.view = view;
+        view.getResourceManager().addObserver(this);
         this.buttons = Arrays.asList(
                 view.getInfoButton(),
                 view.getSettingsButton(),
@@ -53,7 +55,10 @@ public class StartPresenter {
         view.getSettingsButton().setOnAction(actionEvent -> {
             NavigationService.navigateToSettings(view.getResourceManager(),this.model).showAndWait();
         });
+    }
 
-
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

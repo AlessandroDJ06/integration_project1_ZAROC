@@ -1,6 +1,7 @@
 package game.integration_project1_zaroc.view.pages.multiplayersetup;
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Button;
@@ -8,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.util.Arrays;
 
-public class MultiplayerSetupPresenter {
+public class MultiplayerSetupPresenter implements Observer {
     private MultiplayerSetupView view;
     private AppController model;
 
@@ -44,6 +45,11 @@ public class MultiplayerSetupPresenter {
         });
 
 
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 
 }

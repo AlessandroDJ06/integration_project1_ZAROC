@@ -17,9 +17,9 @@ import javafx.scene.paint.Color;
 
 public class LoginView extends BorderPane {
     private ResourceManager resourceManager;
-    private Button returnButton;
-    private Button loginButton;
-    private Button playAsGuest;
+    private TextButton returnButton;
+    private TextButton loginButton;
+    private TextButton playAsGuest;
 
     private TextField nameField;
     private PasswordField passwordField;
@@ -30,7 +30,7 @@ public class LoginView extends BorderPane {
         layoutNodes();
     }
 
-    private void initialiseNodes(){
+    void initialiseNodes(){
         this.returnButton = new TextButton(resourceManager,"←");
         this.loginButton = new TextButton(resourceManager,"LOGIN");
 
@@ -43,7 +43,11 @@ public class LoginView extends BorderPane {
         this.playAsGuest = new TextButton(resourceManager,"GUEST LOGIN");
     }
 
-    private void layoutNodes(){
+    void layoutNodes(){
+        loginButton.updateLayout();
+        returnButton.updateLayout();
+        playAsGuest.updateLayout();
+
         setBackground(new Background(LayoutHelpers.setBackground(this.resourceManager,550,650)));
         this.setPrefSize(550,650);
         this.setMaxSize(550,650);

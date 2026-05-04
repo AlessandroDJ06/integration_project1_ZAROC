@@ -30,7 +30,9 @@ public class PauseScreenView extends BorderPane {
         returnButton = new LongButtonComponent(resourceManager, "Return to menu");
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
+        continueButton.updateLayout();
+        returnButton.updateLayout();
         gamePaused.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));
         gamePaused.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         noteUnfinishedGame.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));

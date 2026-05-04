@@ -29,10 +29,10 @@ public class ShortButtonComponent extends Button {
         this.resourceManager = resourceManager;
         this.width = width;
         this.height = height;
-        layoutNodes();
+        updateLayout();
     }
 
-    public void layoutNodes(){
+    public void updateLayout(){
         ImageView imageView = new ImageView(resourceManager.getImage(Components.UNIVERSAL));
         imageView.setFitWidth(width);
         imageView.setFitHeight(height);

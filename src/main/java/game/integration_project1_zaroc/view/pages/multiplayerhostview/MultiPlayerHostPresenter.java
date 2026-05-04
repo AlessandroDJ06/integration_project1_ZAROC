@@ -6,6 +6,7 @@ import game.integration_project1_zaroc.dao.ZarocDaoException;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.players.Player;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
@@ -13,7 +14,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
-public class MultiPlayerHostPresenter {
+public class MultiPlayerHostPresenter implements Observer {
 
     private MultiPlayerHostView view;
     private AppController model;
@@ -29,6 +30,7 @@ public class MultiPlayerHostPresenter {
         this.playersDao = new PlayersDao();
         this.existingGameId = existingGameId;
         this.continueMultiplayerGame = model.isContinueInMultiplayer();
+        view.getResourceManager().addObserver(this);
         updateView();
         initLobby();
         addEventHandlers();
@@ -190,5 +192,10 @@ public class MultiPlayerHostPresenter {
         alert.setContentText(message);
 
         alert.showAndWait();
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

@@ -1,4 +1,5 @@
 package game.integration_project1_zaroc.view.sharedlogic.resource_manager;
+import game.integration_project1_zaroc.utils.Observable;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnColorPaths;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncolors.PawnSideViews;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ResourceManager {
+public class ResourceManager extends Observable {
     private  Map<String, Image> loadedImages;
     private  Map<String, Image> loadedProfileImages;
     private  Map<Fonts, Font> loadedFonts;
@@ -98,18 +99,6 @@ public class ResourceManager {
         return loadedSideViews.get(sideView);
     }
 
-    public byte[] getNeuralNetworkModel() {
-        String path = "/game/integration_project1_zaroc/neuralnetwork/zaroc_model.onnx";
-        try (java.io.InputStream is = getClass().getResourceAsStream(path)) {
-            if (is == null) {
-                throw new RuntimeException("AI Model niet gevonden op pad: " + path);
-            }
-            return is.readAllBytes();
-        } catch (java.io.IOException e) {
-            throw new RuntimeException("Fout bij het laden van het AI model", e);
-        }
-    }
-
     public Themes getTheme() {
         return theme;
     }
@@ -122,5 +111,8 @@ public class ResourceManager {
         return musicManager;
     }
 
-    public void setTheme(Themes theme){this.theme = theme;}
+    public void setTheme(Themes theme){
+        this.theme = theme;
+        notifyLayout(theme);
+    }
 }

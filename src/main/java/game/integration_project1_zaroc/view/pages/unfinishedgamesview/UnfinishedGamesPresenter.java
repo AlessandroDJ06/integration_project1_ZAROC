@@ -7,6 +7,7 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.players.AIPlayer;
 import game.integration_project1_zaroc.model.players.HumanPlayer;
 import game.integration_project1_zaroc.model.players.Player;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.components.GameListCell;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
@@ -18,7 +19,9 @@ import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPla
 import game.integration_project1_zaroc.view.pages.playervsplayerview.PlayerVsPlayerView;
 import game.integration_project1_zaroc.view.pages.unfinishedgameplayervplayer.UnfinishedGamePlayerVsPlayerSetupPresenter;
 import game.integration_project1_zaroc.view.pages.unfinishedgameplayervplayer.UnfinishedGamePlayerVsPlayerSetupView;
+import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
+import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -32,7 +35,7 @@ import javafx.stage.StageStyle;
 import java.util.List;
 import java.util.Objects;
 
-public class UnfinishedGamesPresenter {
+public class UnfinishedGamesPresenter implements Observer {
     private UnfinishedGamesView view;
     private AppController model;
     private UnfinishedGamesDao unfinishedGamesDao;
@@ -45,12 +48,19 @@ public class UnfinishedGamesPresenter {
         this.view = view;
         this.unfinishedGamesDao = new UnfinishedGamesDao();
         this.continueMultiplayer = false;
+        view.getResourceManager().addObserver(this);
         this.playerTwo = null;
         this.selectedGameId = -1;
         addEventHandlers();
     }
 
     private void addEventHandlers(){
+        view.getReturnButton().setOnAction(event -> {
+            NavigationService.closeWindow(this.view);
+        });
+        GeneralEventhandlers.addHoverEffect(view.getReturnButton());
+
+
         getUnfinishedGames();
 
         view.getUnfinishedGames().setOnMouseClicked(event -> {
@@ -173,5 +183,10 @@ public class UnfinishedGamesPresenter {
 
     public int getSelectedGameId() {
         return selectedGameId;
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

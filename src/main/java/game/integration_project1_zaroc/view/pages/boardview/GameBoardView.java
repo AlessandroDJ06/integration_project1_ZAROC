@@ -22,9 +22,9 @@ import java.util.List;
 public class GameBoardView extends BorderPane {
 
     private BoardComponent board;
-    private Button undoButton;
-    private Button settingsButton;
-    private Button infoButton;
+    private GeneralActionsComponent undoButton;
+    private GeneralActionsComponent settingsButton;
+    private GeneralActionsComponent infoButton;
     private ResourceManager resourceManager;
     private PlayersPlayingComponent playersPlayingComponent;
     private PegSideViewComponent pegView;
@@ -50,7 +50,11 @@ public class GameBoardView extends BorderPane {
         this.skipButton = new TextButton(resourceManager, "SKIP");
     }
 
-    public void layoutNodes() {
+    void layoutNodes() {
+        settingsButton.updateLayout();
+        infoButton.updateLayout();
+        undoButton.updateLayout();
+
         playersPlayingComponent.setPlayerOnePfp(ProfilePictures.JAMES);
         playersPlayingComponent.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
 

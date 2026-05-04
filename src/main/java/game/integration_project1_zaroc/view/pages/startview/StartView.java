@@ -18,11 +18,11 @@ import javafx.scene.paint.Color;
 public class StartView extends BorderPane {
     private ResourceManager resourceManager;
 
-    private Button loginButton;
-    private Button createAccountButton;
-    private Button leaderboardButton;
-    private Button settingsButton;
-    private Button infoButton;
+    private LongButtonComponent loginButton;
+    private LongButtonComponent createAccountButton;
+    private LongButtonComponent leaderboardButton;
+    private GeneralActionsComponent settingsButton;
+    private GeneralActionsComponent infoButton;
 
 
 
@@ -40,7 +40,13 @@ public class StartView extends BorderPane {
         this.infoButton = new GeneralActionsComponent(resourceManager,Components.RULES);
     }
 
-    private void layoutNodes(){
+    void layoutNodes(){
+        settingsButton.updateLayout();
+        infoButton.updateLayout();
+        loginButton.updateLayout();
+        createAccountButton.updateLayout();
+        leaderboardButton.updateLayout();
+
         VBox infoAndSettingsVbox = new VBox(this.settingsButton,this.infoButton);
         setRight(infoAndSettingsVbox);
         BorderPane.setAlignment(infoAndSettingsVbox, Pos.TOP_RIGHT);
@@ -67,24 +73,23 @@ public class StartView extends BorderPane {
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
     }
 
-    Button getLoginButton() {
+    LongButtonComponent getLoginButton() {
         return loginButton;
     }
-
-    Button getCreateAccountButton() {
-        return createAccountButton;
+    GeneralActionsComponent getInfoButton() {
+        return infoButton;
     }
 
-    Button getLeaderboardButton() {
-        return leaderboardButton;
-    }
-
-    Button getSettingsButton() {
+    GeneralActionsComponent getSettingsButton() {
         return settingsButton;
     }
 
-    Button getInfoButton() {
-        return infoButton;
+    LongButtonComponent getLeaderboardButton() {
+        return leaderboardButton;
+    }
+
+    LongButtonComponent getCreateAccountButton() {
+        return createAccountButton;
     }
 
     ResourceManager getResourceManager() {

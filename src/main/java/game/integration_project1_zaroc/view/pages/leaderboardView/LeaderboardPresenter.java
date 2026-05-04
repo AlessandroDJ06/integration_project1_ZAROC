@@ -9,6 +9,7 @@ import game.integration_project1_zaroc.dao.ZarocDaoException;
 
 
 import game.integration_project1_zaroc.model.AppController;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
@@ -21,11 +22,12 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class LeaderboardPresenter {
+public class LeaderboardPresenter implements Observer {
 
     private final LeaderboardView view;
     private final LeaderboardDao dao;
     private AppController model;
+
 
     private List<LeaderboardEntry> cachedEntries = new ArrayList<>();
 
@@ -33,6 +35,7 @@ public class LeaderboardPresenter {
         this.view = view;
         this.model =appController;
         this.dao  = new LeaderboardDao();
+        view.getResourceManager().addObserver(this);
         attachEventHandlers();
         loadLeaderboard();
     }
@@ -105,6 +108,11 @@ private void applySortAndDisplay(String sortOption) {
 
         dbThread.setDaemon(true);
         dbThread.start();
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 
     }

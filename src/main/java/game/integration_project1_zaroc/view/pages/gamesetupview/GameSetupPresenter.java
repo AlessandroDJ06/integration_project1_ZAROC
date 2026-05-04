@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.view.pages.gamesetupview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.selectionslider.PawnColorPickerModel;
 import game.integration_project1_zaroc.model.selectionslider.StartingPlayerSelector;
+import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardPresenter;
@@ -31,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class GameSetupPresenter {
+public class GameSetupPresenter implements Observer {
     private AppController model;
     private GameSetupView view;
     private List<Button> buttons;
@@ -44,6 +45,7 @@ public class GameSetupPresenter {
     public GameSetupPresenter(GameSetupView view , AppController appController){
         this.view = view;
         this.model = appController;
+        view.getResourceManager().addObserver(this);
         this.buttons = Arrays.asList(
                 view.getProfileButton(),
                 view.getSettingsButton(),
@@ -158,5 +160,10 @@ public class GameSetupPresenter {
 
         pulse.getKeyFrames().add(kf);
         pulse.play();
+    }
+
+    @Override
+    public void updateLayout(Object args) {
+        view.layoutNodes();
     }
 }

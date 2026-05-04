@@ -44,7 +44,8 @@ public class LeaderboardView extends BorderPane {
         sortDropdown.setValue("Win Rate");
     }
 
-    private void layoutNodes() {
+    void layoutNodes() {
+        returnButton.updateLayout();
         this.setPrefWidth(1052);
 
         String themeColor = resourceManager.getTheme().getColor();

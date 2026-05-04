@@ -18,10 +18,10 @@ public class LongButtonComponent extends Button {
     public LongButtonComponent(ResourceManager resourceManager,String text){
         super(text);
         this.resourceManager = resourceManager;
-        layoutNodes();
+        updateLayout();
     }
 
-    public void layoutNodes(){
+    public void updateLayout(){
         setGraphic(new ImageView(resourceManager.getImage(Components.UNIVERSAL)));
         setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));

@@ -44,7 +44,7 @@ public class SettingsView extends BorderPane {
         layoutNodes();
     }
 
-    public void initialiseNodes() {
+    void initialiseNodes() {
         returnButton = new TextButton(resourceManager, "X");
         volume = new Slider(0, 10, 10);
         sound = new Slider(0, 10, 10);
@@ -77,6 +77,7 @@ public class SettingsView extends BorderPane {
     }
 
     public void layoutNodes() {
+        returnButton.updateLayout();
         this.setPrefSize(600, 340);
         this.setMaxSize(600, 340);
         this.setMinSize(600, 340);
