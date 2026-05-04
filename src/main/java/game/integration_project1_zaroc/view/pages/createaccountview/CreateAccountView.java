@@ -30,8 +30,7 @@ public class CreateAccountView extends BorderPane {
     }
 
     private void initialiseNodes() {
-        returnButton.updateLayout();
-        createButton.updateLayout();
+
 
         this.returnButton = new TextButton(resourceManager, "←");
         this.createButton = new TextButton(resourceManager, "CREATE ACCOUNT");
@@ -49,6 +48,8 @@ public class CreateAccountView extends BorderPane {
     }
 
     void layoutNodes() {
+        returnButton.updateLayout();
+        createButton.updateLayout();
         setBackground(new Background(LayoutHelpers.setBackground(this.resourceManager, 550, 650)));
         this.setPrefSize(550, 650);
         this.setMaxSize(550, 650);
