@@ -3,11 +3,8 @@ package game.integration_project1_zaroc.view.pages.pausescreenview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.gameinfo.GameStatus;
 import game.integration_project1_zaroc.utils.Observer;
-import game.integration_project1_zaroc.view.pages.startview.StartPresenter;
-import game.integration_project1_zaroc.view.pages.startview.StartView;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
-import javafx.stage.Stage;
 
 public class PauseScreenPresenter implements Observer {
     private PauseScreenView view;

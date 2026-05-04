@@ -12,9 +12,7 @@ import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
-import game.integration_project1_zaroc.view.pages.leaderboardview.LeaderboardView;
 import javafx.application.Platform;
-import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -8,7 +8,6 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profile
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
 
 import java.util.Arrays;
 import java.util.List;

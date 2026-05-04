@@ -6,7 +6,6 @@ import game.integration_project1_zaroc.utils.Observer;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
-import javafx.stage.Stage;
 
 public class StatisticsPresenter implements Observer {
     private AppController model;

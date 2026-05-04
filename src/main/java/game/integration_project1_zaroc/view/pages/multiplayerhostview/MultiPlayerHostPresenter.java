@@ -12,7 +12,6 @@ import game.integration_project1_zaroc.view.sharedlogic.resource_manager.pawncol
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 
 public class MultiPlayerHostPresenter implements Observer {
 

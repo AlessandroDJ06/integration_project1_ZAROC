@@ -4,12 +4,10 @@ package game.integration_project1_zaroc.view.pages.settingsview;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.selectionslider.ThemePickerModel;
 import game.integration_project1_zaroc.utils.Observer;
-import game.integration_project1_zaroc.view.pages.settingsview.SettingsView;
 import game.integration_project1_zaroc.view.sharedlogic.NavigationService;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Themes;
 import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.scene.image.Image;
-import javafx.stage.Stage;
 
 
 public class SettingsPresenter implements Observer {

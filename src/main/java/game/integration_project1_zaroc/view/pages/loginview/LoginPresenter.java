@@ -9,9 +9,6 @@ import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandle
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage; // Vergeet deze import niet
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
