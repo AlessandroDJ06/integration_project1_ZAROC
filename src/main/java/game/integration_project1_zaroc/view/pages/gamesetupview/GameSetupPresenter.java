@@ -99,7 +99,7 @@ public class GameSetupPresenter implements Observer {
 
         view.getCreateGameButton().setOnAction(event -> {
             model.createGame();
-            NavigationService.navigateToGameBoard(view.getResourceManager(),this.model,this.view);
+            NavigationService.navigateToGameBoard(view.getResourceManager(),this.model);
         });
 
 
@@ -115,7 +115,7 @@ public class GameSetupPresenter implements Observer {
 
         view.getReturnButton().setOnAction(event -> {
             model.setPlayer2(null);
-            NavigationService.navigateToGameModeSelection(view.getResourceManager(),this.model,this.view);
+            NavigationService.navigateToGameModeSelection(view.getResourceManager(),this.model);
         });
 
     }

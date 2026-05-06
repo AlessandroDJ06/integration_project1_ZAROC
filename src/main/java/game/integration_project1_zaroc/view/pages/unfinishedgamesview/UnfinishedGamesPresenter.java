@@ -127,6 +127,7 @@ public class UnfinishedGamesPresenter implements Observer {
                         }
 
                         model.resumeGame(selectedGameId,model.getPlayer1().getUsername().equals(selected.getCurrentUserName()));
+                        System.out.println(model.getPlayer2().getUsername());
                         closeWindow();
                     }
 

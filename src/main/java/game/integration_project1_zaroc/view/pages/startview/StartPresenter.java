@@ -37,14 +37,14 @@ public class StartPresenter implements Observer {
         view.getLoginButton().setOnAction(event -> {
             NavigationService.navigateToLoginView(view.getResourceManager(),this.model,true).showAndWait();
             if (model.isLoggedIn()) {
-                NavigationService.navigateToGameModeSelection(view.getResourceManager(),this.model,this.view);
+                NavigationService.navigateToGameModeSelection(view.getResourceManager(),this.model);
             }
         });
 
         view.getCreateAccountButton().setOnAction(event -> {
             NavigationService.navigateToCreateAccountView(view.getResourceManager(),this.model,true).showAndWait();
             if (model.isLoggedIn()) {
-                NavigationService.navigateToGameModeSelection(view.getResourceManager(),this.model,this.view);
+                NavigationService.navigateToGameModeSelection(view.getResourceManager(),this.model);
             }
         });
 

@@ -240,7 +240,9 @@ public class AppController {
 
             int opponentMoves = 0;
             for (Turn turn : turns) {
-                if (!turn.getCurrentPlayer().getUsername().equals(player1.getUsername())) {
+                Player currentPlayer = turn.getCurrentPlayer();
+                if (currentPlayer == null) continue;
+                if (!currentPlayer.getUsername().equals(player1.getUsername())) {
                     if (turn.getFirstMove() != null) opponentMoves++;
                     if (turn.getSecondMove() != null) opponentMoves++;
                 }

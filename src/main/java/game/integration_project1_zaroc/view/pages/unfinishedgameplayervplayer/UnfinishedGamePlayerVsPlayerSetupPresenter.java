@@ -36,7 +36,7 @@ public class UnfinishedGamePlayerVsPlayerSetupPresenter implements Observer {
 
         view.getLocalGame().setOnAction(event -> {
             model.setContinueInLocalPlayer(true);
-            NavigationService.navigateToPlayerVsPlayerView(view.getResourceManager(), this.model, playerTwo);
+            NavigationService.navigateToPlayerVsPlayerView(view.getResourceManager(), this.model, playerTwo).showAndWait();
             NavigationService.closeWindow(this.view);
 
         });

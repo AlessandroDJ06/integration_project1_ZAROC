@@ -45,7 +45,8 @@ import javafx.stage.StageStyle;
 import java.util.Objects;
 
 public class NavigationService {
-    private static Stage createStage(String title){
+
+    private static Stage createStage(String title) {
         Stage stage = new Stage();
         stage.setTitle(title);
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -55,7 +56,29 @@ public class NavigationService {
         return stage;
     }
 
-    public static Stage navigateToRules(ResourceManager resourceManager, AppController model){
+    private static Stage getMainStage() {
+        return (Stage) Stage.getWindows().getFirst();
+    }
+
+    public static void navigateToGameModeSelection(ResourceManager resourceManager, AppController model) {
+        SelectGamemodeView gamemodeView = new SelectGamemodeView(resourceManager);
+        new SelectGamemodePresenter(model, gamemodeView);
+        getMainStage().getScene().setRoot(gamemodeView);
+    }
+
+    public static void navigateToGameBoard(ResourceManager resourceManager, AppController model) {
+        GameBoardView gameBoardView = new GameBoardView(resourceManager);
+        new GameBoardPresenter(gameBoardView, model);
+        getMainStage().getScene().setRoot(gameBoardView);
+    }
+
+    public static void navigateToGameSetup(ResourceManager resourceManager, AppController model) {
+        GameSetupView gameSetupView = new GameSetupView(resourceManager);
+        new GameSetupPresenter(gameSetupView, model);
+        getMainStage().getScene().setRoot(gameSetupView);
+    }
+
+    public static Stage navigateToRules(ResourceManager resourceManager, AppController model) {
         Stage stage = createStage("rules");
         RuleView ruleView = new RuleView(resourceManager);
         new RuleViewPresenter(ruleView, model);
@@ -65,67 +88,48 @@ public class NavigationService {
         return stage;
     }
 
-    public static Stage navigateToSettings(ResourceManager resourceManager, AppController model){
+    public static Stage navigateToSettings(ResourceManager resourceManager, AppController model) {
         Stage stage = createStage("settings");
         SettingsView settingsView = new SettingsView(resourceManager);
         new SettingsPresenter(settingsView, model);
         Scene settingsScene = new Scene(settingsView);
         settingsScene.setFill(Color.TRANSPARENT);
         stage.setScene(settingsScene);
-        return stage ;
+        return stage;
     }
 
-    public static Stage navigateToLeaderboard(ResourceManager resourceManager, AppController model){
+    public static Stage navigateToLeaderboard(ResourceManager resourceManager, AppController model) {
         Stage stage = createStage("leaderboard");
         LeaderboardView leaderboardView = new LeaderboardView(resourceManager);
-        new LeaderboardPresenter(leaderboardView,model);
+        new LeaderboardPresenter(leaderboardView, model);
         Scene leaderboardScene = new Scene(leaderboardView);
         leaderboardScene.setFill(Color.TRANSPARENT);
         stage.setScene(leaderboardScene);
         return stage;
-
     }
 
-    public static void navigateToGameModeSelection(ResourceManager resourceManager, AppController model,Node view){
-        SelectGamemodeView gamemodeView = new SelectGamemodeView(resourceManager);
-        new SelectGamemodePresenter(model,gamemodeView);
-        view.getScene().setRoot(gamemodeView);
-    }
-
-    public static void navigateToGameBoard(ResourceManager resourceManager, AppController model,Node view){
-        GameBoardView GameBoardView = new GameBoardView(resourceManager);
-        new GameBoardPresenter(GameBoardView,model);
-        view.getScene().setRoot(GameBoardView);
-    }
-
-    public static Stage navigateToLoginView(ResourceManager resourceManager, AppController model, boolean isPlayerOne){
+    public static Stage navigateToLoginView(ResourceManager resourceManager, AppController model, boolean isPlayerOne) {
         Stage stage = createStage("login");
         LoginView loginView = new LoginView(resourceManager);
-        new LoginPresenter(model, loginView,isPlayerOne);
+        new LoginPresenter(model, loginView, isPlayerOne);
         Scene loginScene = new Scene(loginView);
         loginScene.setFill(Color.TRANSPARENT);
         stage.setScene(loginScene);
         return stage;
     }
 
-    public static Stage navigateToCreateAccountView(ResourceManager resourceManager, AppController model,boolean isPlayerOne){
+    public static Stage navigateToCreateAccountView(ResourceManager resourceManager, AppController model, boolean isPlayerOne) {
         Stage stage = createStage("create account");
         CreateAccountView createAccountView = new CreateAccountView(resourceManager);
-        new CreateAccountPresenter(model, createAccountView,isPlayerOne);
+        new CreateAccountPresenter(model, createAccountView, isPlayerOne);
         Scene createAccountScene = new Scene(createAccountView);
         createAccountScene.setFill(Color.TRANSPARENT);
         stage.setScene(createAccountScene);
         return stage;
     }
 
-    public static void navigateToGameSetup(ResourceManager resourceManager, AppController model,Node view) {
-        GameSetupView gameSetupView = new GameSetupView(resourceManager);
-        new GameSetupPresenter(gameSetupView,model);
-        view.getScene().setRoot(gameSetupView);
-    }
-
-    public static Stage navigateToUnfinishedGames(ResourceManager resourceManager, AppController model){
-        Stage stage = createStage("login");
+    public static Stage navigateToUnfinishedGames(ResourceManager resourceManager, AppController model) {
+        Stage stage = createStage("unfinished games");
         UnfinishedGamesView unfinishedView = new UnfinishedGamesView(resourceManager);
         new UnfinishedGamesPresenter(unfinishedView, model);
         Scene unfinishedScene = new Scene(unfinishedView, 900, 750);
@@ -133,29 +137,28 @@ public class NavigationService {
         return stage;
     }
 
-
-    public static Stage navigateToPlayerVsAiView(ResourceManager resourceManager, AppController model){
-        Stage stage = createStage("login");
+    public static Stage navigateToPlayerVsAiView(ResourceManager resourceManager, AppController model) {
+        Stage stage = createStage("player vs ai");
         PlayerVsAiView playerVsAiView = new PlayerVsAiView(resourceManager);
-        new PlayerVsAiPresenter(playerVsAiView,model);
-        Scene playerVsAiScene = new Scene(playerVsAiView,900,750);
+        new PlayerVsAiPresenter(playerVsAiView, model);
+        Scene playerVsAiScene = new Scene(playerVsAiView, 900, 750);
         playerVsAiScene.setFill(Color.TRANSPARENT);
         stage.setScene(playerVsAiScene);
         return stage;
     }
 
-    public static Stage navigateToPlayerVsPlayerView(ResourceManager resourceManager, AppController model, UnfinishedGame playerTwo){
-        Stage stage = createStage("login");
+    public static Stage navigateToPlayerVsPlayerView(ResourceManager resourceManager, AppController model, UnfinishedGame playerTwo) {
+        Stage stage = createStage("player vs player");
         PlayerVsPlayerView playerVsPlayerView = new PlayerVsPlayerView(resourceManager);
-        new PlayerVsPlayerPresenter(playerVsPlayerView, model,playerTwo);
+        new PlayerVsPlayerPresenter(playerVsPlayerView, model, playerTwo);
         Scene playerVsPlayerScene = new Scene(playerVsPlayerView, 900, 750);
         playerVsPlayerScene.setFill(Color.TRANSPARENT);
         stage.setScene(playerVsPlayerScene);
         return stage;
     }
 
-    public static Stage navigateToMultiplayerView(ResourceManager resourceManager, AppController model){
-        Stage stage = createStage("login");
+    public static Stage navigateToMultiplayerView(ResourceManager resourceManager, AppController model) {
+        Stage stage = createStage("multiplayer");
         MultiplayerSetupView multiplayerSetupView = new MultiplayerSetupView(resourceManager);
         new MultiplayerSetupPresenter(multiplayerSetupView, model);
         Scene multiplayerScene = new Scene(multiplayerSetupView);
@@ -164,28 +167,28 @@ public class NavigationService {
         return stage;
     }
 
-    public static Stage navigateToStatisticsView(ResourceManager resourceManager, AppController model){
-        Stage stage = createStage("login");
+    public static Stage navigateToStatisticsView(ResourceManager resourceManager, AppController model) {
+        Stage stage = createStage("statistics");
         StatisticsView statisticsView = new StatisticsView(resourceManager);
-        new StatisticsPresenter(statisticsView,model);
+        new StatisticsPresenter(statisticsView, model);
         Scene statsScene = new Scene(statisticsView);
         statsScene.setFill(Color.TRANSPARENT);
         stage.setScene(statsScene);
         return stage;
     }
 
-    public static Stage navigateToMultiplayerHostView(ResourceManager resourceManager, AppController model,int existingGameId){
-        Stage stage = createStage("login");
+    public static Stage navigateToMultiplayerHostView(ResourceManager resourceManager, AppController model, int existingGameId) {
+        Stage stage = createStage("multiplayer host");
         MultiPlayerHostView multiPlayerHostView = new MultiPlayerHostView(resourceManager);
-        new MultiPlayerHostPresenter(multiPlayerHostView, model,existingGameId);
+        new MultiPlayerHostPresenter(multiPlayerHostView, model, existingGameId);
         Scene hostScene = new Scene(multiPlayerHostView, 900, 750);
         hostScene.setFill(Color.TRANSPARENT);
         stage.setScene(hostScene);
         return stage;
     }
 
-    public static Stage navigateToMultiplayerGuestView(ResourceManager resourceManager, AppController model){
-        Stage stage = createStage("login");
+    public static Stage navigateToMultiplayerGuestView(ResourceManager resourceManager, AppController model) {
+        Stage stage = createStage("multiplayer guest");
         MultiPlayerGuestView multiPlayerGuestView = new MultiPlayerGuestView(resourceManager);
         new MultiPlayerGuestPresenter(multiPlayerGuestView, model);
         Scene guestScene = new Scene(multiPlayerGuestView, 900, 750);
@@ -193,13 +196,6 @@ public class NavigationService {
         stage.setScene(guestScene);
         return stage;
     }
-
-
-
-
-
-
-
 
     public static void closeWindow(Node view) {
         Stage stage = (Stage) view.getScene().getWindow();

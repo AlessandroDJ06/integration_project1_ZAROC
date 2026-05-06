@@ -43,14 +43,14 @@ public class SelectGamemodePresenter implements Observer {
         view.getPlayerVsAiButton().setOnAction(event -> {
             NavigationService.navigateToPlayerVsAiView(view.getResourceManager(), this.model).showAndWait();
             if (model.getPlayer2() != null) {
-                NavigationService.navigateToGameSetup(view.getResourceManager(), this.model, this.view);
+                NavigationService.navigateToGameSetup(view.getResourceManager(), this.model);
             }
         });
 
         view.getPlayerVsPlayerButton().setOnAction(event -> {
             NavigationService.navigateToPlayerVsPlayerView(view.getResourceManager(), this.model,null).showAndWait();
             if (model.getPlayer2() != null) {
-                NavigationService.navigateToGameSetup(view.getResourceManager(), this.model, this.view);
+                NavigationService.navigateToGameSetup(view.getResourceManager(), this.model);
             }
         });
 
@@ -82,7 +82,7 @@ public class SelectGamemodePresenter implements Observer {
 
     private void checkIfGameIsEmpty() {
         if (model.getGame() != null) {
-            NavigationService.navigateToGameBoard(view.getResourceManager(), this.model, this.view);
+            NavigationService.navigateToGameBoard(view.getResourceManager(), this.model);
         }
     }
 
