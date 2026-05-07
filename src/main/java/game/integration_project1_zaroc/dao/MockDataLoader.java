@@ -3,6 +3,7 @@ package game.integration_project1_zaroc.dao;
 import java.sql.*;
 
 /**
+ * Loads mock player, game, and move data into the database.
   * TRIGGERED: Call loadIfEmpty() once from Application.start() before any
  *            scene is shown.
  */
@@ -21,6 +22,8 @@ public class MockDataLoader {
     /**
      * Loads mock data only when the GAMES table is empty.
      * Safe to call every startup — it does nothing if data already exists.
+     * @throws SQLException      if a database access error occurs during loading or rollback
+     * @throws ZarocDaoException if the database connection cannot be established
      */
     public void loadIfEmpty() throws SQLException, ZarocDaoException {
         try(Connection conn = DaoUtils.createConnection()){
@@ -52,6 +55,13 @@ public class MockDataLoader {
     //  Empty check
     // ══════════════════════════════════════════════════════════════════════
 
+    /**
+     * Checks if the GAMES table is empty.
+     *
+     * @param conn an active database connection
+     * @return {@code true} if the database is empty, {@code false} otherwise
+     * @throws SQLException if the query fails
+     */
     private boolean isDatabaseEmpty(Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM GAMES");
              ResultSet rs = ps.executeQuery()) {
@@ -63,6 +73,12 @@ public class MockDataLoader {
     //  Players
     // ══════════════════════════════════════════════════════════════════════
 
+    /**
+     * Inserts five mock players using batch execution.
+     *
+     * @param conn an active database connection
+     * @throws SQLException if the batch insert fails
+     */
     private void insertPlayers(Connection conn) throws SQLException {
         String sql = """
             INSERT INTO PLAYERS (username, email, play_style, password)
@@ -91,6 +107,12 @@ public class MockDataLoader {
     //  Games
     // ══════════════════════════════════════════════════════════════════════
 
+    /**
+     * Inserts 13 finished games (status {@code ENDED}) and 2 paused games using batch execution.
+     *
+     * @param conn an active database connection
+     * @throws SQLException if the batch insert fails
+     */
     private void insertGames(Connection conn) throws SQLException {
         String sql = "INSERT INTO GAMES (game_status) VALUES (?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -104,6 +126,14 @@ public class MockDataLoader {
     //  Game Participation — no hardcoded IDs, subselects on username
     // ══════════════════════════════════════════════════════════════════════
 
+    /**
+     * Inserts gameParticipations for all mock games.
+     * Players are resolved by username via subselect, games by zero-based offset.
+     * Winner is {@code null} for in-progress games.
+     *
+     * @param conn an active database connection
+     * @throws SQLException if any participation insert fails
+     */
     private void insertParticipations(Connection conn) throws SQLException {
         // { playerUsername, gameOffset(0-based), pawnColor, winner boolean null }
         Object[][] rows = {
@@ -166,7 +196,13 @@ public class MockDataLoader {
     // ══════════════════════════════════════════════════════════════════════
     //  Turns
     // ══════════════════════════════════════════════════════════════════════
-
+    /**
+     * Inserts turns for all mock games.
+     * Player and game references are resolved via subselects on username and game offset.
+     *
+     * @param conn an active database connection
+     * @throws SQLException if the batch insert fails
+     */
     private void insertTurns(Connection conn) throws SQLException {
         // { turnNumber, playerUsername, gameOffset }
         Object[][] turns = {
@@ -205,7 +241,13 @@ public class MockDataLoader {
     }
 
 
-
+    /**
+     * Inserts moves for all mock games.
+     * Turn references are resolved via subselect matching turn number, player username, and game offset.
+     *
+     * @param conn an active database connection
+     * @throws SQLException if the batch insert fails
+     */
     private void insertMoves(Connection conn) throws SQLException {
         // { moveNumber, turnNumber, playerUsername, gameOffset,
         //   startTime, endTime, startLoc, endLoc }
@@ -359,6 +401,13 @@ public class MockDataLoader {
             ps.executeBatch();
         }
     }
+
+    /**
+     * Truncates all tables and restarts their identity sequences.
+     *
+     * @throws SQLException      if the truncation fails
+     * @throws ZarocDaoException if the database connection cannot be established
+     */
     public void clearDatabase() throws SQLException, ZarocDaoException {
         try (Connection conn = DaoUtils.createConnection();
              Statement stmt = conn.createStatement()) {

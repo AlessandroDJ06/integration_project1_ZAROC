@@ -19,16 +19,33 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-
+/**
+ * Presenter for the leaderboard screen.
+ * Loads player statistics from the database on a background thread
+ * and handles sorting by selected value.
+ */
 public class LeaderboardPresenter implements Observer {
 
+    /** The leaderboard view this presenter manages. */
     private final LeaderboardView view;
+    /** DAO used to fetch leaderboard entries from the database. */
     private final LeaderboardDao dao;
+    /** The connection to the model.*/
     private AppController model;
 
-
+    /**
+     * Cached list of leaderboard entries loaded from the database.
+     * Used to avoid having to fetch again when the user changes the sort option.
+     */
     private List<LeaderboardEntry> cachedEntries = new ArrayList<>();
 
+    /**
+     * Creates a new LeaderboardPresenter, registers event handlers,
+     * and triggers the initial leaderboard load.
+     *
+     * @param view          the leaderboard view to manage.
+     * @param appController the connection to the model.
+     */
     public LeaderboardPresenter(LeaderboardView view, AppController appController) {
         this.view = view;
         this.model =appController;
@@ -38,6 +55,11 @@ public class LeaderboardPresenter implements Observer {
         loadLeaderboard();
     }
 
+    /**
+     * Registers event handlers for the leaderboard view controls.
+     * Attaches a close action, hover effect, and sound effect to the return button,
+     * and a sort listener to the sort dropdown.
+     */
     private void attachEventHandlers() {
 
         view.getReturnButton().setOnAction(actionEvent ->{
@@ -50,7 +72,12 @@ public class LeaderboardPresenter implements Observer {
         );
     }
 
-
+    /**
+     * Sorts the cached leaderboard entries by the given option and updates the view.
+     * Assigns ranks after sorting. Does nothing if no entries are cached yet.
+     *
+     * @param sortOption the display name of the column to sort by, default is win rate.
+     */
 private void applySortAndDisplay(String sortOption) {
     if (cachedEntries.isEmpty()) return;
     Comparator<LeaderboardEntry> comparator = switch (sortOption) {
@@ -75,6 +102,13 @@ private void applySortAndDisplay(String sortOption) {
 
     view.setItems(sorted);
 }
+
+    /**
+     * Loads leaderboard entries from the database on a background thread.
+     * Enters mock data in the database if its empty.
+     * Updates the view once loading completes.
+     * Displays an error message in the view if the anything fails.
+     */
 
     public void loadLeaderboard(){
         view.setStatusText("Loading leaderboard…");
@@ -107,7 +141,10 @@ private void applySortAndDisplay(String sortOption) {
         dbThread.setDaemon(true);
         dbThread.start();
     }
-
+    /**
+     * Called when the resource manager notifies observers of a layout change.
+     * Triggers a full layout refresh on the view.
+     */
     @Override
     public void updateLayout(Object args) {
         view.layoutNodes();
