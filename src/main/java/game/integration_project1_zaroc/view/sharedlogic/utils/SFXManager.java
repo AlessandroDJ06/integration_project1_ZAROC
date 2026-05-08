@@ -7,11 +7,20 @@ import java.net.URL;
 public class SFXManager {
     private AudioClip pawnMove;
     private AudioClip buttonPress;
+    private AudioClip undoSound;
+    private AudioClip warningSound;
+    private AudioClip winSound;
+    private AudioClip lossSound;
+
     private double volume = 1;
 
     public SFXManager() {
         pawnMove = loadSound("/game/integration_project1_zaroc/Audio/SFX/pawn.mp3");
         buttonPress = loadSound("/game/integration_project1_zaroc/Audio/SFX/buttonPress.mp3");
+        //undoSound = loadSound();
+        //warningSound = warningSound();
+        //winSound = winSound();
+        //lossSound = lossSound();
     }
 
     private AudioClip loadSound(String path) {
@@ -33,6 +42,34 @@ public class SFXManager {
             buttonPress.play();
         }
     }
+
+    public void playUndoSound(){
+        if (undoSound != null) {
+            undoSound.setVolume(volume);
+            undoSound.play();
+        }
+    }
+
+    public void playWarningSound(){
+        if (warningSound != null) {
+            warningSound.setVolume(volume);
+            warningSound.play();
+        }
+    }
+    public void playWinSound(){
+        if (winSound != null) {
+            winSound.setVolume(volume);
+            winSound.play();
+        }
+    }
+
+    public void playLossSound(){
+        if (lossSound != null) {
+            lossSound.setVolume(volume);
+            lossSound.play();
+        }
+    }
+
 
     public void setVolume(double volume) {
         this.volume = volume/10;
