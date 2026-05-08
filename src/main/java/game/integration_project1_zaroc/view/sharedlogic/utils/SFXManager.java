@@ -18,9 +18,7 @@ public class SFXManager {
         pawnMove = loadSound("/game/integration_project1_zaroc/Audio/SFX/pawn.mp3");
         buttonPress = loadSound("/game/integration_project1_zaroc/Audio/SFX/buttonPress.mp3");
         //undoSound = loadSound();
-        //warningSound = warningSound();
-        //winSound = winSound();
-        //lossSound = lossSound();
+        //warningSound = loadSound();
     }
 
     private AudioClip loadSound(String path) {
@@ -42,31 +40,24 @@ public class SFXManager {
             buttonPress.play();
         }
     }
-
+    /**
+     * Plays the undoSound AudioClip.
+     * Only if undoSound != null.
+     * */
     public void playUndoSound(){
         if (undoSound != null) {
             undoSound.setVolume(volume);
             undoSound.play();
         }
     }
-
+    /**
+     * Plays the warningSound AudioClip.
+     * Only if warningSound != null.
+     * */
     public void playWarningSound(){
         if (warningSound != null) {
             warningSound.setVolume(volume);
             warningSound.play();
-        }
-    }
-    public void playWinSound(){
-        if (winSound != null) {
-            winSound.setVolume(volume);
-            winSound.play();
-        }
-    }
-
-    public void playLossSound(){
-        if (lossSound != null) {
-            lossSound.setVolume(volume);
-            lossSound.play();
         }
     }
 
