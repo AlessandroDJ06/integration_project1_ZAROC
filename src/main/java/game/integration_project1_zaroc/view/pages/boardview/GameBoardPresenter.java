@@ -119,6 +119,7 @@ public class GameBoardPresenter implements Observer {
             view.getUndoButton().setDisable(true);
 
             model.getGame().undoMove();
+            view.getResourceManager().getSfxManager().playUndoSound();
             updateView();
 
             startAfkTimer();
@@ -524,6 +525,7 @@ public class GameBoardPresenter implements Observer {
                 model.getGame().executeMove(destinationPeg);
                 System.out.println("Zet uitgevoerd naar: " + col + "," + row);
 
+                view.getResourceManager().getSfxManager().playPawnMove();
                 updateView();
 
                 if (model.getGame().getStatus() == GameStatus.ENDED) {
