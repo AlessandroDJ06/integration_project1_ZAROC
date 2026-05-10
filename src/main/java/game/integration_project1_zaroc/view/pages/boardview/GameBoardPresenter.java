@@ -25,28 +25,27 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
+import javafx.stage.*;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.logging.Handler;
 
 public class GameBoardPresenter implements Observer {
     private GameBoardView view;
@@ -65,6 +64,7 @@ public class GameBoardPresenter implements Observer {
     private ImageView selectedPawn;
     private boolean player1Warned = false;
     private boolean player2Warned = false;
+    private boolean isPaused = false;
 
     public GameBoardPresenter(GameBoardView view, AppController model) {
         this.view = view;
@@ -103,12 +103,13 @@ public class GameBoardPresenter implements Observer {
     }
 
     private void addEventHandlers() {
+
         view.getSettingsButton().setOnAction(actionEvent -> {
-            NavigationService.navigateToSettings(view.getResourceManager(),this.model).showAndWait();
+            NavigationService.navigateToSettings(view.getResourceManager(), this.model).showAndWait();
         });
 
         view.getInfoButton().setOnAction(event -> {
-            NavigationService.navigateToRules(view.getResourceManager(),this.model).showAndWait();
+            NavigationService.navigateToRules(view.getResourceManager(), this.model).showAndWait();
         });
 
         view.getUndoButton().setOnAction(e -> {
@@ -123,47 +124,10 @@ public class GameBoardPresenter implements Observer {
 
             startAfkTimer();
         });
+
         view.getPlayersPlayingComponent().getPauseButton().setOnAction(event -> {
 
-            pauzeAfkTimer();
-
-            boolean timerWasRunning = (undoTimer != null && undoTimer.getStatus() == Animation.Status.RUNNING);
-
-            player1Animation.pause();
-            player2Animation.pause();
-            if(timerWasRunning){
-                undoTimer.pause();
-            }
-            PauseScreenView pauseScreenView = new PauseScreenView(view.getResourceManager());
-            PauseScreenPresenter pauseScreenPresenter = new PauseScreenPresenter(pauseScreenView,model);
-
-            if (model.getGame().isAllowedSave()){
-                pauseScreenView.getNoteUnfinishedGame().setText("NOTE: Current game will be added to Unfinished Games");
-            }
-            Scene pauseScene = new Scene(pauseScreenView);
-            pauseScene.setFill(Color.TRANSPARENT);
-            Stage pauseStage = new Stage();
-            pauseStage.setScene(pauseScene);
-            pauseStage.initOwner(view.getScene().getWindow());
-            pauseStage.initStyle(StageStyle.TRANSPARENT);
-            pauseStage.initModality(Modality.APPLICATION_MODAL);
-            pauseStage.showAndWait();
-
-            if(pauseScreenPresenter.isContinued()){
-                if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername().equals(model.getGame().getParticipation1().getPlayer().getUsername())) {
-                    player1Animation.play();
-                }
-                else{
-                    player2Animation.play();
-                }
-
-                if(timerWasRunning){
-                    undoTimer.play();
-                }
-
-                continueAfkTimer();
-            }
-
+            handlePause(false, event);
 
         });
         view.getSkipButton().setOnAction(event -> {
@@ -210,6 +174,86 @@ public class GameBoardPresenter implements Observer {
         }
 
     }
+
+    private void handlePause(boolean close, Event event) {
+        event.consume();
+
+        pauzeAfkTimer();
+        player1Animation.pause();
+        player2Animation.pause();
+        isPaused = true;
+        view.getBoard().getBoard().setDisable(true);
+        if (undoTimer != null && undoTimer.getStatus() == Animation.Status.RUNNING) {
+            undoTimer.pause();
+        }
+
+        PauseScreenView pauseScreenView = new PauseScreenView(view.getResourceManager());
+        PauseScreenPresenter pauseScreenPresenter = new PauseScreenPresenter(pauseScreenView, model);
+
+        if (model.getGame().isAllowedSave()) {
+            pauseScreenView.getNoteUnfinishedGame().setText("NOTE: Current game will be added to Unfinished Games");
+        }
+
+        Scene pauseScene = new Scene(pauseScreenView);
+        pauseScene.setFill(Color.TRANSPARENT);
+        Stage pauseStage = new Stage();
+        pauseStage.setScene(pauseScene);
+        pauseStage.initOwner(view.getScene().getWindow());
+        pauseStage.initStyle(StageStyle.TRANSPARENT);
+        pauseStage.initModality(Modality.APPLICATION_MODAL);
+        if (close) {
+            pauseStage.show();
+            Alert stopWindow = new Alert(Alert.AlertType.CONFIRMATION);
+            stopWindow.initOwner(pauseStage);
+            stopWindow.initModality(Modality.WINDOW_MODAL);
+            stopWindow.setHeaderText("You're closing the application.");
+            stopWindow.setContentText("Are you sure?");
+            stopWindow.setTitle("WARNING!");
+            stopWindow.getButtonTypes().clear();
+            stopWindow.getButtonTypes().addAll(new ButtonType("Yes"), new ButtonType("No"));
+            stopWindow.showAndWait();
+
+            if (stopWindow.getResult() != null && stopWindow.getResult().getText().equals("Yes")) {
+               view.getScene().getWindow().hide();
+            } else {
+                pauseStage.hide();
+                pauseStage.showAndWait();
+            }
+        } else {
+            pauseStage.showAndWait();
+        }
+
+
+
+        if (pauseScreenPresenter.isContinued()) {
+            isPaused=false;
+            view.getBoard().getBoard().setDisable(false);
+            if (model.getGame().getCurrentTurn().getCurrentPlayer().getUsername()
+                    .equals(model.getGame().getParticipation1().getPlayer().getUsername())) {
+                player1Animation.play();
+            } else {
+                player2Animation.play();
+            }
+            if (undoTimer != null && undoTimer.getStatus() == Animation.Status.PAUSED) {
+                undoTimer.play();
+            }else{
+            continueAfkTimer();
+            }
+            if (model.getGame().getCurrentTurn().getCurrentPlayer() instanceof AIPlayer) {
+                processTurn();
+            }
+
+        }
+    }
+
+    public void attachCloseHandler(Stage stage) {
+        stage.setOnCloseRequest(event ->
+                { if(stage.getScene().getRoot() == view){
+                    handlePause(true, event);
+                }
+                });
+    }
+
 
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~UPDATE METHODS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -310,9 +354,9 @@ public class GameBoardPresenter implements Observer {
         }
     }
 
-    private void showWinner(){
+    private void showWinner() {
         WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
-        new WinScreenPresenter(winScreenView,model);
+        new WinScreenPresenter(winScreenView, model);
 
         Scene winScene = new Scene(winScreenView);
         winScene.setFill(Color.TRANSPARENT);
@@ -324,9 +368,9 @@ public class GameBoardPresenter implements Observer {
         winStage.showAndWait();
     }
 
-    private void showWinWarning(){
+    private void showWinWarning() {
         WinWarningView winWarningView = new WinWarningView(this.view.getResourceManager());
-        new WinWarningPresenter(model,winWarningView);
+        new WinWarningPresenter(model, winWarningView);
 
         winWarningView.getWinWarning().setText(model.getGame().getPlayerCloseToWinning().getUsername().toUpperCase() + " IS CLOSE TO WINNING!");
         Scene warningScene = new Scene(winWarningView);
@@ -395,16 +439,17 @@ public class GameBoardPresenter implements Observer {
             view.getUndoButton().setDisable(true);
             view.getBoard().getBoard().setDisable(true);
             executeAiLogic((AIPlayer) currentPlayer);
-        }
-        else if (isRemotePlayer(currentPlayer)) {
+        } else if (isRemotePlayer(currentPlayer)) {
             stopAfkTimer();
             view.getUndoButton().setDisable(true);
             view.getBoard().getBoard().setDisable(true);
-        }
-        else {
+        } else {
             view.getBoard().getBoard().setDisable(false);
             view.getUndoButton().setDisable(true);
             startAfkTimer();
+            if (isPaused) {
+                pauzeAfkTimer();
+            }
         }
     }
 
@@ -443,20 +488,24 @@ public class GameBoardPresenter implements Observer {
                             executeSingleMove(bestTurn.getSecondMove());
                             updateView();
 
-                            if(model.getGame().getStatus() == GameStatus.ENDED){
+                            if (model.getGame().getStatus() == GameStatus.ENDED) {
                                 Platform.runLater(() -> showWinner());
                                 return;
                             }
                             showWinWarningIfNeeded();
                             model.getGame().switchCurrentPlayer();
-                            processTurn();
+                            if (!isPaused) {
+                                processTurn();
+                            }
 
                         });
                         pause.play();
                     } else {
                         showWinWarningIfNeeded();
                         model.getGame().switchCurrentPlayer();
-                        processTurn();
+                        if (!isPaused) {
+                            processTurn();
+                        }
                     }
                 }
             });
@@ -500,8 +549,7 @@ public class GameBoardPresenter implements Observer {
                 System.out.println("Pion geselecteerd op positie: " + col + "," + row);
                 System.out.println(model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
             }
-        }
-        else {
+        } else {
             int startCol = GridPane.getColumnIndex(selectedPawn);
             int startRow = GridPane.getRowIndex(selectedPawn);
             Peg startPeg = model.getGame().getBoard().getAllPegs()[startRow][startCol];
@@ -605,15 +653,16 @@ public class GameBoardPresenter implements Observer {
         view.getPlayersPlayingComponent().getAfkTimer().setVisible(false);
     }
 
-    private void pauzeAfkTimer(){
-        if (afkTimer != null){
+    private void pauzeAfkTimer() {
+        if (afkTimer != null) {
             afkTimer.pause();
         }
     }
 
-    private void continueAfkTimer(){
-        if (afkTimer!= null){
+    private void continueAfkTimer() {
+        if (afkTimer != null) {
             afkTimer.play();
+            view.getPlayersPlayingComponent().getAfkTimer().setVisible(true);
         }
     }
 
@@ -661,7 +710,7 @@ public class GameBoardPresenter implements Observer {
                 if (model.getGame().getCurrentTurn().getSecondMove() != null) {
                     model.getGame().switchCurrentPlayer();
                     processTurn();
-                }else{
+                } else {
                     startAfkTimer();
                 }
 
@@ -750,6 +799,6 @@ public class GameBoardPresenter implements Observer {
 
     @Override
     public void updateLayout(Object args) {
-            view.layoutNodes();
+        view.layoutNodes();
     }
 }
