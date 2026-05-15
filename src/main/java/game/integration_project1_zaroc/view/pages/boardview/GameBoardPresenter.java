@@ -437,13 +437,14 @@ public class GameBoardPresenter implements Observer {
                 if (bestTurn != null) {
                     executeSingleMove(bestTurn.getFirstMove());
                     updateView();
+                    view.getResourceManager().getSfxManager().playPawnMove();
 
                     if (bestTurn.getSecondMove() != null) {
                         javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(Duration.millis(800));
                         pause.setOnFinished(event -> {
                             executeSingleMove(bestTurn.getSecondMove());
                             updateView();
-
+                            view.getResourceManager().getSfxManager().playPawnMove();
                             if(model.getGame().getStatus() == GameStatus.ENDED){
                                 Platform.runLater(() -> showWinner());
                                 return;

@@ -17,8 +17,8 @@ public class SFXManager {
     public SFXManager() {
         pawnMove = loadSound("/game/integration_project1_zaroc/Audio/SFX/pawn.mp3");
         buttonPress = loadSound("/game/integration_project1_zaroc/Audio/SFX/buttonPress.mp3");
-        //undoSound = loadSound();
-        //warningSound = loadSound();
+        undoSound = loadSound("/game/integration_project1_zaroc/Audio/SFX/unod.mp3");
+        warningSound = loadSound("/game/integration_project1_zaroc/Audio/SFX/warning.mp3");
     }
 
     private AudioClip loadSound(String path) {
