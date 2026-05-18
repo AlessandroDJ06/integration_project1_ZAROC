@@ -429,4 +429,8 @@ public class AppController {
     public void setContinueInLocalPlayer(boolean continueInLocalPlayer) {
         this.continueInLocalPlayer = continueInLocalPlayer;
     }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 }

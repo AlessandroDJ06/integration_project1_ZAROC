@@ -26,6 +26,8 @@ public class WinScreenPresenter implements Observer {
 
     private void addEventHandlers() {
         view.getReturnButton().setOnAction(event -> {
+            model.setPlayer2(null);
+            model.setGame(null);
             Stage selectStage = (Stage) ((Stage) view.getScene().getWindow()).getOwner();
             SelectGamemodeView selectView = new SelectGamemodeView(view.getResourceManager());
             new SelectGamemodePresenter(model, selectView);
