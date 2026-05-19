@@ -448,6 +448,7 @@ public class GameBoardPresenter implements Observer {
         if (model.getGame().getStatus() == GameStatus.ENDED) {
             if (model.getMultiplayerService() != null) {
                 model.getMultiplayerService().stopPolling();
+                showWinner();
             }
             return;
         }

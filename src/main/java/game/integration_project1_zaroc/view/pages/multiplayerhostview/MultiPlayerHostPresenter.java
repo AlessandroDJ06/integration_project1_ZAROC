@@ -106,6 +106,12 @@ public class MultiPlayerHostPresenter implements Observer {
                 showAlert(ex.toString());
             }
 
+            try{
+                model.getMultiplayerService().getRoomDao().deleteRoom(currentRoomCode);
+            } catch (ZarocDaoException ex) {
+                showAlert(ex.toString());
+            }
+
             NavigationService.closeWindow(this.view);
         });
     }
