@@ -4,6 +4,7 @@ import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.gamelogic.*;
 import game.integration_project1_zaroc.model.players.AIPlayer;
+import game.integration_project1_zaroc.model.players.Difficulty;
 
 import java.util.*;
 
@@ -14,6 +15,7 @@ public class AiModel {
     private PawnColor aiColor;
     private PawnColor opponentColor;
     private String aiUsername;
+    private Difficulty difficulty;
 
     private final ZarocNeuralNet neuralNet;
     private final ZarocMCTS mcts;
@@ -21,6 +23,7 @@ public class AiModel {
 
     public AiModel(int difficulty, String name) {
         this.aiUsername = name.toUpperCase();
+        this.difficulty = Difficulty.values()[difficulty];
 
         int iterations = switch (difficulty) {
             case 0  -> 1000;
@@ -54,12 +57,13 @@ public class AiModel {
         Map<Turn, Double> scoreCache = new HashMap<>();
         for (Turn t : options) {
             scoreCache.put(t, scoreTurn(t, actualGame));
+            System.out.println(scoreCache.get(t));
         }
 
         options.sort((a, b) -> Double.compare(scoreCache.get(b), scoreCache.get(a)));
         List<Turn> beam = options.subList(0, Math.min(options.size(), BEAM_WIDTH));
 
-        return mcts.findBestTurn(actualGame, beam, aiUsername, aiColor, opponentColor);
+        return mcts.findBestTurn(actualGame, beam, aiUsername,difficulty,aiColor, opponentColor);
     }
 
     private double scoreTurn(Turn t, Game game) {

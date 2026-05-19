@@ -244,6 +244,8 @@ public class GameBoardPresenter implements Observer {
 
         String pfp1 = model.getPlayer1().getProfilePicture();
         String pfp2 = model.getPlayer2().getProfilePicture();
+        Image colorPlayerOne = view.getResourceManager().getPawnSideView(PawnSideViews.values()[model.getColorOne().getCurrentIndex()]);
+        Image colorPlayerTwo = view.getResourceManager().getPawnSideView(PawnSideViews.values()[model.getColorTwo().getCurrentIndex()]);
         if (pfp1 != null) {
             view.getPlayersPlayingComponent().setPlayerOnePfp(ProfilePictures.valueOf(pfp1));
         } else {
@@ -255,6 +257,9 @@ public class GameBoardPresenter implements Observer {
         } else {
             view.getPlayersPlayingComponent().setPlayerTwoPfp(ProfilePictures.EMPTY);
         }
+
+        view.getPlayersPlayingComponent().setPointPlayerOne(colorPlayerOne);
+        view.getPlayersPlayingComponent().setColorPlayerTwo(colorPlayerTwo);
         renderBoard();
     }
 
@@ -424,7 +429,6 @@ public class GameBoardPresenter implements Observer {
         }
         return moveCount;
     }
-
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HANDLE   AI    MOVE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //----------------------------------------------------------------------------------------------
@@ -653,10 +657,6 @@ public class GameBoardPresenter implements Observer {
                 view.getSkipButton().setVisible(false);
                 view.getSkipButton().setDisable(true);
                 view.getUndoButton().setDisable(true);
-
-                System.out.println("Timer afgelopen, currentPlayer: " +
-                        model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
-                System.out.println("secondMove: " + model.getGame().getCurrentTurn().getSecondMove());
 
                 if (model.getGame().getCurrentTurn().getSecondMove() != null) {
                     model.getGame().switchCurrentPlayer();

@@ -5,6 +5,7 @@ import game.integration_project1_zaroc.model.gameinfo.PawnColor;
 import game.integration_project1_zaroc.model.gamelogic.Game;
 import game.integration_project1_zaroc.model.gamelogic.Move;
 import game.integration_project1_zaroc.model.gamelogic.Turn;
+import game.integration_project1_zaroc.model.players.Difficulty;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -13,8 +14,9 @@ public class ZarocMCTS {
 
     private final ZarocNeuralNet neuralNet;
     private final int totalIterations;
-    private final int numThreads = Runtime.getRuntime().availableProcessors() - 2 ;
+    private final int numThreads = Runtime.getRuntime().availableProcessors() ;
     private double ucbConstant;
+    private Random random;
 
     private String aiUsername;
     private PawnColor aiColor;
@@ -26,8 +28,19 @@ public class ZarocMCTS {
         this.neuralNet = neuralNet;
         this.totalIterations = totalIterations;
         this.ucbConstant = ucbConstant;
+        this.random = new Random();
     }
 
+    /**
+     * this method is basically the entire mcts cycle combined in a format that allows it to run on a thread in the threadpool
+     * we go through all the phases of mcts , select -> expand -> rollout -> backpropogate
+     * every thread will execute this method for the amount of itterations, this depends on the amount of threads and is calculated in
+     * findBestTurn()
+     * @param base -> this is the original game satate so basically the current situation
+     * @param iterations -> how many times will the mcts cycle run
+     * @param rootBeam -> list of legal turns
+     * @return -> returns a new root node based on the current game state
+     */
     private ZarocNode runMctsThread(Game base, int iterations, List<Turn> rootBeam) {
         ZarocNode root = new ZarocNode(base.gameCopy(), null, null);
         expand(root, rootBeam);
@@ -40,15 +53,37 @@ public class ZarocMCTS {
         return root;
     }
 
+    /**
+     * this method returns the most interesting node, so basically you calculate the ucb score (upper confidence bound) and compares it
+     * to the other children, if there are no children it will just return the inout node
+     * @param node -> start node
+     * @return -> best node
+     */
     private ZarocNode select(ZarocNode node) {
         while (!node.getChildren().isEmpty()) {
-            node = node.getChildren().stream()
-                    .max(Comparator.comparingDouble(child -> ucb(child)))
-                    .get();
+
+            ZarocNode bestChild = null;
+            double bestUcb = -Double.MAX_VALUE;
+            for (ZarocNode child : node.getChildren()) {
+                double currentUcb = ucb(child);
+
+                if (currentUcb > bestUcb) {
+                    bestUcb = currentUcb;
+                    bestChild = child;
+                }
+            }
+            node = bestChild;
         }
         return node;
     }
 
+    /**
+     * this method calculates the ucb score for a node
+     * the score depends on the ucbConstant the amount of visits in both parent and child nodes and the score from the child node
+     * we optimised our ai player by playing with the ucb score to get a higher exploration instead of exploitation
+     * @param child
+     * @return
+     */
     private double ucb(ZarocNode child) {
         if (child.getVisits() == 0) return Double.MAX_VALUE;
         ZarocNode parent = child.getParent();
@@ -58,6 +93,12 @@ public class ZarocMCTS {
         return exploitation + exploration;
     }
 
+    /**
+     * the expand function is there to expand every leaf node, you get the rootbeam these are the turns we are going to play on the
+     * current game state
+     * @param leaf -> current game state
+     * @param rootBeam -> turns we want to explore
+     */
     private void expand(ZarocNode leaf, List<Turn> rootBeam) {
         if (checkResult(leaf.getState()) != Result.PLAYING) return;
         if (!leaf.getChildren().isEmpty()) return;
@@ -76,6 +117,13 @@ public class ZarocMCTS {
         }
     }
 
+    /**
+     * this method is used to explore the game (normally) we use a shortcut here because a rollout takes a lot
+     * of time normally. normally you simulate untill a winning state but because it takes time we just use the neural
+     * network to evaluate the non winning game state
+     * @param node
+     * @return score
+     */
     private double rollout(ZarocNode node) {
         Result res = checkResult(node.getState());
         if (res == Result.AI_WINS)  return 1.0;
@@ -84,6 +132,9 @@ public class ZarocMCTS {
         return (v < 0) ? 0.5 : v;
     }
 
+    /**
+     * this makes sure every leaf node gets updated with their new values
+     */
     private void backpropagate(ZarocNode node, double score) {
         ZarocNode curr = node;
         while (curr != null) {
@@ -104,10 +155,10 @@ public class ZarocMCTS {
      * @param aiUsername   username of the AI player
      * @param aiColor      pawn color of the AI player
      * @param opponentColor pawn color of the opponent
+     * @param difficulty    chosen difficulty for the ai player
      * @return the best Turn found by MCTS
      */
-    public Turn findBestTurn(Game rootState, List<Turn> beam,
-                             String aiUsername, PawnColor aiColor, PawnColor opponentColor) {
+    public Turn findBestTurn(Game rootState, List<Turn> beam,String aiUsername,Difficulty difficulty, PawnColor aiColor, PawnColor opponentColor) {
         this.aiUsername = aiUsername;
         this.aiColor = aiColor;
         this.opponentColor = opponentColor;
@@ -121,6 +172,15 @@ public class ZarocMCTS {
         }
 
         List<ZarocNode> roots = new ArrayList<>();
+        /**
+         *  this part collects the data from all the threads
+         *  executo.invokeAll(tasks) -> combine all the tasks
+         *  invokAll blocks all code from running until all threads are done
+         *  "Future" is like a promise, it represents a result that will be calculated
+         *  in the future, we use f.get() to wait for and retrieve the final result
+         *  from each completed thread
+         *  the future basically waits till there is a result
+         */
         try {
             for (Future<ZarocNode> f : executor.invokeAll(tasks)) {
                 roots.add(f.get());
@@ -128,10 +188,10 @@ public class ZarocMCTS {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            executor.shutdown();
+            executor.shutdown(); // we always need to make sure we END the threadpool
         }
 
-        return pickBestTurn(roots, beam);
+        return pickBestTurn(roots, beam,difficulty);
     }
 
     /**
@@ -153,7 +213,7 @@ public class ZarocMCTS {
      * @param beam  the original candidate turns used as filter
      * @return the Turn with the highest average MCTS score
      */
-    private Turn pickBestTurn(List<ZarocNode> roots, List<Turn> beam) {
+    private Turn pickBestTurn(List<ZarocNode> roots, List<Turn> beam,Difficulty difficulty) {
         Set<String> beamKeys = new HashSet<>();
         for (Turn t : beam) {
             String k = getTurnKey(t);
@@ -177,14 +237,43 @@ public class ZarocMCTS {
 
         if (data.isEmpty()) return beam.get(0);
 
-        MoveStats best = null;
-        for (MoveStats stats : data.values()) {
-            if (stats.visits == 0) continue;
-            if (best == null || (stats.totalScore / stats.visits) > (best.totalScore / best.visits)) {
-                best = stats;
-            }
-        }
-        return best != null ? best.turn : beam.get(0);
+        Turn best = null;
+        List<MoveStats> dataList = new ArrayList<>();
+        dataList.addAll(data.values());
+
+        dataList.sort((s1, s2) -> {
+            double score1 = (s1.visits == 0) ? 0.0 : ( s1.totalScore / s1.visits);
+            double score2 = (s2.visits == 0) ? 0.0 : ( s2.totalScore / s2.visits);
+
+            return Double.compare(score2, score1);
+        });
+
+        best = getTurnBasedOnDifficulty(dataList,difficulty);
+
+
+
+
+        return best != null ? best : beam.get(0);
+    }
+
+    /**
+     * this method is responsible for making the ai adjustable for each difficulty this prevents the ez ai
+     * from playing like a grandmaster
+     * @param dataList
+     * @param difficulty
+     * @return
+     */
+    private Turn getTurnBasedOnDifficulty(List<MoveStats> dataList, Difficulty difficulty){
+        List<MoveStats> availableTurns =
+                switch (difficulty){
+                    case EASY -> dataList.subList(3, 11);
+                    case MEDIUM -> dataList.subList(2,5);
+                    case HARD -> dataList.subList(1,3);
+                    case ELITE -> dataList.subList(0,0);
+        };
+        MoveStats chosenTurn = availableTurns.get(random.nextInt(0,availableTurns.size()));
+        System.out.println(availableTurns.indexOf(chosenTurn));
+        return chosenTurn.turn;
     }
 
     /**

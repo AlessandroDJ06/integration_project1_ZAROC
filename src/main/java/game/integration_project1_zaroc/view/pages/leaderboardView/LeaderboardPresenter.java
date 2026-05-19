@@ -4,7 +4,7 @@ package game.integration_project1_zaroc.view.pages.leaderboardview;
 import game.integration_project1_zaroc.dao.LeaderboardDao;
 
 import game.integration_project1_zaroc.dao.LeaderboardEntry;
-import game.integration_project1_zaroc.dao.MockDataLoader;
+//import game.integration_project1_zaroc.dao.MockDataLoader;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 
 
@@ -78,11 +78,11 @@ private void applySortAndDisplay(String sortOption) {
 
     public void loadLeaderboard(){
         view.setStatusText("Loading leaderboard…");
-        try{
-            new MockDataLoader().loadIfEmpty();
-        }catch(SQLException|ZarocDaoException e){
-            System.out.println("Mock data loader not working" + e.getMessage());
-        }
+//        try{
+//            new MockDataLoader().loadIfEmpty();
+//        }catch(SQLException|ZarocDaoException e){
+//            System.out.println("Mock data loader not working" + e.getMessage());
+//        }
 
         Thread dbThread = new Thread(() -> {
             try {

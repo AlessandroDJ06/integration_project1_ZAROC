@@ -113,6 +113,9 @@ public class UnfinishedGamesPresenter implements Observer {
 
                     }else{
                         playerTwo = new AIPlayer(selected.getOppDifficulty(),selected.getOpponentName());
+                        playerTwo.setPlayerId(selected.getOppId());
+                        playerTwo.setProfilePicture(selected.getOpponentPfp());
+                        model.setPlayer2(playerTwo);
                     }
 
                     if (!model.isOnlineMultiplayer()){
