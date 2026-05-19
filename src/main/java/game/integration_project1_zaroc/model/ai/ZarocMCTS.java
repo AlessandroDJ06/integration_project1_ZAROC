@@ -269,9 +269,15 @@ public class ZarocMCTS {
                     case EASY -> dataList.subList(3, 11);
                     case MEDIUM -> dataList.subList(2,5);
                     case HARD -> dataList.subList(1,3);
-                    case ELITE -> dataList.subList(0,0);
+                    case ELITE -> dataList;
         };
-        MoveStats chosenTurn = availableTurns.get(random.nextInt(0,availableTurns.size()));
+        MoveStats chosenTurn;
+
+        if (difficulty == Difficulty.ELITE){
+            chosenTurn = availableTurns.getFirst();
+        }else{
+           chosenTurn = availableTurns.get(random.nextInt(0,availableTurns.size()));
+        }
         return chosenTurn.turn;
     }
 
