@@ -43,9 +43,7 @@ public class ZarocNeuralNet {
             opts.setIntraOpNumThreads(1);
             onnxSession = onnxEnv.createSession(bytes, opts);
             isAvailable = true;
-            System.out.println("Neural Network succesvol geladen!");
         } catch (Exception e) {
-            System.err.println("Waarschuwing: Neuraal netwerk kon niet laden. Fallback wordt gebruikt.");
             isAvailable = false;
         }
     }

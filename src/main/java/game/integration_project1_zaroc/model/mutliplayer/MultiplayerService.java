@@ -64,9 +64,7 @@ public class MultiplayerService extends Observable {
 
         scheduler.scheduleAtFixedRate(() -> {
             try {
-                System.out.println("Polling... gameId=" + gameId + " offset=" + lastKnownMoveCount + " username=" + myUsername);
                 List<MultiplayerMove> newMoves = multiplayerDao.fetchNewMoves(gameId, lastKnownMoveCount, myUsername);
-                System.out.println("new moves found: " + newMoves.size());
 
                 if (!newMoves.isEmpty()) {
                     lastKnownMoveCount += newMoves.size();

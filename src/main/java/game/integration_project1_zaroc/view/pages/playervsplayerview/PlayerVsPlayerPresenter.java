@@ -55,7 +55,6 @@ public class PlayerVsPlayerPresenter implements Observer {
                     alert.setContentText("The user logged in isn't the user who played the game!");
                     alert.showAndWait();
                     model.setPlayer2(null);
-                    System.out.println("hier");
                 }
             } else {
                 if (model.getPlayer2() != null) {

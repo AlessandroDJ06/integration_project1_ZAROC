@@ -119,7 +119,7 @@ public class RoomDao {
                 psRoom.executeUpdate();
             }
 
-            System.out.println("DEBUG: Game succesvol aangemaakt met ID: " + newGameId);
+
             return newGameId;
 
         } catch (SQLException e) {

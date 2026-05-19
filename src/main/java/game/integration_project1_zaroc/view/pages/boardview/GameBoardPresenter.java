@@ -48,6 +48,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * presenter for the game board, handles all interaction between the player and the board
+ * it manages three types of turns: local human, AI, and remote (online multiplayer)
+ * for online multiplayer it registers itself as an observer of MultiplayerService
+ * so it gets notified whenever the poller picks up a new opponent move
+ * the board is disabled while waiting for the remote player and re-enabled when it's your turn
+ *
+ * timers:
+ *   - afkTimer    -> auto-executes a random move if the player is idle too long
+ *   - undoTimer   -> gives the player a short window to undo after each move (disabled in online mode)
+ */
 public class GameBoardPresenter implements Observer {
     private GameBoardView view;
     private AppController model;
@@ -95,7 +106,6 @@ public class GameBoardPresenter implements Observer {
 
     @Override
     public void update(Object args) {
-        System.out.println("Remote zet ontvangen, UI updaten!");
         Platform.runLater(() -> {
             updateView();
             processTurn();
@@ -223,8 +233,6 @@ public class GameBoardPresenter implements Observer {
             view.getPlayersPlayingComponent().setSecondPlayer(
                     model.getGame().getParticipation2().getPlayer().getUsername()
             );
-        } else {
-            System.out.println("fatal error");
         }
 
         if (!model.isOnlineMultiplayer() || model.getGame().getCurrentTurn() != null) {
@@ -373,9 +381,17 @@ public class GameBoardPresenter implements Observer {
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CURRENT PLAYER HANDLE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //----------------------------------------------------------------------------------------------
+    /**
+     * the main routing method that decides what happens at the start of each turn
+     * checks three cases:
+     *   - AI player      -> disables the board and runs executeAiLogic() on a background thread
+     *   - remote player  -> disables the board and waits for the poller to notify us
+     *   - local player   -> enables the board and starts the afk timer
+     *
+     * in online multiplayer the guest may have no current turn yet when the board first opens
+     * (the host hasn't started their turn yet), in that case we just disable the board and return
+     */
     private void processTurn() {
-        // Bij online multiplayer kan de guest een lege turns lijst hebben
-        // omdat de host nog niet begonnen is → bord disablen en wachten op poller
         if (model.isOnlineMultiplayer() && model.getGame().getCurrentTurn() == null) {
             view.getBoard().getBoard().setDisable(true);
             view.getUndoButton().setDisable(true);
@@ -385,7 +401,6 @@ public class GameBoardPresenter implements Observer {
         updateView();
 
         if (model.getGame().getStatus() == GameStatus.ENDED) {
-            System.out.println("Winnaar: " + model.getGame().getWinner().getUsername());
             if (model.getMultiplayerService() != null) {
                 model.getMultiplayerService().stopPolling();
             }
@@ -393,7 +408,6 @@ public class GameBoardPresenter implements Observer {
         }
 
         Player currentPlayer = model.getGame().getCurrentTurn().getCurrentPlayer();
-        System.out.println("processTurn: currentPlayer=" + currentPlayer.getUsername() + " isRemote=" + isRemotePlayer(currentPlayer));
 
         if (currentPlayer instanceof AIPlayer) {
             stopAfkTimer();
@@ -413,12 +427,26 @@ public class GameBoardPresenter implements Observer {
         }
     }
 
+    /**
+     * checks if the given player is the remote opponent in an online game
+     * returns false for local/AI games and also false if player1 is the current player
+     * (player1 is always the local player)
+     * @param p -> player to check
+     * @return -> true if this player's moves come from the poller, not from local input
+     */
     private boolean isRemotePlayer(Player p) {
         if (!model.isOnlineMultiplayer()) return false;
         if (model.getGame() == null || model.getGame().getGameId() == -1) return false;
         return !p.getUsername().equals(model.getPlayer1().getUsername());
     }
 
+    /**
+     * counts the total number of individual moves across all turns in the current game
+     * used to calculate the polling offset when starting turn polling after a resume
+     * note: this counts ALL moves (both players), not just opponent moves,
+     * so it should only be used when the context makes that correct
+     * @return -> total move count across all turns
+     */
     private int calculateTotalMoves() {
         int moveCount = 0;
         if (model.getGame() != null && model.getGame().getTurns() != null) {
@@ -432,6 +460,13 @@ public class GameBoardPresenter implements Observer {
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HANDLE   AI    MOVE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //----------------------------------------------------------------------------------------------
+    /**
+     * runs the AI move calculation on a background daemon thread to avoid freezing the UI
+     * once the AI decides its turn, both moves are applied on the JavaFX thread via Platform.runLater()
+     * a short pause of 800ms is added between move 1 and move 2 so the player can see what happened
+     * after both moves are done it switches to the next player and calls processTurn() again
+     * @param ai -> the AI player whose decideTurn() method we call
+     */
     private void executeAiLogic(AIPlayer ai) {
         Thread aiThread = new Thread(() -> {
             Turn bestTurn = ai.decideTurn(model.getGame());
@@ -469,24 +504,37 @@ public class GameBoardPresenter implements Observer {
         aiThread.start();
     }
 
+    /**
+     * applies a single move to the game by looking up the actual peg objects from their coordinates
+     * this is a shared helper used by both AI logic and the remote move processor
+     * it calls selectStartPeg() and executeMove() on the game model just like a human click would
+     * @param m -> the move to execute, does nothing if null or if the start peg is empty
+     */
     private void executeSingleMove(Move m) {
         if (m == null) return;
         Peg start = model.getGame().getBoard().getPegPosition(m.getStartPeg().getYPosition(), m.getStartPeg().getXPosition());
         Peg dest = model.getGame().getBoard().getPegPosition(m.getDestinationPeg().getYPosition(), m.getDestinationPeg().getXPosition());
 
         if (start != null && dest != null && !start.getPawns().isEmpty()) {
-            String playerName = model.getGame().getCurrentTurn().getCurrentPlayer().getUsername();
             model.getGame().selectStartPeg(start);
             model.getGame().executeMove(dest);
-            System.out.println("Pion geselecteerd op positie: " + m.getStartPeg().getXPosition() + "," + m.getStartPeg().getYPosition());
-            System.out.println(playerName);
-            System.out.println("Zet uitgevoerd naar: " + m.getDestinationPeg().getXPosition() + "," + m.getDestinationPeg().getYPosition());
         }
     }
 
     //----------------------------------------------------------------------------------------------
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HANDLE HUMAN MOVE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //----------------------------------------------------------------------------------------------
+    /**
+     * handles a click on any peg position on the board by the local human player
+     * works in two stages:
+     *   1. first click  -> selects a pawn (if there is one), highlights legal moves
+     *   2. second click -> if the destination is legal, executes the move and starts the undo timer
+     *                      if illegal, deselects the current pawn
+     *
+     * returns immediately if the current turn already has both moves filled in
+     * @param col -> grid column of the clicked peg
+     * @param row -> grid row of the clicked peg
+     */
     private void handlePegClick(int col, int row) {
 
         if (model.getGame().getCurrentTurn().getSecondMove() != null) {
@@ -500,9 +548,6 @@ public class GameBoardPresenter implements Observer {
                 selectedPawn = bovensteImg;
                 selectedPawn.setOpacity(0.5);
                 highLightLegalMoves();
-
-                System.out.println("Pion geselecteerd op positie: " + col + "," + row);
-                System.out.println(model.getGame().getCurrentTurn().getCurrentPlayer().getUsername());
             }
         }
         else {
@@ -526,7 +571,6 @@ public class GameBoardPresenter implements Observer {
 
                 model.getGame().selectStartPeg(startPeg);
                 model.getGame().executeMove(destinationPeg);
-                System.out.println("Zet uitgevoerd naar: " + col + "," + row);
 
                 updateView();
 
@@ -538,7 +582,6 @@ public class GameBoardPresenter implements Observer {
                 startUndoTimer();
             } else {
                 selectedPawn.setOpacity(1.0);
-                System.out.println("Ongeldige zet naar: " + col + "," + row);
             }
 
             selectedPawn = null;
@@ -546,6 +589,14 @@ public class GameBoardPresenter implements Observer {
         }
     }
 
+    /**
+     * finds the topmost ImageView pawn at a given grid position
+     * iterates all children of the board GridPane and returns the last one found at (col, row)
+     * since pawns are stacked the last one in the list is visually on top
+     * @param col -> grid column
+     * @param row -> grid row
+     * @return -> the top pawn ImageView or null if the position is empty
+     */
     private ImageView getTopPawn(int col, int row) {
         ImageView bovenste = null;
         for (Node node : view.getBoard().getBoard().getChildren()) {
@@ -575,7 +626,6 @@ public class GameBoardPresenter implements Observer {
 
             if (remainingAfkSeconds <= 0) {
                 stopAfkTimer();
-                System.out.println("Voer random zet uit");
                 selectedPawn = null;
                 clearHighlights();
                 model.getGame().executeRandomMove();
@@ -750,6 +800,6 @@ public class GameBoardPresenter implements Observer {
 
     @Override
     public void updateLayout(Object args) {
-            view.layoutNodes();
+        view.layoutNodes();
     }
 }

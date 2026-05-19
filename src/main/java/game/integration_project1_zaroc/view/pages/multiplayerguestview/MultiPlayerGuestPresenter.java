@@ -140,7 +140,7 @@ public class MultiPlayerGuestPresenter implements Observer {
                     view.getHostPfpView().setImage(view.getResourceManager().getProfilePicture(ProfilePictures.valueOf(host.getProfilePicture())));
                 }
             } catch (Exception e) {
-                System.err.println("Couldn't load host: " + e.getMessage());
+                showAlert("couldn't load host");
             }
         }
 
@@ -159,6 +159,13 @@ public class MultiPlayerGuestPresenter implements Observer {
             Player host = playersDao.getPlayerById(currentRoomData.getHostId());
             PawnColor hostColor = currentRoomData.getHostColor();
             PawnColor guestColor = PawnColor.values()[model.getColorOne().getCurrentIndex()];
+            if (currentRoomData.getGameId() != 0) {
+                if (!model.getMultiplayerService().getRoomDao().isPlayerInGame(currentRoomData.getGameId(), model.getPlayer1().getPlayerId())) {
+                    showAlert("not able to join because player is not correct");
+                    return;
+                }
+                model.setContinueInMultiplayer(true);
+            }
 
             if (model.isContinueInMultiplayer()) {
                 model.setPlayer2(host);

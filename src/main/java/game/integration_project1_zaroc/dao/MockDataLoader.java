@@ -25,7 +25,6 @@
 //    public void loadIfEmpty() throws SQLException, ZarocDaoException {
 //        try (Connection conn = DaoUtils.createConnection()) {
 //            if (isDatabaseEmpty(conn)) {
-//                System.out.println("[MockDataLoader] Database empty — loading mock data.");
 //                conn.setAutoCommit(false);
 //                try {
 //                    insertPlayers(conn);
@@ -34,10 +33,8 @@
 //                    insertTurns(conn);
 //                    insertMoves(conn);
 //                    conn.commit();
-//                    System.out.println("[MockDataLoader] Mock data loaded successfully.");
 //                } catch (SQLException e) {
 //                    conn.rollback();
-//                    System.err.println("[MockDataLoader] Rolled back: " + e.getMessage());
 //                    throw e;
 //                } finally {
 //                    conn.setAutoCommit(true);

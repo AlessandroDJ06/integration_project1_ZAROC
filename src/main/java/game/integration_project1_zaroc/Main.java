@@ -40,7 +40,6 @@ public class Main extends Application {
             DaoUtils.createTable();
             return true;
         } catch (ZarocDaoException e) {
-            System.out.println("Database niet beschikbaar, app start zonder DB: " + e.getMessage());
             return false;
         }
     }

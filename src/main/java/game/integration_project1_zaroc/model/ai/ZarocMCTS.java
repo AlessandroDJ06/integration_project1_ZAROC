@@ -272,7 +272,6 @@ public class ZarocMCTS {
                     case ELITE -> dataList.subList(0,0);
         };
         MoveStats chosenTurn = availableTurns.get(random.nextInt(0,availableTurns.size()));
-        System.out.println(availableTurns.indexOf(chosenTurn));
         return chosenTurn.turn;
     }
 

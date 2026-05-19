@@ -66,7 +66,6 @@ public class Game {
         turns.add(turn);
         if (allowedSave) {
             try {
-                System.out.println("nieuwe turn gestart: " + player.getUsername());
                 turn.setTurnId(turnsDao.saveTurn(gameId, turn));
             } catch (ZarocDaoException e) {
                 throw new RuntimeException(e);
@@ -115,9 +114,7 @@ public class Game {
         if (allowedSave && newMove != null) {
             try {
                 movesDao.saveMove(getCurrentTurn().getTurnId(), newMove);
-                System.out.println("move opgeslagen");
             } catch (ZarocDaoException e) {
-                System.out.println("probleem");
                 throw new RuntimeException(e);
 
             }
