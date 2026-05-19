@@ -2,7 +2,6 @@ package game.integration_project1_zaroc.view.sharedlogic;
 
 import game.integration_project1_zaroc.dao.UnfinishedGame;
 import game.integration_project1_zaroc.model.AppController;
-import game.integration_project1_zaroc.model.players.Player;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardPresenter;
 import game.integration_project1_zaroc.view.pages.boardview.GameBoardView;
 import game.integration_project1_zaroc.view.pages.createaccountview.CreateAccountPresenter;
@@ -65,11 +64,14 @@ public class NavigationService {
         new SelectGamemodePresenter(model, gamemodeView);
         getMainStage().getScene().setRoot(gamemodeView);
     }
-
+/**Handels the initialization and navigation to GameBoardView/presenter.
+ * ClosHandler is attached after initialization.
+ * */
     public static void navigateToGameBoard(ResourceManager resourceManager, AppController model) {
         GameBoardView gameBoardView = new GameBoardView(resourceManager);
-        new GameBoardPresenter(gameBoardView, model);
+        GameBoardPresenter gameBoardPresenter = new GameBoardPresenter(gameBoardView, model);
         getMainStage().getScene().setRoot(gameBoardView);
+        gameBoardPresenter.attachCloseHandler(getMainStage());
     }
 
     public static void navigateToGameSetup(ResourceManager resourceManager, AppController model) {

@@ -28,6 +28,8 @@ public class PauseScreenPresenter implements Observer {
 
         view.getReturnButton().setOnAction(event -> {
             model.getGame().setStatus(GameStatus.PAUSED);
+            model.setPlayer2(null);
+            model.setGame(null);
             NavigationService.navigateToGameModeSelection(this.view.getResourceManager(),this.model);
             NavigationService.closeWindow(this.view);
         });

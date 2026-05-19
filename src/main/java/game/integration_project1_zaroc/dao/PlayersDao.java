@@ -53,7 +53,6 @@ public class PlayersDao {
      * @throws ZarocDaoException if the insert fails or no ID is returned
      */
     public int createAiPlayer(AIPlayer player) throws ZarocDaoException {
-        System.out.println("ai speler");
         String sql = "INSERT INTO PLAYERS (username, email, play_style,difficulty,profile_picture) VALUES (?, NULL, NULL,?,?)";
 
         try (Connection conn = DaoUtils.createConnection();
@@ -158,7 +157,6 @@ public class PlayersDao {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    System.out.println("ik ben hier");
                     return HumanPlayer.fromResultSet(rs);
                 }
             }
