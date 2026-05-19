@@ -7,7 +7,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * DAO responsible for creating and updating game records in the GAMES table.
+ */
 public class GamesDao {
+
+    /**
+     * Inserts a new game with status {@code PLAYING} and returns its generated ID.
+     *
+     * @return the generated {@code game_id} of the newly created game
+     * @throws ZarocDaoException if the insert fails or no ID is returned by the database
+     */
     public int createGame() throws ZarocDaoException {
         String sql = "INSERT INTO GAMES (game_status) VALUES (?)";
 
@@ -26,6 +36,12 @@ public class GamesDao {
         throw new ZarocDaoException("Game werd in de DB toegevoegd maar er werd geen ID teruggegeven");
     }
 
+    /**
+     * Updates the status of an existing game in the database.
+     *
+     * @param game the game whose status should be changed, must have a valid {@code gameId}
+     * @throws ZarocDaoException if the update fails due to a database error
+     */
     public void updateGame(Game game) throws ZarocDaoException {
         String sql = "UPDATE GAMES SET game_status = ? WHERE game_id = ?";
 

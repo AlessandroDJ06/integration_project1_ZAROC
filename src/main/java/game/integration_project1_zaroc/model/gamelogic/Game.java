@@ -337,7 +337,9 @@ public class Game {
         return copy;
     }
 
-
+/**Executes a random move out of a list of all legal moves.
+ *Silently does nothing if there are no legal moves (probably impossible).
+ * */
     public void executeRandomMove() {
         if (status != GameStatus.PLAYING) {
             return;
