@@ -49,7 +49,7 @@ public class MockDataLoader {
      * */
     private void loadPlayers(Connection conn) throws Exception {
         copyInto(conn,
-                "PLAYERS(username, email, play_style, password)",
+                "PLAYERS(username, email, play_style, difficulty, password)",
                 "mockData/players.csv");
 
     }

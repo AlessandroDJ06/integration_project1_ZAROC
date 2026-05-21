@@ -99,13 +99,14 @@ public class DaoUtils {
                                          profile_picture VARCHAR(255),
                 
                                          CONSTRAINT PK_PLAYER_ID PRIMARY KEY (player_id),
-                                         CONSTRAINT CHK_PLAYER_DIFFICULTY CHECK (difficulty IN ('EASY', 'MEDIUM', 'HARD')),
+                                         CONSTRAINT CHK_PLAYER_DIFFICULTY CHECK (difficulty IN ('EASY', 'MEDIUM', 'HARD','ELITE')),
                                          CONSTRAINT CHK_PLAYER_PLAYSTYLE CHECK (play_style IN ('PASSIVE', 'AGGRESSIVE', 'DEFAULT'))
                 );
                 
                 CREATE TABLE IF NOT EXISTS GAMES (
                                        game_id INT GENERATED ALWAYS AS IDENTITY,
                                        game_status VARCHAR(255) NOT NULL,
+                                       start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 
                                        CONSTRAINT PK_GAME_ID PRIMARY KEY (game_id)
                 );
@@ -163,6 +164,42 @@ public class DaoUtils {
                                                           CONSTRAINT FK_ROOM_GAME FOREIGN KEY (game_id) REFERENCES GAMES(game_id),
                                                           CONSTRAINT CHK_ROOM_STATUS CHECK (status IN ('WAITING', 'PLAYING', 'FINISHED'))
                 );
+                
+                --Deze view berekent de outliers zelf , die wordt dan in een andere view gebruikt om te kijken welke moves er een outlier zijn
+                CREATE VIEW outliers AS
+                SELECT move_id from moves
+                WHERE extract(epoch FROM end_time) - extract(epoch from start_time) NOT BETWEEN (
+                    SELECT
+                        percentile_cont(0.25) WITHIN GROUP (ORDER BY extract(epoch FROM end_time) - extract(epoch from start_time)) - (1.5 * (percentile_cont(0.75) WITHIN GROUP (ORDER BY extract(epoch FROM end_time) - extract(epoch from start_time)) - (percentile_cont(0.25) WITHIN GROUP (ORDER BY extract(epoch FROM end_time) - extract(epoch from start_time))))) AS outlier_bottom
+                    FROM moves
+                    ) AND
+                    (
+                    SELECT
+                        percentile_cont(0.75) WITHIN GROUP (ORDER BY extract(epoch FROM end_time) - extract(epoch from start_time)) + (1.5 * (percentile_cont(0.75) WITHIN GROUP (ORDER BY extract(epoch FROM end_time) - extract(epoch from start_time)) - (percentile_cont(0.25) WITHIN GROUP (ORDER BY extract(epoch FROM end_time) - extract(epoch from start_time))))) AS outlier_top
+                    FROM moves
+                    );
+                
+                CREATE VIEW calculate_outliers AS
+                SELECT p.username AS player,
+                       g.start_time AS game,
+                       CASE  -- Deze case bekijkt of de move van een winnende game participation is , indien ja zet hij W anders L
+                           WHEN winner = true THEN 'W'
+                           ELSE 'L'
+                           END AS outcome,
+                       m.start_time as move,
+                       extract(epoch FROM m.end_time) - extract(epoch from m.start_time) AS duration, --dit berekent de duration tegenover EPOCH , aka 1 januari 1970
+                       CASE -- Deze case zet een X wanneer de move voorkomt in de andere view, hij mag dus geen null waarde hebben bij de link want met de outer join komen die er ook bij
+                           WHEN o.move_id IS NOT NULL THEN 'X'
+                           ELSE ''
+                           END AS outlier
+                
+                FROM moves m
+                         JOIN turns t ON m.turn_id = t.turn_id
+                         JOIN game_participation gp ON t.game_id = gp.game_id
+                         JOIN games g ON gp.game_id = g.game_id
+                         JOIN players p ON gp.player_id = p.player_id
+                         LEFT JOIN outliers o ON m.move_id = o.move_id; --outer join op de view zodat we dus makkelijk kunnen controleren op een outlier
+                
                 
                 """;
 

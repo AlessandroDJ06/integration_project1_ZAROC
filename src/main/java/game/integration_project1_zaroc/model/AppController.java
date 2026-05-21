@@ -133,6 +133,8 @@ public class AppController {
             try {
                 player2.setPlayerId(playersDao.getOrCreateAiPlayer((AIPlayer) player2));
             } catch (ZarocDaoException e) {
+                System.out.println("problem: " + e.getMessage());
+                if (e.getCause() != null) e.getCause().printStackTrace();
             }
         }
 

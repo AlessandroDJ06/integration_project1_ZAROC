@@ -1,4 +1,4 @@
-username,email,play_style,password
-Alessandro,alessandrojongh@gmail.com,DEFAULT,$2a$10$XHTJo0RRhH0cZaf9Xg3D9eFUPhJFhDjkQf8mKyC7kdUp33qPeNnWK
-illia,,DEFAULT,$2a$10$/HSoXp0TPPvHlnL.UvtcuOtnoTwRZqsnmVWMYeA2frcvMZAJW3Ih.
-STEFAN,,DEFAULT,password
+username,email,play_style,difficulty,password
+Alessandro,alessandrojongh@gmail.com,DEFAULT,,$2a$10$XHTJo0RRhH0cZaf9Xg3D9eFUPhJFhDjkQf8mKyC7kdUp33qPeNnWK
+illia,,DEFAULT,,$2a$10$/HSoXp0TPPvHlnL.UvtcuOtnoTwRZqsnmVWMYeA2frcvMZAJW3Ih.
+STEFAN,,DEFAULT,ELITE,

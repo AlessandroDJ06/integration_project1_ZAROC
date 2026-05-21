@@ -21,6 +21,7 @@ public class SelectGamemodeView extends BorderPane {
     private Button playerVsAiButton;
     private Button multiPlayerButton;
     private LongButtonComponent unfinishedGamesButton;
+    private LongButtonComponent leaderBoardButton;
 
     private GeneralActionsComponent settingsButton;
     private GeneralActionsComponent infoButton;
@@ -38,6 +39,7 @@ public class SelectGamemodeView extends BorderPane {
         this.playerVsAiButton = new Button();
         this.multiPlayerButton = new Button();
         this.unfinishedGamesButton = new LongButtonComponent(resourceManager,"UNFINISHED GAMES");
+        this.leaderBoardButton = new LongButtonComponent(resourceManager,"LEADERBOARD");
 
         this.settingsButton = new GeneralActionsComponent(this.resourceManager, Components.SETTINGS);
         this.infoButton = new GeneralActionsComponent(this.resourceManager,Components.RULES);
@@ -62,6 +64,7 @@ public class SelectGamemodeView extends BorderPane {
         );
         centralContainer.setBackground(new Background(backgroundImage));
         centralContainer.setMaxSize(800, 640);
+        centralContainer.setPadding(new Insets(20,0,0,0));
         setCenter(centralContainer);
         BorderPane.setAlignment(centralContainer, Pos.CENTER);
 
@@ -130,6 +133,12 @@ public class SelectGamemodeView extends BorderPane {
         setLeft(profileButtonVbox);
         BorderPane.setAlignment(profileButtonVbox, Pos.TOP_LEFT);
         profileButtonVbox.setPadding(new Insets(30, 0, 0, 30));
+
+
+        leaderBoardButton.setMaxSize(60,20);
+        setBottom(leaderBoardButton);
+        BorderPane.setAlignment(leaderBoardButton,Pos.CENTER_RIGHT);
+        leaderBoardButton.setPadding(new Insets(10,50,40,0));
 
         this.setStyle("-fx-background-color: " + this.resourceManager.getTheme().getColor() + ";");
     }
