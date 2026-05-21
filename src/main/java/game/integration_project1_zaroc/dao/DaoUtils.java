@@ -66,7 +66,7 @@ public class DaoUtils {
                 
                                          CONSTRAINT PK_PLAYER_ID PRIMARY KEY (player_id),
                                          CONSTRAINT CHK_PLAYER_DIFFICULTY CHECK (difficulty IN ('EASY', 'MEDIUM', 'HARD')),
-                                         CONSTRAINT CHK_PLAYER_PLAYSTYLE CHECK (play_style IN ('PASSIVE', 'AGGRESSIVE'))
+                                         CONSTRAINT CHK_PLAYER_PLAYSTYLE CHECK (play_style IN ('PASSIVE', 'AGGRESSIVE', 'DEFAULT'))
                 );
                 
                 CREATE TABLE IF NOT EXISTS GAMES (
@@ -139,6 +139,7 @@ public class DaoUtils {
             throw new ZarocDaoException("Er ging iets mis bij het maken van de tabellen in de db",e);
         }
     }
+
     public static void dropAllTables() throws SQLException, ZarocDaoException {
 
         String[] tables = {
