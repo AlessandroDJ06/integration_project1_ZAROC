@@ -100,7 +100,7 @@ public class DaoUtils {
                 
                                          CONSTRAINT PK_PLAYER_ID PRIMARY KEY (player_id),
                                          CONSTRAINT CHK_PLAYER_DIFFICULTY CHECK (difficulty IN ('EASY', 'MEDIUM', 'HARD')),
-                                         CONSTRAINT CHK_PLAYER_PLAYSTYLE CHECK (play_style IN ('PASSIVE', 'AGGRESSIVE'))
+                                         CONSTRAINT CHK_PLAYER_PLAYSTYLE CHECK (play_style IN ('PASSIVE', 'AGGRESSIVE', 'DEFAULT'))
                 );
                 
                 CREATE TABLE IF NOT EXISTS GAMES (
@@ -174,13 +174,6 @@ public class DaoUtils {
         }
     }
 
-    /**
-     * Drops all tables from the database and their data permanently.
-     * Tables with foreign key dependencies are dropped before the tables they reference.
-     *
-     * @throws SQLException      if a table cannot be dropped due to a SQL error
-     * @throws ZarocDaoException if the database connection cannot be established
-     */
     public static void dropAllTables() throws SQLException, ZarocDaoException {
 
         String[] tables = {
