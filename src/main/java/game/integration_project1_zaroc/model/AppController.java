@@ -33,7 +33,6 @@ public class AppController {
     private GameParticipationDao gameParticipationDao;
     private PlayersDao playersDao;
     private UnfinishedGamesDao unfinishedGamesDao;
-    private MultiplayerDao multiplayerDao;
 
     private PawnColor player1Color;
     private PawnColor player2Color;
@@ -134,7 +133,6 @@ public class AppController {
             try {
                 player2.setPlayerId(playersDao.getOrCreateAiPlayer((AIPlayer) player2));
             } catch (ZarocDaoException e) {
-                System.out.println("Kon AI speler niet ophalen of aanmaken: " + e.getMessage());
             }
         }
 

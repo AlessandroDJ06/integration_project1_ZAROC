@@ -5,8 +5,20 @@ import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
 
+/**
+ * Utility class providing commonly used methods for the DAO layer.
+ * Handles connection creation, statement preparation and the creation/deletion of tables.
+ * All methods use db.properties from the classpath to resolve
+ * the database URL, username, and password.
+ * This class is not meant to be instantiated.
+ */
 public class DaoUtils {
 
+    /**
+     * Loads the HSQLDB JDBC driver.
+     *
+     * @throws ZarocDaoException if the driver class cannot be found on the classpath
+     */
     public static void loadDriver() throws ZarocDaoException {
         try {
             Class.forName("org.hsqldb.jdbcDriver");
@@ -15,6 +27,14 @@ public class DaoUtils {
         }
     }
 
+    /**
+     * Creates and returns a new database connection using values
+     * loaded from db.properties
+     *
+     * @return an open connection to the database
+     * @throws ZarocDaoException if the properties file is missing, cannot be read,
+     *                           or the connection cannot be established
+     */
     public static Connection createConnection() throws ZarocDaoException {
         Properties props = new Properties();
 
@@ -42,6 +62,15 @@ public class DaoUtils {
         }
     }
 
+
+    /**
+     * Creates a {@link PreparedStatement} for the given SQL on the provided connection.
+     *
+     * @param connection the active database connection to use
+     * @param sql        the SQL query to prepare
+     * @return a prepared statement ready for values for the parameters and execution
+     * @throws ZarocDaoException if the statement cannot be created
+     */
     public static PreparedStatement createPreparedStatement(Connection connection, String sql) throws ZarocDaoException {
         try {
             return connection.prepareStatement(sql);
@@ -52,7 +81,12 @@ public class DaoUtils {
 
         //Gebruik try with resources om automatisch alles af te sluiten (connection en statements)
 
-
+    /**
+     * Creates all database tables if they do not already exist.
+     * PLAYERS, GAMES, GAME_PARTICIPATION, TURNS, MOVES, and GAME_ROOMS.
+     *
+     * @throws ZarocDaoException if the tables cannot be created because of a database error
+     */
     public static void createTable() throws ZarocDaoException{
         String sql = """
                 CREATE TABLE IF NOT EXISTS PLAYERS (

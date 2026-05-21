@@ -69,7 +69,6 @@ public class AiModel {
         Map<Turn, Double> scoreCache = new HashMap<>();
         for (Turn t : options) {
             scoreCache.put(t, scoreTurn(t, actualGame));
-            System.out.println(scoreCache.get(t));
         }
 
         options.sort((a, b) -> Double.compare(scoreCache.get(b), scoreCache.get(a)));

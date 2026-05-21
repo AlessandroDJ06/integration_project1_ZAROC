@@ -119,7 +119,7 @@ public class RoomDao {
                 psRoom.executeUpdate();
             }
 
-            System.out.println("DEBUG: Game succesvol aangemaakt met ID: " + newGameId);
+
             return newGameId;
 
         } catch (SQLException e) {
@@ -137,9 +137,20 @@ public class RoomDao {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); // Dit print de rode lap tekst in je console!
+            e.printStackTrace();
             System.err.println("De échte SQL fout is: " + e.getMessage());
             throw new ZarocDaoException("kon status niet updaten",e);
+        }
+    }
+
+    public void removePlayer(String roomCode) throws ZarocDaoException{
+        String sql = "UPDATE GAME_ROOMS SET guest_id = null , status = 'WAITING' WHERE room_code = ?";
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)){
+             ps.setString(1,roomCode);
+             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ZarocDaoException("kon speler niet updaten",e);
         }
     }
 
@@ -166,6 +177,17 @@ public class RoomDao {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new ZarocDaoException("Kon game niet hervatten in room", e);
+        }
+    }
+
+    public void deleteRoom(String roomCode) throws ZarocDaoException{
+        String sql = "DELETE FROM GAME_ROOMS WHERE room_code = ?";
+        try (Connection conn = DaoUtils.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, roomCode);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ZarocDaoException("Kon gameroom niet verwijderen", e);
         }
     }
 }

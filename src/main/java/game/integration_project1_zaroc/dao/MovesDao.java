@@ -5,10 +5,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
+/**
+ * DAO responsible for saving moves to the MOVES table.
+ */
 public class MovesDao {
 
-
+    /**
+     * Inserts a single move linked with the given turn.
+     *
+     * @param turnId the ID of the turn this move belongs to
+     * @param move   the move to save
+     * @throws ZarocDaoException if the insert fails due to a database error
+     */
     public void saveMove(int turnId, Move move) throws ZarocDaoException {
         try (Connection conn = DaoUtils.createConnection()) {
 
