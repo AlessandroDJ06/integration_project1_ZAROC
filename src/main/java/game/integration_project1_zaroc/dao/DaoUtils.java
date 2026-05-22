@@ -106,7 +106,7 @@ public class DaoUtils {
                 CREATE TABLE IF NOT EXISTS GAMES (
                                        game_id INT GENERATED ALWAYS AS IDENTITY,
                                        game_status VARCHAR(255) NOT NULL,
-                                       start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                       start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 
                                        CONSTRAINT PK_GAME_ID PRIMARY KEY (game_id)
                 );
@@ -166,7 +166,7 @@ public class DaoUtils {
                 );
                 
                 --Deze view berekent de outliers zelf , die wordt dan in een andere view gebruikt om te kijken welke moves er een outlier zijn
-                CREATE VIEW outliers AS
+                CREATE OR REPLACE VIEW outliers AS
                 SELECT move_id from moves
                 WHERE extract(epoch FROM end_time) - extract(epoch from start_time) NOT BETWEEN (
                     SELECT
@@ -179,7 +179,7 @@ public class DaoUtils {
                     FROM moves
                     );
                 
-                CREATE VIEW calculate_outliers AS
+                CREATE OR REPLACE VIEW calculate_outliers AS
                 SELECT p.username AS player,
                        g.start_time AS game,
                        CASE  -- Deze case bekijkt of de move van een winnende game participation is , indien ja zet hij W anders L
