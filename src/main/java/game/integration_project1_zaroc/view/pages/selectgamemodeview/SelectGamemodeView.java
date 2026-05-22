@@ -174,4 +174,8 @@ public class SelectGamemodeView extends BorderPane {
     Button getMultiPlayerButton(){
         return multiPlayerButton;
     }
-}
+
+    Button getLeaderboardButton(){
+        return leaderBoardButton; }
+    }
+

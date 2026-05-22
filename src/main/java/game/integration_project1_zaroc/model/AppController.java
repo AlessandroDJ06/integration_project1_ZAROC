@@ -88,6 +88,9 @@ public class AppController {
 
 
     public void createAccount(String username, String email, String password, String profilePicture, boolean isPlayerOne) throws ZarocDaoException {
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("email isn't formatted correctly");
+        }
         HumanPlayer player = new HumanPlayer(username, email);
         player.setProfilePicture(profilePicture);
         int id = playersDao.createHumanPlayer(player, password);

@@ -26,7 +26,8 @@ public class SelectGamemodePresenter implements Observer {
                 view.getPlayerVsAiButton(),
                 view.getPlayerVsPlayerButton(),
                 view.getUnfinishedGamesButton(),
-                view.getMultiPlayerButton()
+                view.getMultiPlayerButton(),
+                view.getLeaderboardButton()
         )) {
             GeneralEventhandlers.addHoverEffect(button);
             GeneralEventhandlers.addSoundEffect(button, view.getResourceManager());
@@ -76,6 +77,10 @@ public class SelectGamemodePresenter implements Observer {
 
         view.getProfileButton().setOnAction(event -> {
             NavigationService.navigateToStatisticsView(view.getResourceManager(), this.model).showAndWait();
+        });
+
+        view.getLeaderboardButton().setOnAction( event -> {
+            NavigationService.navigateToLeaderboard(view.getResourceManager(),this.model).showAndWait();
         });
 
     }
