@@ -71,6 +71,7 @@ public class LeaderboardPresenter implements Observer {
         view.getSortDropdown().valueProperty().addListener(
                 (obs, oldVal, newVal) -> applySortAndDisplay(newVal)
         );
+        view.getAiDropdown().valueProperty().addListener((observableValue, oldVal, newVal) -> applySortAndDisplay(view.getSortDropdown().getValue()));
     }
 
     /**
@@ -81,6 +82,24 @@ public class LeaderboardPresenter implements Observer {
      */
 private void applySortAndDisplay(String sortOption) {
     if (cachedEntries.isEmpty()) return;
+    List<LeaderboardEntry> entriesToSort = new ArrayList<>();
+
+    String selectedValue = view.getAiDropdown().getValue();
+
+    for(LeaderboardEntry leaderboardEntry: cachedEntries){
+        if(selectedValue.equals("Only AI")){
+            if(!(leaderboardEntry.getDifficulty()==null)){
+                entriesToSort.add(leaderboardEntry);
+            }
+        }else if(selectedValue.equals("Only human players")){
+            if(leaderboardEntry.getDifficulty()==null){
+                entriesToSort.add(leaderboardEntry);
+            }
+        }else{
+            entriesToSort.add(leaderboardEntry);
+        }
+    }
+
     Comparator<LeaderboardEntry> comparator = switch (sortOption) {
             case "Wins"            -> Comparator.comparingInt(LeaderboardEntry::getWins).reversed();
             case "Losses"          -> Comparator.comparingInt(LeaderboardEntry::getLosses).reversed();
@@ -94,7 +113,7 @@ private void applySortAndDisplay(String sortOption) {
                             .thenComparingInt(LeaderboardEntry::getWins).reversed();
         };
 
-    List<LeaderboardEntry> sorted = new ArrayList<>(cachedEntries);
+    List<LeaderboardEntry> sorted = new ArrayList<>(entriesToSort);
     sorted.sort(comparator);
 
     for (int i = 0; i < sorted.size(); i++) {
@@ -128,7 +147,7 @@ private void applySortAndDisplay(String sortOption) {
                     view.setItems(entries);
                     view.setStatusText(entries.isEmpty()
                             ? "No finished games found."
-                            : entries.size() + " player(s) on the board.");
+                            : entries.size() + " player(s) found in total.");
                 });
 
             } catch (SQLException | ZarocDaoException e) {

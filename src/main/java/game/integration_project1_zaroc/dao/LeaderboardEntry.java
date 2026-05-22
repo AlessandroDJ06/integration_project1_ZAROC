@@ -24,6 +24,8 @@ public class LeaderboardEntry {
     private double avgSecPerMove;
     /** Total score, equal to the total number of wins. */
     private int totalScore;
+    /** Difficulty used to see if player is an AI or not.*/
+    private String difficulty;
 
 
     /**
@@ -39,12 +41,13 @@ public class LeaderboardEntry {
      * @param avgMovesPerGame      average moves made per game
      * @param avgSecPerMove        average seconds spent per move
      * @param totalScore           total score
+     * @param difficulty           difficult of an AI (null if human)
      */
     public LeaderboardEntry(int rank, String username,
                             int gamesPlayed, int wins, int losses,
                             double winPercentage, long totalPlayTimeSeconds,
                             double avgMovesPerGame, double avgSecPerMove,
-                            int totalScore) {
+                            int totalScore, String difficulty) {
         this.rank = rank;
         this.username = username;
         this.gamesPlayed = gamesPlayed;
@@ -55,6 +58,7 @@ public class LeaderboardEntry {
         this.avgMovesPerGame = avgMovesPerGame;
         this.avgSecPerMove = avgSecPerMove;
         this.totalScore = totalScore;
+        this.difficulty =difficulty;
     }
 
 
@@ -97,6 +101,8 @@ public class LeaderboardEntry {
     public int getTotalScore() {
         return totalScore;
     }
+
+    public String getDifficulty(){return difficulty;}
 
     /**
      * Updates the player's rank after re-sorting the leaderboard.
