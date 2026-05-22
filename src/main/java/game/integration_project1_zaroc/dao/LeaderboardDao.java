@@ -50,7 +50,8 @@ public class LeaderboardDao {
                          ), 0
                          )                                                           AS avg_sec_per_move,
                 COUNT(DISTINCT CASE WHEN gp.winner = TRUE THEN gp.game_id END)
-                                                                                                      AS total_score
+                                                                                                      AS total_score,
+                COALESCE(p.difficulty,null) AS difficulty
                                       FROM
                                           PLAYERS p
                                           JOIN GAME_PARTICIPATION gp ON p.player_id = gp.player_id
@@ -86,7 +87,8 @@ public class LeaderboardDao {
                     rs.getLong("total_play_time_sec"),
                     rs.getDouble("avg_moves_per_game"),
                     rs.getDouble("avg_sec_per_move"),
-                    rs.getInt("total_score")
+                    rs.getInt("total_score"),
+                        rs.getString("difficulty")
                 );
                 entries.add(entry);
             }
