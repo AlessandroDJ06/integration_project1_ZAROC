@@ -32,6 +32,7 @@ public class GameListCell extends ListCell<UnfinishedGame> {
         layoutNodes();
     }
 
+
     private void initialiseNodes(){
         this.content = new HBox(15);
         this.currentPlayerName = new Label();
@@ -59,6 +60,11 @@ public class GameListCell extends ListCell<UnfinishedGame> {
         this.content.setAlignment(Pos.CENTER);
 
         this.content.getChildren().addAll(currentPlayerPfp,currentPlayerName,dateAndTime,opponentPlayerName,opponentPlayerPfp);
+    }
+
+    public void updateLayout(){
+        this.getChildren().clear();
+        layoutNodes();
     }
 
     @Override

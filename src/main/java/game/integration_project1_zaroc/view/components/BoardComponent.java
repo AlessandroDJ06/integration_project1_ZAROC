@@ -95,6 +95,15 @@ public class BoardComponent extends StackPane {
         getChildren().add(board);
     }
 
+    public void updateLayout(){
+        this.getChildren().clear();
+        this.board.getChildren().clear();
+        this.board.getColumnConstraints().clear();
+        this.board.getRowConstraints().clear();
+        this.pegPositions.clear();
+        layoutComponent();
+    }
+
     public GridPane getBoard() {
         return board;
     }

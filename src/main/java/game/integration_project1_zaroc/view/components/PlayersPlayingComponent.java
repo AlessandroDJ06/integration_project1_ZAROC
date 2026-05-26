@@ -108,6 +108,11 @@ public class PlayersPlayingComponent extends HBox {
         setPadding(new Insets(0,15,0,15));
     }
 
+    public void updateLayout(){
+        this.getChildren().clear();
+        layoutNodes();
+    }
+
     public void setFirstPlayer(String name) {
         this.firstPlayer.setText(name);
     }

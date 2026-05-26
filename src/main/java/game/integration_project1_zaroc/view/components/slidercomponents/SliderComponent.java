@@ -63,6 +63,11 @@ public abstract class SliderComponent extends BorderPane {
         BorderPane.setAlignment(centerNode, Pos.CENTER);
     }
 
+    public void updateLayout(){
+        this.getChildren().clear();
+        layoutNodes();
+    }
+
     protected abstract Node getContent();
 
     public Button getLeftButton() { return leftButton; }

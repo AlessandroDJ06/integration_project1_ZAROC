@@ -38,7 +38,7 @@ public class GameBoardView extends BorderPane {
         layoutNodes();
     }
 
-    public void initialiseNodes() {
+    private void initialiseNodes() {
         this.board = new BoardComponent(this.resourceManager);
         this.undoButton = new GeneralActionsComponent(this.resourceManager, Components.UNDO);
         this.settingsButton = new GeneralActionsComponent(this.resourceManager, Components.SETTINGS);
@@ -51,13 +51,12 @@ public class GameBoardView extends BorderPane {
     }
 
     void layoutNodes() {
-        this.getChildren().clear();
         settingsButton.updateLayout();
         infoButton.updateLayout();
         undoButton.updateLayout();
-
-        playersPlayingComponent.setPlayerOnePfp(ProfilePictures.JAMES);
-        playersPlayingComponent.setPlayerTwoPfp(ProfilePictures.BADBUNNY);
+        playersPlayingComponent.updateLayout();
+        board.updateLayout();
+        pegView.updateLayout();
 
         BorderPane topHeader = new BorderPane();
         topHeader.setPadding(new Insets(30, 30, 0, 30));
@@ -111,7 +110,6 @@ public class GameBoardView extends BorderPane {
 
         this.undoTimer.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
         this.undoTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
-
 
     }
 

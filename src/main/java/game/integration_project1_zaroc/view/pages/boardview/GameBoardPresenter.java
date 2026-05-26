@@ -865,5 +865,6 @@ public class GameBoardPresenter implements Observer {
     @Override
     public void updateLayout(Object args) {
         view.layoutNodes();
+        updateView();
     }
 }

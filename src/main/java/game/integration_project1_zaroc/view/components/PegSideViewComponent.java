@@ -39,9 +39,21 @@ public class PegSideViewComponent extends BorderPane {
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
-                new BackgroundSize(100, 100, true, true, true, false) // Zorgt dat het vult
+                new BackgroundSize(100, 100, true, true, true, false)
         );
         region.setBackground(new Background(bImg));
+    }
+
+    public void updateLayout(){
+        this.getChildren().clear();
+        this.pegRowFour.getChildren().clear();
+        this.pegRowThree.getChildren().clear();
+        this.pegRowTwo.getChildren().clear();
+        this.rows.getChildren().clear();
+        this.pegContainers.clear();
+        styleComponent();
+        layoutNodes();
+
     }
 
     private void layoutNodes(){
