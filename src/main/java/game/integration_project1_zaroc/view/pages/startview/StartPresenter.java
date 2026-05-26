@@ -55,6 +55,10 @@ public class StartPresenter implements Observer {
         view.getSettingsButton().setOnAction(actionEvent -> {
             NavigationService.navigateToSettings(view.getResourceManager(),this.model).showAndWait();
         });
+
+        view.getInfoButton().setOnAction(event -> {
+            NavigationService.navigateToRules(view.getResourceManager(),this.model).showAndWait();
+        });
     }
 
     @Override
