@@ -44,6 +44,7 @@ public class WinScreenView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         VBox gameStatsVBox = new VBox(gameStatsTitle, gameStats);
         gameStatsVBox.setAlignment(Pos.TOP_RIGHT);
         gameStatsVBox.setSpacing(10);

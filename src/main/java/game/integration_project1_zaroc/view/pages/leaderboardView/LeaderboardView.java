@@ -50,6 +50,7 @@ public class LeaderboardView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         returnButton.updateLayout();
         this.setPrefWidth(1052);
 

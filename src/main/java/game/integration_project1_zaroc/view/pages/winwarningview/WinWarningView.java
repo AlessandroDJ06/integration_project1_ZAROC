@@ -30,6 +30,7 @@ public class WinWarningView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         this.winWarning.setFont(resourceManager.getFont(Fonts.PRESSSTART2PMEDIUM));
         this.matchPoint.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
 

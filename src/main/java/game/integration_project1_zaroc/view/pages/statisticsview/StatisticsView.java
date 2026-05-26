@@ -55,6 +55,7 @@ public class StatisticsView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
 
         Image boardBackgroundImage = resourceManager.getImage(Components.PEGVIEW);
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);

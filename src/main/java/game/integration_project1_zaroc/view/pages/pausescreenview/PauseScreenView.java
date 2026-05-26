@@ -31,6 +31,7 @@ public class PauseScreenView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         continueButton.updateLayout();
         returnButton.updateLayout();
         gamePaused.setFont(resourceManager.getFont(Fonts.PRESSSTART2PTITLE));

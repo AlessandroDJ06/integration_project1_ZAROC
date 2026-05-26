@@ -48,6 +48,7 @@ public class SelectGamemodeView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         settingsButton.updateLayout();
         infoButton.updateLayout();
         profileButton.updateLayout();

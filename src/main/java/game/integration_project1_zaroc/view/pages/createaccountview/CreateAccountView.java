@@ -48,6 +48,7 @@ public class CreateAccountView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         returnButton.updateLayout();
         createButton.updateLayout();
         setBackground(new Background(LayoutHelpers.setBackground(this.resourceManager, 550, 650)));

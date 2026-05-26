@@ -55,6 +55,7 @@ public class MultiPlayerHostView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         returnButton.updateLayout();
         startGameButton.updateLayout();
         BorderPane centralContainer = new BorderPane();

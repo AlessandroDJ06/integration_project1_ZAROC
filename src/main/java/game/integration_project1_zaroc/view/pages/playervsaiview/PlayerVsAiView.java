@@ -38,6 +38,7 @@ public class PlayerVsAiView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         returnButton.updateLayout();
         BorderPane centralContainer = new BorderPane();
         centralContainer.setBackground(new Background(new BackgroundImage(

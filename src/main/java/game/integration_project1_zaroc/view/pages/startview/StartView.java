@@ -41,6 +41,7 @@ public class StartView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         settingsButton.updateLayout();
         infoButton.updateLayout();
         loginButton.updateLayout();

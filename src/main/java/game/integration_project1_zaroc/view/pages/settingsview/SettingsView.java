@@ -77,6 +77,7 @@ public class SettingsView extends BorderPane {
     }
 
     public void layoutNodes() {
+        this.getChildren().clear();
         returnButton.updateLayout();
         this.setPrefSize(600, 340);
         this.setMaxSize(600, 340);

@@ -31,6 +31,8 @@ public class UnfinishedGamesView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
+
         returnButton.updateLayout();
 
         BorderPane centralContainer = new BorderPane();
