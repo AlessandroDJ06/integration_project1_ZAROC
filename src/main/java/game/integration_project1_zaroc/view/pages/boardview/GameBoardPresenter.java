@@ -101,7 +101,7 @@ public class GameBoardPresenter implements Observer {
                 this.model.getMultiplayerService().startTurnPolling(gameId, offset, myUsername);
             }
         }
-
+        view.getResourceManager().getMusicManager().changeMusic();
         updateView();
         addEventHandlers();
         processTurn();

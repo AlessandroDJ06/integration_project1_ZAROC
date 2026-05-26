@@ -31,6 +31,8 @@ public class PauseScreenPresenter implements Observer {
 
         view.getReturnButton().setOnAction(event -> {
             if (gameBoardPresenter != null){ gameBoardPresenter.closeWarningPopup();}
+            view.getResourceManager().getMusicManager().changeMusic();
+
             model.getGame().setStatus(GameStatus.PAUSED);
             model.setPlayer2(null);
             model.setGame(null);

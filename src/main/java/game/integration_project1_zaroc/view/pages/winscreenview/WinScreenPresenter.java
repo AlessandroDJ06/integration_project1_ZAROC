@@ -20,6 +20,7 @@ public class WinScreenPresenter implements Observer {
         this.view = view;
         this.model = model;
         view.getResourceManager().addObserver(this);
+        view.getResourceManager().getMusicManager().changeMusic();
         updateInfo();
         addEventHandlers();
     }
