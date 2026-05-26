@@ -44,7 +44,7 @@ public class RuleView extends BorderPane {
 
         returnButton.setFont(resourceManager.getFont(Fonts.PRESSSTART2BUTTONSTYLE));
 
-        Text title = new Text("Regels");
+        Text title = new Text("Rules");
         title.setFont(titleFont);
         title.setFill(textColor);
 
@@ -55,32 +55,31 @@ public class RuleView extends BorderPane {
 
         header.setPadding(new Insets(50, 70, 20, 70));
 
-        Text hText1 = createText("Doel van het spel\n\n", largeFont, textColor);
-        Text sText1 = createText("Het doel van het spel is om als eerste drie van je eigen stukken in de eindrij te plaatsen. De eindrij bestaat uit de vijf vakjes aan het einde van het bord.\n\n\n", smallFont, textColor);
+        Text hText1 = createText("Objective of the Game\n\n", largeFont, textColor);
+        Text sText1 = createText("The objective of the game is to be the first to place three of your own pieces in the end row. The end row consists of the five spaces at the end of the board.\n\n\n", smallFont, textColor);
 
-        Text hText2 = createText("Beurtverloop\n\n", largeFont, textColor);
-        Text sText2 = createText("Spelers spelen om de beurt. Tijdens je beurt moet je twee zetten uitvoeren. Deze twee zetten mogen met eender welk stuk op het bord gebeuren, ook met stukken van je tegenstander. Je mag ook twee keer hetzelfde stuk verplaatsen, zolang de zetten geldig zijn.\n\n\n", smallFont, textColor);
+        Text hText2 = createText("Turn Sequence\n\n", largeFont, textColor);
+        Text sText2 = createText("Players take turns. During your turn, you must perform two moves. These two moves may be made with any piece on the board, including your opponent’s pieces. You may also move the same piece twice, as long as the moves are valid.\n\n\n", smallFont, textColor);
 
-        Text hText3 = createText("Beweging\n\n", largeFont, textColor);
+        Text hText3 = createText("Movement\n\n", largeFont, textColor);
         Text sText3 = createText("""
-                Bij elke zet neem je het bovenste stuk van een pin en verplaats je het zijwaarts of vooruit.
-                
-                Bij een zijwaartse zet verplaats je een stuk naar een aangrenzende pin van dezelfde hoogte, op voorwaarde dat er nog plaats is op die pin.
-                
-                Bij een voorwaartse zet verplaats je een stuk naar een pin van een lagere hoogte of naar een vakje in de eindrij, volgens de voorwaartse verbindingen van het bord. Een stuk mag alleen vooruit bewegen wanneer het zich op de hoogst mogelijke positie van zijn pin bevindt, dus wanneer er geen lege plaatsen boven het stuk zijn.
-                
-                Stukken mogen nooit achteruit bewegen naar een hogere pin.
-                
-                Een zet mag de vorige zet niet onmiddellijk ongedaan maken.
-                
-                Stukken die de eindrij bereiken mogen niet meer bewegen, en zijwaartse beweging is in de eindrij niet toegestaan.
-                
-                
-                """, smallFont, textColor);
+        For each move, you take the top piece from a peg and move it sideways or forward.
+        
+        In a sideways move, you move a piece to an adjacent peg of the same height, provided there is still space on that peg.
+        
+        In a forward move, you move a piece to a peg of a lower height or to a space in the end row, following the forward connections of the board. A piece may only move forward when it is in the highest possible position on its peg, meaning there are no empty spaces above the piece.
+        
+        Pieces may never move backward to a higher peg.
+        
+        A move may not immediately undo the previous move.
+        
+        Pieces that reach the end row may no longer move, and sideways movement is not allowed in the end row.
+        
+        
+        """, smallFont, textColor);
 
-        Text hText4 = createText("Het spel winnen\n\n", largeFont, textColor);
-        Text sText4 = createText("Het spel eindigt onmiddellijk wanneer een speler drie stukken van zijn kleur in de eindrij heeft. Die speler wint het spel.", smallFont, textColor);
-
+        Text hText4 = createText("Winning the Game\n\n", largeFont, textColor);
+        Text sText4 = createText("The game ends immediately when a player has three pieces of their color in the end row. That player wins the game.", smallFont, textColor);
         TextFlow rules = new TextFlow(hText1, sText1, hText2, sText2, hText3, sText3, hText4, sText4);
         rules.setLineSpacing(8);
 

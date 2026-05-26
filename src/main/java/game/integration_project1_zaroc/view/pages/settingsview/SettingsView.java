@@ -48,10 +48,10 @@ public class SettingsView extends BorderPane {
         returnButton = new TextButton(resourceManager, "X");
         volume = new Slider(0, 10, 10);
         sound = new Slider(0, 10, 10);
-        titel = new Text("Instellingen");
-        soundLabel = new Text("Geluid");
-        volumeLabel = new Text("Muziek");
-        themeLabel = new Text("Thema");
+        titel = new Text("Settings");
+        soundLabel = new Text("Sound");
+        volumeLabel = new Text("Music");
+        themeLabel = new Text("Theme");
 
 
         volumeIconView = new ImageView();
