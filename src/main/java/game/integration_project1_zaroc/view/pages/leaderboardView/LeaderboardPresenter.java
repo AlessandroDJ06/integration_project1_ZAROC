@@ -165,10 +165,10 @@ private void applySortAndDisplay(String sortOption) {
      * Called when the resource manager notifies observers of a layout change.
      * Triggers a full layout refresh on the view.
      */
-    @Override
-    public void updateLayout(Object args) {
-        view.layoutNodes();
-    }
-
+//    @Override
+//    public void updateLayout(Object args) {
+//        view.layoutNodes();
+//    }
+//
     }
 

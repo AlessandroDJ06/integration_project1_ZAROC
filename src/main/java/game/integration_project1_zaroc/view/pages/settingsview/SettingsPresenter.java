@@ -72,14 +72,15 @@ public class SettingsPresenter implements Observer {
         // Theme Selector Events
         view.getThemeSelector().getRightButton().setOnAction(actionEvent -> {
             themePickerModel.increaseCurrentIndex();
-            updateView();
             setResourceManagerTheme(Themes.values()[themePickerModel.getCurrentIndex()]);
+            updateView();
+
         });
 
         view.getThemeSelector().getLeftButton().setOnAction(actionEvent -> {
             themePickerModel.decreaseCurrentIndex();
-            updateView();
             setResourceManagerTheme(Themes.values()[themePickerModel.getCurrentIndex()]);
+            updateView();
         });
     }
 
@@ -111,6 +112,7 @@ public class SettingsPresenter implements Observer {
     /** Updates the theme selector label to reflect the current selected theme.*/
     private void updateView() {
         view.getThemeSelector().getLabel().setText(Themes.values()[themePickerModel.getCurrentIndex()].name());
+        view.getThemeSelector().getLabel().setTextFill(javafx.scene.paint.Color.web(view.getResourceManager().getTheme().getTextColor()));
     }
 
     /**
