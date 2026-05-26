@@ -134,7 +134,7 @@ public class SelectGamemodeView extends BorderPane {
         BorderPane.setAlignment(profileButtonVbox, Pos.TOP_LEFT);
         profileButtonVbox.setPadding(new Insets(30, 0, 0, 30));
 
-
+        leaderBoardButton.updateLayout();
         leaderBoardButton.setMaxSize(60,20);
         setBottom(leaderBoardButton);
         BorderPane.setAlignment(leaderBoardButton,Pos.CENTER_RIGHT);
