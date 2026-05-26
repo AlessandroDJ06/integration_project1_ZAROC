@@ -88,9 +88,17 @@ public class AppController {
 
 
     public void createAccount(String username, String email, String password, String profilePicture, boolean isPlayerOne) throws ZarocDaoException {
-        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
             throw new IllegalArgumentException("email isn't formatted correctly");
         }
+        if (password == null || password.length() < 8){
+            throw new IllegalArgumentException("password needs to be longer than 8 chars");
+        }
+
+        if (!password.matches("^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>]).+$")){
+            throw new IllegalArgumentException("password at least needs one capital and at least one special character");
+        }
+
         HumanPlayer player = new HumanPlayer(username, email);
         player.setProfilePicture(profilePicture);
         int id = playersDao.createHumanPlayer(player, password);
