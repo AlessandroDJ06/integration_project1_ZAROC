@@ -78,6 +78,8 @@ public class GameBoardPresenter implements Observer {
     private boolean player2Warned = false;
     private boolean isPaused = false;
 
+    private WinWarningPresenter winWarningPresenter;
+
     public GameBoardPresenter(GameBoardView view, AppController model) {
         this.view = view;
         this.model = model;
@@ -200,6 +202,7 @@ public class GameBoardPresenter implements Observer {
 
         PauseScreenView pauseScreenView = new PauseScreenView(view.getResourceManager());
         PauseScreenPresenter pauseScreenPresenter = new PauseScreenPresenter(pauseScreenView, model);
+        pauseScreenPresenter.setGameBoardPresenter(this);
 
         if (model.getGame().isAllowedSave()) {
             pauseScreenView.getNoteUnfinishedGame().setText("NOTE: Current game will be added to Unfinished Games");
@@ -367,8 +370,15 @@ public class GameBoardPresenter implements Observer {
             }
         }
     }
+    public void closeWarningPopup() {
+        if (winWarningPresenter != null) {
+            winWarningPresenter.close();
+            winWarningPresenter = null;
+        }
+    }
 
     private void showWinner() {
+        closeWarningPopup();
         WinScreenView winScreenView = new WinScreenView(this.view.getResourceManager());
         new WinScreenPresenter(winScreenView, model);
 
@@ -384,7 +394,7 @@ public class GameBoardPresenter implements Observer {
 
     private void showWinWarning() {
         WinWarningView winWarningView = new WinWarningView(this.view.getResourceManager());
-        new WinWarningPresenter(model, winWarningView);
+        winWarningPresenter = new WinWarningPresenter(model, winWarningView);
 
         winWarningView.getWinWarning().setText(model.getGame().getPlayerCloseToWinning().getUsername().toUpperCase() + " IS CLOSE TO WINNING!");
         Scene warningScene = new Scene(winWarningView);
