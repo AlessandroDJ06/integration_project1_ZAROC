@@ -60,6 +60,7 @@ public class MultiPlayerGuestView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         returnButton.updateLayout();
         joinButton.updateLayout();
         BorderPane centralContainer = new BorderPane();

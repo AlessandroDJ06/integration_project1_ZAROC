@@ -15,13 +15,13 @@ public class ZarocNeuralNet {
 
     private OrtEnvironment onnxEnv;
     private OrtSession onnxSession;
-    private boolean isAvailable = false;
+    private boolean isAvailable;
 
     private static final int[][] VALID_PEGS = {
-            {1, 3, 5, 7},      // row 0 — max stack 4
-            {1, 3, 5, 7},      // row 1 — max stack 3
-            {0, 2, 4, 6, 8},   // row 2 — max stack 2
-            {0, 2, 4, 6, 8}    // row 3 — max stack 1
+            {1, 3, 5, 7},
+            {1, 3, 5, 7},
+            {0, 2, 4, 6, 8},
+            {0, 2, 4, 6, 8}
     };
     private static final int[] MAX_STACK_PER_ROW = {4, 3, 2, 1};
 
@@ -43,9 +43,7 @@ public class ZarocNeuralNet {
             opts.setIntraOpNumThreads(1);
             onnxSession = onnxEnv.createSession(bytes, opts);
             isAvailable = true;
-            System.out.println("Neural Network succesvol geladen!");
         } catch (Exception e) {
-            System.err.println("Waarschuwing: Neuraal netwerk kon niet laden. Fallback wordt gebruikt.");
             isAvailable = false;
         }
     }

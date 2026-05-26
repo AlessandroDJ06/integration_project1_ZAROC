@@ -1,9 +1,6 @@
 package game.integration_project1_zaroc.model.mutliplayer;
 
-import game.integration_project1_zaroc.dao.MultiplayerDao;
-import game.integration_project1_zaroc.dao.MultiplayerMove;
-import game.integration_project1_zaroc.dao.RoomDao;
-import game.integration_project1_zaroc.dao.RoomDTO;
+import game.integration_project1_zaroc.dao.*;
 import game.integration_project1_zaroc.model.AppController;
 import game.integration_project1_zaroc.model.boardinfo.Peg;
 import game.integration_project1_zaroc.model.gamelogic.Move;
@@ -22,7 +19,7 @@ public class MultiplayerService extends Observable {
     private final RoomDao roomDao;
 
     private ScheduledExecutorService scheduler;
-    private volatile int lastKnownMoveCount = 0;
+    private int lastKnownMoveCount = 0;
 
     public MultiplayerService(AppController model) {
         this.model = model;
@@ -35,7 +32,7 @@ public class MultiplayerService extends Observable {
         return Integer.toHexString(new Random().nextInt(0xFFFFF)).toUpperCase();
     }
 
-    public void startLobbyPolling(String roomCode, Consumer<RoomDTO> onRoomUpdated) {
+    public void startLobbyPolling(String roomCode, Consumer<RoomDTO> onRoomUpdated)throws ZarocDaoException {
         stopPolling();
         scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -46,8 +43,8 @@ public class MultiplayerService extends Observable {
                 if (fetchedData != null && onRoomUpdated != null) {
                     onRoomUpdated.accept(fetchedData);
                 }
-            } catch (Exception e) {
-                System.err.println("Fout in lobby poller: " + e.getMessage());
+            } catch (ZarocDaoException e) {
+                model.setPlayer2(null);
             }
         }, 0, 1, TimeUnit.SECONDS);
     }
@@ -64,9 +61,7 @@ public class MultiplayerService extends Observable {
 
         scheduler.scheduleAtFixedRate(() -> {
             try {
-                System.out.println("Polling... gameId=" + gameId + " offset=" + lastKnownMoveCount + " username=" + myUsername);
                 List<MultiplayerMove> newMoves = multiplayerDao.fetchNewMoves(gameId, lastKnownMoveCount, myUsername);
-                System.out.println("new moves found: " + newMoves.size());
 
                 if (!newMoves.isEmpty()) {
                     lastKnownMoveCount += newMoves.size();

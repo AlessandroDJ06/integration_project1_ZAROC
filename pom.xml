@@ -15,25 +15,21 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
             <version>21.0.6</version>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.7.9</version>
         </dependency>
-
         <dependency>
             <groupId>com.microsoft.onnxruntime</groupId>
             <artifactId>onnxruntime</artifactId>
             <version>1.17.1</version>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -44,13 +40,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>21.0.6</version>
         </dependency>
-
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -101,29 +95,46 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
                 <configuration>
+                    <outputDirectory>${project.build.directory}/libs</outputDirectory>
                     <archive>
                         <manifest>
                             <mainClass>game.integration_project1_zaroc.Launcher</mainClass>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>libs/</classpathPrefix>
+                            <classpathPrefix></classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <name>IntegrationApp</name>
+                    <appVersion>1.0.0</appVersion>
+                    <vendor>Alessandro</vendor>
+                    <destination>${project.build.directory}/dist</destination>
+                    <mainJar>integration_project1_zaroc-1.0-SNAPSHOT.jar</mainJar>
+                    <mainClass>game.integration_project1_zaroc.Launcher</mainClass>
+                    <javaOptions>
+                        <option>--add-modules=javafx.controls,javafx.fxml,javafx.media</option>
+                        <option>--module-path=$APPDIR</option>
+                    </javaOptions>
+                    <input>${project.build.directory}/libs</input>
+                    <type>APP_IMAGE</type>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>
-                                game.integration_project1_zaroc/game.integration_project1_zaroc.HelloApplication
-                            </mainClass>
+                            <mainClass>game.integration_project1_zaroc/game.integration_project1_zaroc.HelloApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

@@ -26,7 +26,10 @@ public class Main extends Application {
         Scene scene = new Scene(view);
         stage.setScene(scene);
         stage.setMaximized(true);
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png"))));
+        var iconStream = getClass().getResourceAsStream("/game/integration_project1_zaroc/ui/zaroc.png");
+        if (iconStream != null) {
+            stage.getIcons().add(new Image(iconStream));
+        }
         stage.show();
 
     }
@@ -40,7 +43,6 @@ public class Main extends Application {
             DaoUtils.createTable();
             return true;
         } catch (ZarocDaoException e) {
-            System.out.println("Database niet beschikbaar, app start zonder DB: " + e.getMessage());
             return false;
         }
     }

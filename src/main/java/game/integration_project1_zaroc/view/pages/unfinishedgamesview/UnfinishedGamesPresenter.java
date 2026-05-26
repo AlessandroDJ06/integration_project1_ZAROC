@@ -113,6 +113,9 @@ public class UnfinishedGamesPresenter implements Observer {
 
                     }else{
                         playerTwo = new AIPlayer(selected.getOppDifficulty(),selected.getOpponentName());
+                        playerTwo.setPlayerId(selected.getOppId());
+                        playerTwo.setProfilePicture(selected.getOpponentPfp());
+                        model.setPlayer2(playerTwo);
                     }
 
                     if (!model.isOnlineMultiplayer()){
@@ -127,7 +130,6 @@ public class UnfinishedGamesPresenter implements Observer {
                         }
 
                         model.resumeGame(selectedGameId,model.getPlayer1().getUsername().equals(selected.getCurrentUserName()));
-                        System.out.println(model.getPlayer2().getUsername());
                         closeWindow();
                     }
 
@@ -174,10 +176,6 @@ public class UnfinishedGamesPresenter implements Observer {
     private void closeWindow() {
         Stage stage = (Stage) view.getScene().getWindow();
         stage.close();
-    }
-
-    public int getSelectedGameId() {
-        return selectedGameId;
     }
 
     @Override

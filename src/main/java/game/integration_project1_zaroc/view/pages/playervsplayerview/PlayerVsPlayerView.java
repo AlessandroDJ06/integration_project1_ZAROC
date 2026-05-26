@@ -59,10 +59,15 @@ public class PlayerVsPlayerView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         returnButton.updateLayout();
         loginPlayerTwo.updateLayout();
         createAccountPlayerTwo.updateLayout();
         startGame.updateLayout();
+        playerOneInfo.getChildren().clear();
+        playerTwoInfo.getChildren().clear();
+        loginButtons.getChildren().clear();
+        content.getChildren().clear();
 
         BorderPane centralContainer = new BorderPane();
         centralContainer.setBackground(new Background(new BackgroundImage(

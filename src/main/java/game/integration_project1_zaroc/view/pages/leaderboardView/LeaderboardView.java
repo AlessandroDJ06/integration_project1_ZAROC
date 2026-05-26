@@ -23,6 +23,8 @@ public class LeaderboardView extends BorderPane {
     private TableView<LeaderboardEntry> leaderboardTable;
     private Label statusLabel;
     private ComboBox<String> sortDropdown;
+    private ComboBox<String> aiDropdown;
+
 
     private final ResourceManager resourceManager;
 
@@ -36,6 +38,9 @@ public class LeaderboardView extends BorderPane {
         returnButton = new TextButton(resourceManager, "X");
         leaderboardTable = new TableView<>();
         statusLabel = new Label("Loading leaderboard…");
+        aiDropdown = new ComboBox<>();
+        aiDropdown.getItems().addAll("All players", "Only AI", "Only human players");
+        aiDropdown.setValue("All players");
         sortDropdown = new ComboBox<>();
         sortDropdown.getItems().addAll(
                 "Win Rate", "Wins", "Losses", "Games Played",
@@ -45,6 +50,7 @@ public class LeaderboardView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         returnButton.updateLayout();
         this.setPrefWidth(1052);
 
@@ -68,53 +74,15 @@ public class LeaderboardView extends BorderPane {
         sortLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
         sortLabel.setTextFill(Color.web(textColor));
 
-        sortDropdown.setStyle(
-                "-fx-background-color: derive(" + themeColor + ", 15%); " +
-                        "-fx-border-color: derive(" + themeColor + ", -10%); " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-font-size: 11px; " +
-                        "-fx-text-base-color: " + textColor + "; " +
-                        "-fx-text-fill: " + textColor + "; " +
-                        "-fx-font-family: '" + fontFamily + "';"
-        );
 
-        sortDropdown.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setStyle("-fx-background-color: " + themeColor + ";");
-                    return;
-                }
-                setText(item);
-                setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
-                setTextFill(Color.web(textColor));
+        Label aiLabel = new Label(" | filter: ");
+        aiLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+        aiLabel.setTextFill(Color.web(textColor));
 
-                if (getIndex() % 2 == 0) {
-                    setStyle("-fx-background-color: derive(" + themeColor + ", 15%); -fx-padding: 8px;");
-                } else {
-                    setStyle("-fx-background-color: derive(" + themeColor + ", 30%); -fx-padding: 8px;");
-                }
-            }
-        });
+       styleDropdown(sortDropdown);
+       styleDropdown(aiDropdown);
 
-        sortDropdown.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    return;
-                }
-                setText(item);
-                setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
-                setTextFill(Color.web(textColor));
-                setStyle("-fx-background-color: transparent;");
-            }
-        });
-
-        HBox sortBox = new HBox(10, sortLabel, sortDropdown);
+        HBox sortBox = new HBox(10, sortLabel, sortDropdown, aiLabel, aiDropdown );
         sortBox.setAlignment(Pos.CENTER_LEFT);
         sortBox.setPadding(new Insets(0, 0, 10, 0));
 
@@ -188,6 +156,7 @@ public class LeaderboardView extends BorderPane {
         statusLabel.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
         statusLabel.setTextFill(Color.web(textColor));
 
+
         HBox statusBox = new HBox(statusLabel);
         statusBox.setAlignment(Pos.CENTER);
         statusBox.setPadding(new Insets(10, 0, 30, 0));
@@ -205,6 +174,57 @@ public class LeaderboardView extends BorderPane {
         this.setBackground(new Background(bgImage));
     }
 
+    private void styleDropdown(ComboBox<String> comboBox){
+        String themeColor = resourceManager.getTheme().getColor();
+        String textColor = resourceManager.getTheme().getTextColor();
+        String fontFamily = resourceManager.getFont(Fonts.PRESSSTART2PSMALL).getFamily();
+        comboBox.setStyle(
+                "-fx-background-color: derive(" + themeColor + ", 15%); " +
+                        "-fx-border-color: derive(" + themeColor + ", -10%); " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-font-size: 11px; " +
+                        "-fx-text-base-color: " + textColor + "; " +
+                        "-fx-text-fill: " + textColor + "; " +
+                        "-fx-font-family: '" + fontFamily + "';"
+        );
+
+        comboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("-fx-background-color: " + themeColor + ";");
+                    return;
+                }
+                setText(item);
+                setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+                setTextFill(Color.web(textColor));
+
+                if (getIndex() % 2 == 0) {
+                    setStyle("-fx-background-color: derive(" + themeColor + ", 15%); -fx-padding: 8px;");
+                } else {
+                    setStyle("-fx-background-color: derive(" + themeColor + ", 30%); -fx-padding: 8px;");
+                }
+            }
+        });
+
+        comboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    return;
+                }
+                setText(item);
+                setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
+                setTextFill(Color.web(textColor));
+                setStyle("-fx-background-color: transparent;");
+            }
+        });
+    }
+
     public void setItems(List<LeaderboardEntry> rows) {
         leaderboardTable.getItems().setAll(rows);
     }
@@ -220,6 +240,7 @@ public class LeaderboardView extends BorderPane {
     public ComboBox<String> getSortDropdown() {
         return sortDropdown;
     }
+    public ComboBox<String> getAiDropdown(){return aiDropdown;}
 
     public ResourceManager getResourceManager() {
         return resourceManager;

@@ -6,8 +6,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO responsible for fetching player statistics for the leaderboard.
+ */
 public class LeaderboardDao {
 
+    /**
+     * Fetches all players who have participated in at least one finished game,
+     * along with their statistics (only ENDED games count towards these). Results are ordered by win percentage
+     * descending, then wins descending, then username ascending.
+     *
+     * @return a ranked list of {@link LeaderboardEntry} objects, one per player;
+     *         empty if no finished games are found
+     * @throws SQLException      if a database access error occurs
+     * @throws ZarocDaoException if the database connection cannot be established
+     */
     public List<LeaderboardEntry> fetchLeaderboard() throws SQLException, ZarocDaoException {
 
         String sql = """
@@ -37,7 +50,8 @@ public class LeaderboardDao {
                          ), 0
                          )                                                           AS avg_sec_per_move,
                 COUNT(DISTINCT CASE WHEN gp.winner = TRUE THEN gp.game_id END)
-                                                                                                      AS total_score
+                                                                                                      AS total_score,
+                COALESCE(p.difficulty,null) AS difficulty
                                       FROM
                                           PLAYERS p
                                           JOIN GAME_PARTICIPATION gp ON p.player_id = gp.player_id
@@ -73,7 +87,8 @@ public class LeaderboardDao {
                     rs.getLong("total_play_time_sec"),
                     rs.getDouble("avg_moves_per_game"),
                     rs.getDouble("avg_sec_per_move"),
-                    rs.getInt("total_score")
+                    rs.getInt("total_score"),
+                        rs.getString("difficulty")
                 );
                 entries.add(entry);
             }

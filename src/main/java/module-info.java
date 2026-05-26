@@ -8,11 +8,6 @@ module game.integration_project1_zaroc {
     requires org.postgresql.jdbc;
     requires com.microsoft.onnxruntime;
     requires javafx.media;
-    //requires game.integration_project1_zaroc;
-    //requires game.integration_project1_zaroc;
-    //requires game.integration_project1_zaroc;
-    //requires game.integration_project1_zaroc;
-    //requires game.integration_project1_zaroc;
 
     exports game.integration_project1_zaroc;
 }

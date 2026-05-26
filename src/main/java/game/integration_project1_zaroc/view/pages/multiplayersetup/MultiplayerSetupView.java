@@ -33,6 +33,7 @@ public class MultiplayerSetupView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         returnButton.updateLayout();
         hostGame.updateLayout();
         joinGame.updateLayout();

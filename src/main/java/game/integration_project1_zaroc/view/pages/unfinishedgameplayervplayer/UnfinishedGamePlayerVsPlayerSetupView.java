@@ -33,6 +33,7 @@ public class UnfinishedGamePlayerVsPlayerSetupView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         setBackground(new Background(LayoutHelpers.setBackground(this.resourceManager, 550, 650)));
         this.setPrefSize(550, 650);
         this.setMaxSize(550, 650);

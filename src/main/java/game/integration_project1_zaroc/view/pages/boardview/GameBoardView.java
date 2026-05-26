@@ -51,6 +51,7 @@ public class GameBoardView extends BorderPane {
     }
 
     void layoutNodes() {
+        this.getChildren().clear();
         settingsButton.updateLayout();
         infoButton.updateLayout();
         undoButton.updateLayout();

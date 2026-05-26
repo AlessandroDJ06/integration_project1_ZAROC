@@ -49,6 +49,7 @@ public class GameSetupView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         profileButton.updateLayout();
         settingsButton.updateLayout();
         infoButton.updateLayout();

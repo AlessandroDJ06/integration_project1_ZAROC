@@ -44,6 +44,7 @@ public class LoginView extends BorderPane {
     }
 
     void layoutNodes(){
+        this.getChildren().clear();
         loginButton.updateLayout();
         returnButton.updateLayout();
         playAsGuest.updateLayout();

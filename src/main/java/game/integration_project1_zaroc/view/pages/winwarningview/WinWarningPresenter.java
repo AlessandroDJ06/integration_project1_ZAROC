@@ -23,6 +23,12 @@ public class WinWarningPresenter implements Observer {
             currentStage.close();
         });
     }
+    public void close() {
+        Stage stage = (Stage) view.getScene().getWindow();
+        if (stage != null) {
+            stage.close();
+        }
+    }
 
     @Override
     public void updateLayout(Object args) {

@@ -52,7 +52,7 @@ public class CreateAccountPresenter implements Observer {
             try {
                 model.createAccount(username, email, password,profilePicture,isPlayerOne);
                 NavigationService.closeWindow(this.view);
-            } catch (ZarocDaoException ex) {
+            } catch (ZarocDaoException | IllegalArgumentException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
                 alert.setHeaderText("Account creation failed");

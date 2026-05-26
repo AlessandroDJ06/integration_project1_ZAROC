@@ -4,6 +4,7 @@ package game.integration_project1_zaroc.view.pages.leaderboardview;
 import game.integration_project1_zaroc.dao.LeaderboardDao;
 
 import game.integration_project1_zaroc.dao.LeaderboardEntry;
+//import game.integration_project1_zaroc.dao.MockDataLoader;
 import game.integration_project1_zaroc.dao.MockDataLoader;
 import game.integration_project1_zaroc.dao.ZarocDaoException;
 
@@ -19,16 +20,33 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-
+/**
+ * Presenter for the leaderboard screen.
+ * Loads player statistics from the database on a background thread
+ * and handles sorting by selected value.
+ */
 public class LeaderboardPresenter implements Observer {
 
+    /** The leaderboard view this presenter manages. */
     private final LeaderboardView view;
+    /** DAO used to fetch leaderboard entries from the database. */
     private final LeaderboardDao dao;
+    /** The connection to the model.*/
     private AppController model;
 
-
+    /**
+     * Cached list of leaderboard entries loaded from the database.
+     * Used to avoid having to fetch again when the user changes the sort option.
+     */
     private List<LeaderboardEntry> cachedEntries = new ArrayList<>();
 
+    /**
+     * Creates a new LeaderboardPresenter, registers event handlers,
+     * and triggers the initial leaderboard load.
+     *
+     * @param view          the leaderboard view to manage.
+     * @param appController the connection to the model.
+     */
     public LeaderboardPresenter(LeaderboardView view, AppController appController) {
         this.view = view;
         this.model =appController;
@@ -38,6 +56,11 @@ public class LeaderboardPresenter implements Observer {
         loadLeaderboard();
     }
 
+    /**
+     * Registers event handlers for the leaderboard view controls.
+     * Attaches a close action, hover effect, and sound effect to the return button,
+     * and a sort listener to the sort dropdown.
+     */
     private void attachEventHandlers() {
 
         view.getReturnButton().setOnAction(actionEvent ->{
@@ -48,11 +71,35 @@ public class LeaderboardPresenter implements Observer {
         view.getSortDropdown().valueProperty().addListener(
                 (obs, oldVal, newVal) -> applySortAndDisplay(newVal)
         );
+        view.getAiDropdown().valueProperty().addListener((observableValue, oldVal, newVal) -> applySortAndDisplay(view.getSortDropdown().getValue()));
     }
 
-
+    /**
+     * Sorts the cached leaderboard entries by the given option and updates the view.
+     * Assigns ranks after sorting. Does nothing if no entries are cached yet.
+     *
+     * @param sortOption the display name of the column to sort by, default is win rate.
+     */
 private void applySortAndDisplay(String sortOption) {
     if (cachedEntries.isEmpty()) return;
+    List<LeaderboardEntry> entriesToSort = new ArrayList<>();
+
+    String selectedValue = view.getAiDropdown().getValue();
+
+    for(LeaderboardEntry leaderboardEntry: cachedEntries){
+        if(selectedValue.equals("Only AI")){
+            if(!(leaderboardEntry.getDifficulty()==null)){
+                entriesToSort.add(leaderboardEntry);
+            }
+        }else if(selectedValue.equals("Only human players")){
+            if(leaderboardEntry.getDifficulty()==null){
+                entriesToSort.add(leaderboardEntry);
+            }
+        }else{
+            entriesToSort.add(leaderboardEntry);
+        }
+    }
+
     Comparator<LeaderboardEntry> comparator = switch (sortOption) {
             case "Wins"            -> Comparator.comparingInt(LeaderboardEntry::getWins).reversed();
             case "Losses"          -> Comparator.comparingInt(LeaderboardEntry::getLosses).reversed();
@@ -66,7 +113,7 @@ private void applySortAndDisplay(String sortOption) {
                             .thenComparingInt(LeaderboardEntry::getWins).reversed();
         };
 
-    List<LeaderboardEntry> sorted = new ArrayList<>(cachedEntries);
+    List<LeaderboardEntry> sorted = new ArrayList<>(entriesToSort);
     sorted.sort(comparator);
 
     for (int i = 0; i < sorted.size(); i++) {
@@ -75,6 +122,13 @@ private void applySortAndDisplay(String sortOption) {
 
     view.setItems(sorted);
 }
+
+    /**
+     * Loads leaderboard entries from the database on a background thread.
+     * Enters mock data in the database if its empty.
+     * Updates the view once loading completes.
+     * Displays an error message in the view if the anything fails.
+     */
 
     public void loadLeaderboard(){
         view.setStatusText("Loading leaderboard…");
@@ -93,7 +147,7 @@ private void applySortAndDisplay(String sortOption) {
                     view.setItems(entries);
                     view.setStatusText(entries.isEmpty()
                             ? "No finished games found."
-                            : entries.size() + " player(s) on the board.");
+                            : entries.size() + " player(s) found in total.");
                 });
 
             } catch (SQLException | ZarocDaoException e) {
@@ -107,11 +161,14 @@ private void applySortAndDisplay(String sortOption) {
         dbThread.setDaemon(true);
         dbThread.start();
     }
-
-    @Override
-    public void updateLayout(Object args) {
-        view.layoutNodes();
-    }
-
+    /**
+     * Called when the resource manager notifies observers of a layout change.
+     * Triggers a full layout refresh on the view.
+     */
+//    @Override
+//    public void updateLayout(Object args) {
+//        view.layoutNodes();
+//    }
+//
     }
 

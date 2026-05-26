@@ -1,17 +1,16 @@
 package game.integration_project1_zaroc.view.components;
 
-import game.integration_project1_zaroc.view.components.buttons.ShortButtonComponent;
 import game.integration_project1_zaroc.view.components.buttons.TextButton;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.ResourceManager;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.fonts.Fonts;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.profilePictures.ProfilePictures;
 import game.integration_project1_zaroc.view.sharedlogic.resource_manager.themes.Components;
-import game.integration_project1_zaroc.view.sharedlogic.utils.GeneralEventhandlers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -28,9 +27,10 @@ public class PlayersPlayingComponent extends HBox {
     private Circle secondPlayerPfpFrame;
     private ProfilePictures playerOnePfp;
     private ProfilePictures playerTwoPfp;
-    private Label pointPlayerOne;
-    private Label pointPlayerTwo;
+    private ImageView colorPlayerOne;
+    private ImageView colorPlayerTwo;
     private Button pauseButton;
+
     private Label afkTimer;
 
 
@@ -49,8 +49,8 @@ public class PlayersPlayingComponent extends HBox {
         this.secondPlayer = new Label(secondPlayer);
         this.firsPlayerPfpFrame = new Circle(50,50,50);
         this.secondPlayerPfpFrame = new Circle(50,50,50);
-        this.pointPlayerOne = new Label("Points: 0");
-        this.pointPlayerTwo = new Label("Points: 0");
+        this.colorPlayerOne = new ImageView();
+        this.colorPlayerTwo = new ImageView();
         this.playerOnePfp = ProfilePictures.EMPTY;
         this.playerTwoPfp = ProfilePictures.EMPTY;
         this.pauseButton = new TextButton(resourceManager,"II");
@@ -68,8 +68,8 @@ public class PlayersPlayingComponent extends HBox {
                 new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
         );
 
-        VBox nameSectionPlayer1 = new VBox(this.firstPlayer,this.pointPlayerOne);
-        VBox nameSectionPlayer2 = new VBox(this.secondPlayer,this.pointPlayerTwo);
+        VBox nameSectionPlayer1 = new VBox(this.firstPlayer,this.colorPlayerOne);
+        VBox nameSectionPlayer2 = new VBox(this.secondPlayer,this.colorPlayerTwo);
 
         nameSectionPlayer2.setAlignment(Pos.CENTER);
         nameSectionPlayer1.setAlignment(Pos.CENTER);
@@ -79,11 +79,9 @@ public class PlayersPlayingComponent extends HBox {
 
         firstPlayer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
         secondPlayer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
-        pointPlayerOne.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
-        pointPlayerTwo.setFont(resourceManager.getFont(Fonts.PRESSSTART2PSMALL));
         afkTimer.setFont(resourceManager.getFont(Fonts.PRESSSTART2PLARGE));
 
-        List<Label> setFontColors = Arrays.asList(firstPlayer,secondPlayer,pointPlayerOne,pointPlayerTwo,afkTimer);
+        List<Label> setFontColors = Arrays.asList(firstPlayer,secondPlayer,afkTimer);
 
         for (Label label : setFontColors){
             label.setTextFill(Color.web(resourceManager.getTheme().getTextColor()));
@@ -138,12 +136,12 @@ public class PlayersPlayingComponent extends HBox {
         this.firstPlayer = firstPlayer;
     }
 
-    public void setPointPlayerTwo(String pointPlayerTwo) {
-        this.pointPlayerTwo.setText("Points: " + pointPlayerTwo);
+    public void setColorPlayerTwo(Image colorPlayerTwo) {
+        this.colorPlayerTwo.setImage(colorPlayerTwo);
     }
 
-    public void setPointPlayerOne(String pointPlayerOne) {
-        this.pointPlayerOne.setText("Points: " + pointPlayerOne);
+    public void setPointPlayerOne(Image colorPlayerOne) {
+        this.colorPlayerOne.setImage(colorPlayerOne);
     }
 
     public Label getFirstPlayer() {
