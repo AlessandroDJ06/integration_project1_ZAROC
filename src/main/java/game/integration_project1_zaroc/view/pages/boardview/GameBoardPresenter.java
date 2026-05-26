@@ -133,6 +133,7 @@ public class GameBoardPresenter implements Observer {
             view.getUndoButton().setDisable(true);
 
             model.getGame().undoMove();
+            view.getResourceManager().getSfxManager().playUndoSound();
             updateView();
 
             startAfkTimer();
@@ -532,14 +533,15 @@ public class GameBoardPresenter implements Observer {
                 if (bestTurn != null) {
                     executeSingleMove(bestTurn.getFirstMove());
                     updateView();
+                    view.getResourceManager().getSfxManager().playPawnMove();
 
                     if (bestTurn.getSecondMove() != null) {
                         javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(Duration.millis(800));
                         pause.setOnFinished(event -> {
                             executeSingleMove(bestTurn.getSecondMove());
                             updateView();
-
-                            if (model.getGame().getStatus() == GameStatus.ENDED) {
+                            view.getResourceManager().getSfxManager().playPawnMove();
+                            if(model.getGame().getStatus() == GameStatus.ENDED){
                                 Platform.runLater(() -> showWinner());
                                 return;
                             }
@@ -632,6 +634,7 @@ public class GameBoardPresenter implements Observer {
                 model.getGame().selectStartPeg(startPeg);
                 model.getGame().executeMove(destinationPeg);
 
+                view.getResourceManager().getSfxManager().playPawnMove();
                 updateView();
 
                 if (model.getGame().getStatus() == GameStatus.ENDED) {

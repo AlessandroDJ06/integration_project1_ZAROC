@@ -11,7 +11,11 @@ public class SFXManager {
     private AudioClip pawnMove;
     /** AudioClip used for audioclip buttonPress.*/
     private AudioClip buttonPress;
-    /** Current volume level, between 0.0-1.0.*/
+    private AudioClip undoSound;
+    private AudioClip warningSound;
+    private AudioClip winSound;
+    private AudioClip lossSound;
+
     private double volume = 1;
 
 
@@ -21,6 +25,8 @@ public class SFXManager {
     public SFXManager() {
         pawnMove = loadSound("/game/integration_project1_zaroc/Audio/SFX/pawn.mp3");
         buttonPress = loadSound("/game/integration_project1_zaroc/Audio/SFX/buttonPress.mp3");
+        undoSound = loadSound("/game/integration_project1_zaroc/Audio/SFX/unod.mp3");
+        warningSound = loadSound("/game/integration_project1_zaroc/Audio/SFX/warning.mp3");
     }
 
     /** Loads the audioclips.
@@ -53,8 +59,27 @@ public class SFXManager {
         }
     }
     /**
-     * Sets the playback volume based on a slider scale of 1 to 10.
-     * The value is divided by 10 to match the media players range of 0-1. */
+     * Plays the undoSound AudioClip.
+     * Only if undoSound != null.
+     * */
+    public void playUndoSound(){
+        if (undoSound != null) {
+            undoSound.setVolume(volume);
+            undoSound.play();
+        }
+    }
+    /**
+     * Plays the warningSound AudioClip.
+     * Only if warningSound != null.
+     * */
+    public void playWarningSound(){
+        if (warningSound != null) {
+            warningSound.setVolume(volume);
+            warningSound.play();
+        }
+    }
+
+
     public void setVolume(double volume) {
         this.volume = volume/10;
     }

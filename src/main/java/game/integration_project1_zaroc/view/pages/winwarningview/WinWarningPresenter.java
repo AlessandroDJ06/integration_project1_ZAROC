@@ -14,6 +14,7 @@ public class WinWarningPresenter implements Observer {
         this.view = view;
         this.view.getResourceManager().addObserver(this);
         addEventHandlers();
+        view.getResourceManager().getSfxManager().playWarningSound();
     }
 
     private void addEventHandlers() {
